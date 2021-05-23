@@ -10,7 +10,9 @@ include(custom-utils)
 
 
 # Main executable
-add_executable(ceres src/ceres/main.cpp)
+add_executable(ceres src/Ceres/main.cpp)
+target_sources(ceres PRIVATE src/Ceres/Game.cpp)
+target_include_directories(ceres PUBLIC src/Ceres/)
 
 # Compiler options
 target_compile_features(ceres PRIVATE cxx_std_17)
