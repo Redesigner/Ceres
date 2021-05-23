@@ -1,12 +1,12 @@
 extern "C"
 {
-	#include <SDL.h>
+	#include <SDL2/SDL.h>
 }
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 
-int main(int argc, char* args[])
+int main(int, char**)
 {
 	SDL_Window* window = NULL;
 	SDL_Surface* screenSurface = NULL;
