@@ -1,11 +1,14 @@
 #include "Game.h"
 
-Game::Game()
+namespace Ceres
 {
-    
-}
+    Game::Game()
+    {
 
-Game::~Game()
-{
+    }
 
+    Game::~Game()
+    {
+
+    }
 }

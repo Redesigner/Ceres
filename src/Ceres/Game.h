@@ -1,14 +1,17 @@
 #pragma once
 
-class Game
+namespace Ceres
 {
-public:
-    
-    Game(/* args */);
-    
-    ~Game();
+    class Game
+    {
+        public:
+            
+            Game(/* args */);
+            
+            ~Game();
 
-private:
-    /* data */
+        private:
+            /* data */
 
-};
+    };
+}

@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake Build",
+            "command": "build",
+            "type": "cmake",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": [ "/c" ]
+                }
+            }
+        }
+    ]
+}

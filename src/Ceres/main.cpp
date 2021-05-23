@@ -26,7 +26,7 @@ int main(int, char**)
 			SDL_Delay(1000);
 		}
 	}
-	Game game;
+	Ceres::Game game;
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 	return 0;
