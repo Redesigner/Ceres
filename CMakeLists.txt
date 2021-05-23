@@ -11,7 +11,11 @@ include(custom-utils)
 
 # Main executable
 add_executable(ceres src/Ceres/main.cpp)
-target_sources(ceres PRIVATE src/Ceres/Game.cpp)
+target_sources(ceres PRIVATE
+	src/Ceres/Core/MainHandler.cpp
+	src/Ceres/Game.cpp
+	src/Ceres/Core/GraphicsDevice.cpp
+)
 target_include_directories(ceres PUBLIC src/Ceres/)
 
 # Compiler options
@@ -25,9 +29,12 @@ set_target_properties(ceres PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO $
 
 # Required packages
 find_package(SDL2 REQUIRED)
+find_package(fmt REQUIRED)
+find_package(GLEW REQUIRED)
 
 # Link packages
 target_link_libraries(ceres PRIVATE SDL2::SDL2)
+target_link_libraries(ceres PRIVATE fmt::fmt)
 
 # Windows specific
 if (WIN32)
