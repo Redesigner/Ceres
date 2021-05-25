@@ -12,8 +12,11 @@ include(custom-utils)
 # Main executable
 add_executable(ceres src/Ceres/main.cpp)
 target_sources(ceres PRIVATE
-	src/Ceres/Core/MainHandler.cpp
+
 	src/Ceres/Game.cpp
+
+	src/Ceres/Core/MainHandler.cpp
+	src/Ceres/Core/Vector3.cpp
 
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp

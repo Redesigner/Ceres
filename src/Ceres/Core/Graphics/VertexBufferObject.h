@@ -1,3 +1,8 @@
+#pragma once
+
+#include "../Vector3.h"
+
+#include <vector>
 extern "C"
 {
     #include <SDL2/SDL.h>
@@ -13,8 +18,8 @@ namespace Ceres
             VertexBufferObject(unsigned int vertexCount);
             ~VertexBufferObject();
 
-            void SetData(std::vector<float> data, unsigned int offset);
-            void SetData(std::vector<float> data);
+            void SetData(std::vector<Vector3> data, unsigned int offset);
+            void SetData(std::vector<Vector3> data);
         private:
             unsigned int _capacity;
             unsigned int _currentIndex;

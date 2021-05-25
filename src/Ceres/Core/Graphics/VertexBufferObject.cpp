@@ -1,5 +1,7 @@
 #include "VertexBufferObject.h"
 
+#include "../Vector3.h"
+
 #include <vector>
 #include <stdexcept>
 
@@ -12,22 +14,24 @@ namespace Ceres
         _capacity = vertexCount;
         _currentIndex = 0;
         _gVBO = 0;
+
         glGenBuffers(1, &_gVBO);
         glBindBuffer(GL_ARRAY_BUFFER, _gVBO);
         glBufferData(GL_ARRAY_BUFFER, VERTEXSIZE * _capacity, NULL, GL_DYNAMIC_DRAW);
     }
 
-    void VertexBufferObject::SetData(std::vector<float> data, unsigned int offset)
+    void VertexBufferObject::SetData(std::vector<Vector3> data, unsigned int offset)
     {
+        if(offset + data.size() > _capacity)
+        {
+            throw std::out_of_range("VertexBufferObject data out of range.");
+        }
         glBindBuffer(GL_ARRAY_BUFFER, _gVBO);
-        glBufferSubData(GL_ARRAY_BUFFER, offset, data.size() * sizeof(GLfloat), data.data());
+        glBufferSubData(GL_ARRAY_BUFFER, offset, data.size() * VERTEXSIZE, data.data());
     }
 
-    void VertexBufferObject::SetData(std::vector<float> data)
+    void VertexBufferObject::SetData(std::vector<Vector3> data)
     {
-        if(_currentIndex >= _capacity)
-        {
-            throw std::out_of_range("Vertex Buffer Object is already full, cannot set data.");
-        }
+        SetData(data, _currentIndex);
     }
 }
