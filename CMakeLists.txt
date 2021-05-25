@@ -14,7 +14,13 @@ add_executable(ceres src/Ceres/main.cpp)
 target_sources(ceres PRIVATE
 	src/Ceres/Core/MainHandler.cpp
 	src/Ceres/Game.cpp
-	src/Ceres/Core/GraphicsDevice.cpp
+
+	src/Ceres/Core/Graphics/Context.cpp
+	src/Ceres/Core/Graphics/Effect.cpp
+	src/Ceres/Core/Graphics/GraphicsDevice.cpp
+	src/Ceres/Core/Graphics/VertexBufferObject.cpp
+
+	src/Ceres/Core/IO/ContentManager.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)
 
@@ -35,6 +41,8 @@ find_package(GLEW REQUIRED)
 # Link packages
 target_link_libraries(ceres PRIVATE SDL2::SDL2)
 target_link_libraries(ceres PRIVATE fmt::fmt)
+target_link_libraries(ceres PRIVATE GLEW::GLEW)
+
 
 # Windows specific
 if (WIN32)

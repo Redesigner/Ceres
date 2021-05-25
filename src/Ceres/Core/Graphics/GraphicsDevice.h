@@ -5,6 +5,7 @@ struct SDL_Surface;
 
 namespace Ceres
 {
+    class Context;
     class GraphicsDevice
     {
         public:
@@ -12,10 +13,13 @@ namespace Ceres
             GraphicsDevice();
             ~GraphicsDevice();
 
-            bool CreateWindow();
+            SDL_Window* CreateWindow();
+            Context* CreateContext(SDL_Window* window);
             
         private:
             SDL_Window* _window;
             SDL_Surface* screenSurface;
+
+            Context* _currentContext;
     };
 }

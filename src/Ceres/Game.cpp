@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "Core/GraphicsDevice.h"
+#include "Core/Graphics/GraphicsDevice.h"
 
 namespace Ceres
 {
@@ -15,10 +15,6 @@ namespace Ceres
 
     bool Game::Initialize()
     {
-        if(!_graphicsDevice->CreateWindow())
-        {
-            return false;
-        }
         return true;
     }
 
