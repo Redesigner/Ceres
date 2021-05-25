@@ -34,4 +34,9 @@ namespace Ceres
     {
         SetData(data, _currentIndex);
     }
+
+    void VertexBufferObject::Bind()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, _gVBO);
+    }
 }

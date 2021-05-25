@@ -20,6 +20,8 @@ namespace Ceres
 
             void SetData(std::vector<Vector3> data, unsigned int offset);
             void SetData(std::vector<Vector3> data);
+
+            void Bind();
         private:
             unsigned int _capacity;
             unsigned int _currentIndex;

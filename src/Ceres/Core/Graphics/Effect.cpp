@@ -7,34 +7,63 @@
 
 namespace Ceres
 {
-    Effect::Effect(const char* filepath)
+    Effect::Effect(const char* vertFile, const char* fragFile)
     {
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        _vertexShaderSource = ContentManager::LoadString(filepath);
-        const char* vertexCString = _vertexShaderSource.c_str();
-        glShaderSource(_vertexShader, 1, &vertexCString, NULL);
+        _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        if(compileShader(_vertexShader, vertFile, _vertexShaderSource) && compileShader(_fragmentShader, fragFile, _fragmentShaderSource))
+        {
+            glAttachShader(_glProgram, _vertexShader);
+            glAttachShader(_glProgram, _fragmentShader);
+            glLinkProgram(_glProgram);
+
+            GLint status = GL_TRUE;
+            glGetProgramiv(_glProgram, GL_LINK_STATUS, &status);
+            if(status != GL_TRUE)
+            {
+                int maxLength = 0;
+                int msgLength = 0;
+                glGetProgramiv(_glProgram, GL_INFO_LOG_LENGTH, &maxLength);
+                char* msg = new char[maxLength];
+                glGetProgramInfoLog(_glProgram, maxLength, &msgLength, msg);
+                fmt::print(msg);
+                throw std::runtime_error("OpenGL shaders failed to compile.");
+            }
+        }
+
+    }
+
+    void Effect::Begin()
+    {
+        glUseProgram(_glProgram);
+    }
+
+    bool Effect::compileShader(GLuint shader, const char* filename, std::string source)
+    {
+        source = ContentManager::LoadString(filename);
+        const char* sourceArray = source.c_str();
+        glShaderSource(shader, 1, &sourceArray, NULL);
 
         GLint shaderCompiled = GL_FALSE;
-        glCompileShader(_vertexShader);
-        glGetShaderiv(_vertexShader, GL_COMPILE_STATUS, &shaderCompiled);
+        glCompileShader(shader);
+
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &shaderCompiled);
         if (shaderCompiled != GL_TRUE)
         {
-            printGlShaderError();
+            printGlShaderError(shader);
+            return false;
         }
-    }
-    void Effect::Attach()
-    {
-        glAttachShader(_glProgram, _vertexShader);
+        return true;
     }
 
-    void Effect::printGlShaderError()
+    void Effect::printGlShaderError(GLuint shader)
     {
         int maxLength = 0;
         int msgLength = 0;
-        glGetShaderiv(_vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
         char* msg = new char[maxLength];
-        glGetShaderInfoLog(_vertexShader, maxLength, &msgLength, msg);
+        glGetShaderInfoLog(shader, maxLength, &msgLength, msg);
         fmt::print(msg);
     }
 }

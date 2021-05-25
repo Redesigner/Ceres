@@ -10,11 +10,14 @@ extern "C"
 struct SDL_Window;
 namespace Ceres
 {
+    class VertexBufferObject;
+
     class Context
     {
         public:
-            Context::Context(SDL_Window* window);
-            Context::~Context();
+            Context(SDL_Window* window);
+            ~Context();
+
         private:
             SDL_GLContext _glContext;
     };

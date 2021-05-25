@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 
 extern "C"
@@ -13,14 +14,20 @@ namespace Ceres
     class Effect
     {
         public:
-            Effect(const char* filepath);
+            Effect(const char* vertFile, const char* fragFile);
             ~Effect();
 
-            void Attach();
+            void Begin();
+
         private:
-            void printGlShaderError();
+            bool compileShader(GLuint shader, const char* filename, std::string source);
+            void printGlShaderError(GLuint shader);
+
             GLuint _glProgram;
             GLuint _vertexShader;
+            GLuint _fragmentShader;
+
             std::string _vertexShaderSource;
+            std::string _fragmentShaderSource;
     };
 }

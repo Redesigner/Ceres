@@ -13,6 +13,7 @@ namespace Ceres
     {
         _game = game;
         _exit = !game->Initialize();
+        game->Load();
     }
 
     void MainHandler::Loop()

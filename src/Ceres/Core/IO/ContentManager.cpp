@@ -17,10 +17,18 @@ namespace Ceres
         fs::path currentPath = fs::current_path();
         currentPath.append(CONTENTPATH);
         currentPath.append(filename);
-        fmt::print("Loading file '{}'...\n", currentPath.string());
+        fmt::print("Loading file: '{}'...\n", currentPath.string());
         
+
+        std::ifstream ifs (currentPath, std::ifstream::in);
+
         std::string file_content;
-        std::getline(std::ifstream(currentPath), file_content, '\0');
+        while (ifs.good())
+        {
+            file_content += (char) (ifs.get());
+        }
+        ifs.close();
+        fmt::print("File loaded successfully, length: {}\n", file_content.length());
         return file_content;
     }
 }

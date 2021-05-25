@@ -1,7 +1,5 @@
 #include "Context.h"
 
-#include "Effect.h"
-
 #include <fmt/core.h>
 
 extern "C"
@@ -24,8 +22,5 @@ namespace Ceres
         GLenum glewError = glewInit();
 
         fmt::print("Initializing GLEW... {}\n", glewGetErrorString(glewError));
-        
-        Effect* defaultEffect = new Effect("shaders/default.GLSL");
-        defaultEffect->Attach(); 
     }
 }

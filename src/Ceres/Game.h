@@ -10,9 +10,10 @@ namespace Ceres
             Game();
             ~Game();
 
-            bool Game::Initialize();
-            void Game::Update();
-            void Game::Draw();
+            bool Initialize();
+            void Load();
+            void Update();
+            void Draw();
             
         private:
             int _status;

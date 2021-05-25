@@ -1,4 +1,6 @@
 #include "Game.h"
+
+#include "Core/Vector3.h"
 #include "Core/Graphics/GraphicsDevice.h"
 
 namespace Ceres
@@ -18,6 +20,12 @@ namespace Ceres
         return true;
     }
 
+    void Game::Load()
+    {
+        std::vector<Vector3> vertices = {Vector3(-0.5f, -0.5f, 0), Vector3(0, 0.5f, 0), Vector3(0.5f, -0.5f, 0)};
+        _graphicsDevice->LoadVertices(vertices);
+    }
+
     void Game::Update()
     {
 
@@ -25,6 +33,6 @@ namespace Ceres
 
     void Game::Draw()
     {
-
+        _graphicsDevice->Render();
     }
 }
