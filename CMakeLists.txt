@@ -15,12 +15,13 @@ target_sources(ceres PRIVATE
 
 	src/Ceres/Game.cpp
 
-	src/Ceres/Core/MainHandler.cpp
+	src/Ceres/Core/Program.cpp
 	src/Ceres/Core/Vector3.cpp
 
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
+	src/Ceres/Core/Graphics/VertexArrayObject.cpp
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp

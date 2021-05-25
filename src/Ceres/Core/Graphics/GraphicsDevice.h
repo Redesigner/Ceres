@@ -9,6 +9,7 @@ namespace Ceres
 {
     class Context;
     class Effect;
+    class VertexArrayObject;
     class VertexBufferObject;
 
     struct Vector3;
@@ -31,6 +32,7 @@ namespace Ceres
             SDL_Surface* _screenSurface;
 
             Context* _currentContext;
+            VertexArrayObject* _currentVAO;
             VertexBufferObject* _currentVBO;
             Effect* _currentEffect;
     };

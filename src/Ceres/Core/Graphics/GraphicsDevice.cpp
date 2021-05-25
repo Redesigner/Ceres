@@ -2,6 +2,7 @@
 
 #include "Context.h"
 #include "Effect.h"
+#include "VertexArrayObject.h"
 #include "VertexBufferObject.h"
 
 #include <stdexcept>
@@ -25,12 +26,9 @@ namespace Ceres
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
         _currentEffect = new Effect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
-        GLuint vAO = 0;
-        glGenVertexArrays(1, &vAO);
-        glBindVertexArray(vAO);
+        _currentVAO = new VertexArrayObject();
         _currentVBO = new VertexBufferObject(32);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0); 
+        _currentVAO->Bind(_currentVBO);
     }
     GraphicsDevice::~GraphicsDevice()
     {

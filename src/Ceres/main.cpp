@@ -1,11 +1,11 @@
 #include "Game.h"
-#include "Core/MainHandler.h"
+#include "Core/Program.h"
 
 int main(int, char**)
 {
 	Ceres::Game* game = new Ceres::Game();
-	Ceres::MainHandler* mainHandler = new Ceres::MainHandler(game);
-	mainHandler->Loop();
+	Ceres::Program* program = new Ceres::Program(game);
+	program->Loop();
 
 	return 0;
 }

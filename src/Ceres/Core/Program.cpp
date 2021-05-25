@@ -1,4 +1,4 @@
-#include "MainHandler.h"
+#include "Program.h"
 
 #include "Game.h"
 
@@ -9,14 +9,14 @@ extern "C"
 
 namespace Ceres
 {
-    MainHandler::MainHandler(Game* game)
+    Program::Program(Game* game)
     {
         _game = game;
         _exit = !game->Initialize();
         game->Load();
     }
 
-    void MainHandler::Loop()
+    void Program::Loop()
     {
         while(!_exit)
         {
@@ -27,7 +27,7 @@ namespace Ceres
         }
     }
 
-    void MainHandler::handleEvents()
+    void Program::handleEvents()
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))
