@@ -61,7 +61,8 @@ namespace Ceres
     void GraphicsDevice::beginRender()
     {
         glClearColor(1.0, 1.0, 1.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
         _currentEffect->Begin();
     }
 

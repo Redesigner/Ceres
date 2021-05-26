@@ -30,9 +30,12 @@ namespace Ceres
         unsigned int indices[] = {
             0, 1, 2, 0, 2, 3,
             4, 5, 6, 4, 6, 7,
-            1, 2, 5, 2, 5, 6
+            1, 2, 5, 2, 5, 6,
+            0, 3, 4, 3, 4, 7,
+            0, 1, 4, 1, 4, 5,
+            2, 3, 6, 3, 6, 7
         };
-        _testCollection = new VertexCollection(verts, 8, indices, 18);
+        _testCollection = new VertexCollection(verts, 8, indices, 36);
         _graphicsDevice->LoadCollection(_testCollection);
     }
 
