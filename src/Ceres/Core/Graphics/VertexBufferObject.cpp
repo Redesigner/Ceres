@@ -1,7 +1,5 @@
 #include "VertexBufferObject.h"
 
-#include "../Vector3.h"
-
 #include <vector>
 #include <stdexcept>
 
@@ -18,6 +16,11 @@ namespace Ceres
         glGenBuffers(1, &_gVBO);
         glBindBuffer(GL_ARRAY_BUFFER, _gVBO);
         glBufferData(GL_ARRAY_BUFFER, VERTEXSIZE * _capacity, NULL, GL_DYNAMIC_DRAW);
+    }
+
+    VertexBufferObject::~VertexBufferObject()
+    {
+        glDeleteBuffers(1, &_gVBO);
     }
 
     void VertexBufferObject::SetData(std::vector<Vector3> data, unsigned int offset)

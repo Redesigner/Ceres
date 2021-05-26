@@ -32,10 +32,10 @@ namespace Ceres
     }
     GraphicsDevice::~GraphicsDevice()
     {
-        if(_currentContext != nullptr)
-        {
-            SDL_GL_DeleteContext(_currentContext);
-        }
+        delete _currentVAO;
+        delete _currentVBO;
+        delete _currentEffect;
+        delete _currentContext;
         if(_window != nullptr)
         {
             SDL_DestroyWindow(_window);

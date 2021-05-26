@@ -11,6 +11,11 @@ namespace Ceres
         glBindVertexArray(_gVAO);
     }
 
+    VertexArrayObject::~VertexArrayObject()
+    {
+        glDeleteVertexArrays(1, &_gVAO);
+    }
+
     void VertexArrayObject::Bind(VertexBufferObject* vBO)
     {
         glBindVertexArray(_gVAO);

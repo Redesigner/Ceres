@@ -31,7 +31,11 @@ namespace Ceres
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
         }
-
+    }
+    
+    Effect::~Effect()
+    {
+        
     }
 
     void Effect::Begin()

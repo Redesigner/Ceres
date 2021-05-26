@@ -1,6 +1,6 @@
 #include "Game.h"
 
-#include "Core/Vector3.h"
+#include "Core/Common/Vector3.h"
 #include "Core/Graphics/GraphicsDevice.h"
 
 namespace Ceres
@@ -13,6 +13,7 @@ namespace Ceres
 
     Game::~Game()
     {
+        delete _graphicsDevice;
     }
 
     bool Game::Initialize()

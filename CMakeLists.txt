@@ -16,7 +16,9 @@ target_sources(ceres PRIVATE
 	src/Ceres/Game.cpp
 
 	src/Ceres/Core/Program.cpp
-	src/Ceres/Core/Vector3.cpp
+
+	src/Ceres/Core/Common/Matrix.cpp
+	src/Ceres/Core/Common/Vector3.cpp
 
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp

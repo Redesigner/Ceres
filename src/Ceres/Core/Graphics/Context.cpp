@@ -23,4 +23,9 @@ namespace Ceres
 
         fmt::print("Initializing GLEW... {}\n", glewGetErrorString(glewError));
     }
+
+    Context::~Context()
+    {
+        SDL_GL_DeleteContext(_glContext);
+    }
 }
