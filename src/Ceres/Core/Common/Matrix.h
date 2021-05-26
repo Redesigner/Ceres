@@ -5,6 +5,7 @@ namespace Ceres
     struct Matrix
     {
         public:
+            Matrix();
             Matrix(
                 float m11, float m12, float m13, float m14,
                 float m21, float m22, float m23, float m24,
@@ -13,6 +14,7 @@ namespace Ceres
 
             static Matrix Identity();
             static Matrix Zero();
+            static Matrix Perspective(float width, float height, float near, float far);
 
             Matrix operator*(const Matrix& b);
 

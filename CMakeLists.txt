@@ -23,8 +23,10 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
+	src/Ceres/Core/Graphics/IndexBuffer.cpp
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
+	src/Ceres/Core/Graphics/VertexCollection.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp
 )

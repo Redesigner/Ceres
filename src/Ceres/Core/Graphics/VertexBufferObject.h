@@ -3,6 +3,7 @@
 #include "../Common/Vector3.h"
 
 #include <vector>
+
 extern "C"
 {
     #include <SDL2/SDL.h>
@@ -18,8 +19,8 @@ namespace Ceres
             VertexBufferObject(unsigned int vertexCount);
             ~VertexBufferObject();
 
-            void SetData(std::vector<Vector3> data, unsigned int offset);
-            void SetData(std::vector<Vector3> data);
+            void SetData(Vector3 data[], unsigned int size, unsigned int offset);
+            void SetData(Vector3 data[], unsigned int size);
 
             void Bind();
         private:

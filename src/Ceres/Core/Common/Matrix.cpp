@@ -2,6 +2,10 @@
 
 namespace Ceres
 {
+    Matrix::Matrix()
+    {
+    }
+
     Matrix::Matrix(
         float m11, float m12, float m13, float m14,
         float m21, float m22, float m23, float m24,
@@ -42,6 +46,19 @@ namespace Ceres
             0, 0, 0, 0,
             0, 0, 0, 0,
             0, 0, 0, 0);
+    }
+
+    Matrix Matrix::Perspective(float width, float height, float near, float far)
+    {
+        float r = width / 2;
+        float l = -r;
+        float t = height / 2;
+        float b = -t;
+        return Matrix(
+            ((2 * near) / (r - l)), 0, 0, 0,
+            0, ((2 * near) / (t - b)), 0, 0,
+            ((r + l) / (r - l)), ((t + b) / (t - b)), -((far + near) / (far - near)), -1,
+            0, 0, ((-2 * near * far) / (far - near)), 1);
     }
 
     Matrix Matrix::operator*(const Matrix& b)

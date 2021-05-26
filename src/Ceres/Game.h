@@ -3,6 +3,7 @@
 namespace Ceres
 {
     class GraphicsDevice;
+    class VertexCollection;
 
     class Game
     {
@@ -18,6 +19,5 @@ namespace Ceres
         private:
             int _status;
             GraphicsDevice* _graphicsDevice;
-
     };
 }

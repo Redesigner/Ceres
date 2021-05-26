@@ -9,6 +9,7 @@ extern "C"
 
 namespace Ceres
 {
+    class IndexBuffer;
     class VertexBufferObject;
     
     class VertexArrayObject
@@ -17,7 +18,9 @@ namespace Ceres
             VertexArrayObject();
             ~VertexArrayObject();
 
-            void Bind(VertexBufferObject* vBO);
+            void Bind();
+            void BindTo(VertexBufferObject* vBO);
+            void BindTo(IndexBuffer* iBO);
 
         private:
             GLuint _gVAO;

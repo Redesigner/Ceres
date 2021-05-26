@@ -23,19 +23,19 @@ namespace Ceres
         glDeleteBuffers(1, &_gVBO);
     }
 
-    void VertexBufferObject::SetData(std::vector<Vector3> data, unsigned int offset)
+    void VertexBufferObject::SetData(Vector3 data[], unsigned int size, unsigned int offset)
     {
-        if(offset + data.size() > _capacity)
+        if(offset + size > _capacity)
         {
             throw std::out_of_range("VertexBufferObject data out of range.");
         }
         glBindBuffer(GL_ARRAY_BUFFER, _gVBO);
-        glBufferSubData(GL_ARRAY_BUFFER, offset, data.size() * VERTEXSIZE, data.data());
+        glBufferSubData(GL_ARRAY_BUFFER, offset, size * VERTEXSIZE, data);
     }
 
-    void VertexBufferObject::SetData(std::vector<Vector3> data)
+    void VertexBufferObject::SetData(Vector3 data[], unsigned int size)
     {
-        SetData(data, _currentIndex);
+        SetData(data, size, _currentIndex);
     }
 
     void VertexBufferObject::Bind()

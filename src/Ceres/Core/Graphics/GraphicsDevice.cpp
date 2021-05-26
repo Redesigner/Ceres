@@ -4,6 +4,7 @@
 #include "Effect.h"
 #include "VertexArrayObject.h"
 #include "VertexBufferObject.h"
+#include "VertexCollection.h"
 
 #include <stdexcept>
 #include <fmt/core.h>
@@ -26,38 +27,48 @@ namespace Ceres
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
         _currentEffect = new Effect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
-        _currentVAO = new VertexArrayObject();
-        _currentVBO = new VertexBufferObject(32);
-        _currentVAO->Bind(_currentVBO);
     }
+
     GraphicsDevice::~GraphicsDevice()
     {
-        delete _currentVAO;
-        delete _currentVBO;
         delete _currentEffect;
         delete _currentContext;
         if(_window != nullptr)
         {
             SDL_DestroyWindow(_window);
         }
+        for (int i = 0; i < _vertexCollections.size(); i++)
+        {
+            delete _vertexCollections[i];
+        }
     }
 
-    void GraphicsDevice::LoadVertices(std::vector<Vector3> vertices)
+    void GraphicsDevice::LoadCollection(VertexCollection* collection)
     {
-        _currentVBO->SetData(vertices);
-        printError();
-        fmt::print("Adding {} vertices to VBO.\n", vertices.size());
+        _vertexCollections.push_back(collection);
     }
 
     void GraphicsDevice::Render()
     {
+        beginRender();
+        for (int i = 0; i < _vertexCollections.size(); i++)
+        {
+            _vertexCollections[i]->Render();
+        }
+        endRender();
+    }
+
+    void GraphicsDevice::beginRender()
+    {
         glClearColor(1.0, 1.0, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         _currentEffect->Begin();
-        _currentVBO->Bind();
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
-        SDL_GL_SwapWindow(_window);
+    }
 
+    void GraphicsDevice::endRender()
+    {
+
+        SDL_GL_SwapWindow(_window);
         printError();
     }
 

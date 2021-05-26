@@ -1,5 +1,7 @@
 #pragma once
 
+#include"../Common/Matrix.h"
+
 #include <string>
 
 extern "C"
@@ -29,5 +31,7 @@ namespace Ceres
 
             std::string _vertexShaderSource;
             std::string _fragmentShaderSource;
+
+            Matrix _projection;
     };
 }

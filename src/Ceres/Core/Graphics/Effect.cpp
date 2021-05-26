@@ -12,6 +12,7 @@ namespace Ceres
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
         _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        _projection = Matrix::Perspective(1, 1, 1, 20);
         if(compileShader(_vertexShader, vertFile, _vertexShaderSource) && compileShader(_fragmentShader, fragFile, _fragmentShaderSource))
         {
             glAttachShader(_glProgram, _vertexShader);
@@ -30,6 +31,8 @@ namespace Ceres
                 fmt::print(msg);
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
+            glUseProgram(_glProgram);
+            glUniformMatrix4fv(0, 1, GL_FALSE, _projection.M[0]);
         }
     }
     
