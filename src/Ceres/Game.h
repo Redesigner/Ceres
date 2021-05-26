@@ -19,5 +19,6 @@ namespace Ceres
         private:
             int _status;
             GraphicsDevice* _graphicsDevice;
+            VertexCollection* _testCollection;
     };
 }

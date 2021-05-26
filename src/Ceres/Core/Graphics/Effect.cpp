@@ -12,7 +12,9 @@ namespace Ceres
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
         _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        _projection = Matrix::Perspective(1, 1, 1, 20);
+        _projection = Matrix::Perspective(1.77f, 1, 1, 20);
+        Matrix translation = Matrix::Translation(0, -2, -10);
+        _projection = translation * _projection;
         if(compileShader(_vertexShader, vertFile, _vertexShaderSource) && compileShader(_fragmentShader, fragFile, _fragmentShaderSource))
         {
             glAttachShader(_glProgram, _vertexShader);

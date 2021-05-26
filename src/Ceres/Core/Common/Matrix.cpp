@@ -1,5 +1,7 @@
 #include "Matrix.h"
 
+#include <cmath>
+
 namespace Ceres
 {
     Matrix::Matrix()
@@ -28,6 +30,48 @@ namespace Ceres
         M[3][1] = m42;
         M[3][2] = m43;
         M[3][3] = m44;
+    }
+
+    Matrix Matrix::RotationAlongX(float angle)
+    {
+        float cos = std::cos(angle);
+        float sin = std::sin(angle);
+        return Matrix(
+            1, 0, 0, 0,
+            0, cos, sin, 0,
+            0, -sin, cos, 0,
+            0, 0, 0, 1);
+    }
+
+    Matrix Matrix::RotationAlongY(float angle)
+    {
+        float cos = std::cos(angle);
+        float sin = std::sin(angle);
+        return Matrix(
+            cos, 0, -sin, 0,
+            0, 1, 0, 0,
+            sin, 0, cos, 0,
+            0, 0, 0, 1);
+    }
+
+    Matrix Matrix::RotationAlongZ(float angle)
+    {
+        float cos = std::cos(angle);
+        float sin = std::sin(angle);
+        return Matrix(
+            cos, sin, 0, 0,
+            -sin, cos, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1);
+    }
+
+    Matrix Matrix::Translation(float x, float y, float z)
+    {
+        return Matrix(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            x, y, z, 1);
     }
 
     Matrix Matrix::Identity()

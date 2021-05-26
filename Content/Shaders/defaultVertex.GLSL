@@ -5,10 +5,11 @@ in vec3 aPos;
 out vec4 vertexColor;
 
 uniform mat4 projection;
+uniform mat4 model;
 
 void main()
 {
     vec4 pos = vec4(aPos, 1.0);
-    gl_Position = projection * pos;
+    gl_Position = model * projection * pos;
     vertexColor = vec4(0.5, 0.0, 0.0, 1.0);
 }

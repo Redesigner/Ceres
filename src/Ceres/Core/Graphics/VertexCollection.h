@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Common/Matrix.h"
+
 namespace Ceres
 {
     class IndexBuffer;
@@ -15,8 +17,10 @@ namespace Ceres
             ~VertexCollection();
 
             void Render();
+            void ApplyTransform(Matrix transform);
 
         private:
+            Matrix _model;
             unsigned int _count;
             IndexBuffer* _iBO;
             VertexArrayObject* _vAO;

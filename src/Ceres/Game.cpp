@@ -24,14 +24,21 @@ namespace Ceres
 
     void Game::Load()
     {
-        Vector3 verts[] = {Vector3(-1, -1, -1), Vector3(-1, 1, -1), Vector3(1, 1, -1), Vector3(1, -1, -2)};
-        unsigned int indices[] = {0, 1, 2, 0, 2, 3};
-        _graphicsDevice->LoadCollection(new VertexCollection(verts, 4, indices, 6));
+        Vector3 verts[] = {
+            Vector3(-1, -1, 1), Vector3(-1, 1, 1), Vector3(1, 1, 1), Vector3(1, -1, 1),
+            Vector3(-1, -1, -1), Vector3(-1, 1, -1), Vector3(1, 1, -1), Vector3(1, -1, -1)};
+        unsigned int indices[] = {
+            0, 1, 2, 0, 2, 3,
+            4, 5, 6, 4, 6, 7,
+            1, 2, 5, 2, 5, 6
+        };
+        _testCollection = new VertexCollection(verts, 8, indices, 18);
+        _graphicsDevice->LoadCollection(_testCollection);
     }
 
     void Game::Update()
     {
-
+        _testCollection->ApplyTransform(Matrix::RotationAlongY(0.0001f));
     }
 
     void Game::Draw()
