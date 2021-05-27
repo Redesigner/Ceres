@@ -28,6 +28,10 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
 	src/Ceres/Core/Graphics/VertexCollection.cpp
 
+	src/Ceres/Core/Graphics/VertexTypes/IVertexType.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
+
 	src/Ceres/Core/IO/ContentManager.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)

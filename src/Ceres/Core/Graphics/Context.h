@@ -10,8 +10,6 @@ extern "C"
 struct SDL_Window;
 namespace Ceres
 {
-    class VertexBufferObject;
-
     class Context
     {
         public:

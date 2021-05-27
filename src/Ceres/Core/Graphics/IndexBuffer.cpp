@@ -26,6 +26,7 @@ namespace Ceres
         {
             throw std::out_of_range("IndexBuffer data out of range.");
         }
+        _currentCount += count;
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _iBO);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, count * INDEXSIZE, indices);
     }

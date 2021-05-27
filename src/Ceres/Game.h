@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Core/Graphics/VertexCollection.h"
+#include "Core/Graphics/VertexTypes/IVertexType.h"
+#include "Core/Graphics/VertexTypes/VertexPosition.h"
+
 namespace Ceres
 {
     class GraphicsDevice;
-    class VertexCollection;
 
     class Game
     {
@@ -19,6 +22,6 @@ namespace Ceres
         private:
             int _status;
             GraphicsDevice* _graphicsDevice;
-            VertexCollection* _testCollection;
+            VertexCollection<VertexPosition>* _testCollection;
     };
 }

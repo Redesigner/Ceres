@@ -2,7 +2,10 @@
 
 #include <vector>
 
+#include "VertexCollection.h"
 #include "../Common/Matrix.h"
+#include "VertexTypes/IVertexType.h"
+#include "VertexTypes/VertexPosition.h"
 
 struct SDL_Window;
 struct SDL_Surface;
@@ -11,7 +14,6 @@ namespace Ceres
 {
     class Context;
     class Effect;
-    class VertexCollection;
 
     struct Vector3;
 
@@ -22,7 +24,11 @@ namespace Ceres
             GraphicsDevice();
             ~GraphicsDevice();
 
-            void LoadCollection(VertexCollection* collection);
+            template <typename V>
+            void LoadCollection(VertexCollection<V> *collection)
+            {
+                _vertexCollections.push_back( (VertexCollection<IVertexType>*) collection);
+            } 
             void Render();
             
         private:
@@ -38,6 +44,6 @@ namespace Ceres
             Context* _currentContext;
             Effect* _currentEffect;
 
-            std::vector<VertexCollection*> _vertexCollections;
+            std::vector<VertexCollection<IVertexType>*> _vertexCollections;
     };
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "IndexBuffer.h"
+#include "VertexBufferObject.h"
+
 extern "C"
 {
     #include <SDL2/SDL.h>
@@ -9,18 +12,37 @@ extern "C"
 
 namespace Ceres
 {
-    class IndexBuffer;
-    class VertexBufferObject;
-    
+    template <typename V>
     class VertexArrayObject
     {
         public:
-            VertexArrayObject();
-            ~VertexArrayObject();
+            VertexArrayObject()
+            {
+                _gVAO = 0;
+                glGenVertexArrays(1, &_gVAO);
+                glBindVertexArray(_gVAO);
+            }
+            ~VertexArrayObject()
+            {
+                glDeleteVertexArrays(1, &_gVAO);
+            }
 
-            void Bind();
-            void BindTo(VertexBufferObject* vBO);
-            void BindTo(IndexBuffer* iBO);
+            void Bind()
+            {
+                glBindVertexArray(_gVAO);
+            }
+
+            void BindTo(VertexBufferObject<V>* vBO)
+            {
+                glBindVertexArray(_gVAO);
+                vBO->Bind();
+            }
+
+            void BindTo(IndexBuffer* iBO)
+            {
+                glBindVertexArray(_gVAO);
+                iBO->Bind();
+            }
 
         private:
             GLuint _gVAO;

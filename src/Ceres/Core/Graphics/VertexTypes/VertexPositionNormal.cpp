@@ -1,0 +1,25 @@
+#include "VertexPositionNormal.h"
+
+extern "C"
+{
+    #include <SDL2/SDL.h>
+    #include <gl/glew.h>
+    #include <SDL2/SDL_opengl.h>
+}
+
+namespace Ceres
+{
+    VertexNormal::VertexNormal(Vector3 vertex, Vector3 normal)
+        : Vertex(vertex), Normal(normal){}
+
+    VertexNormal::~VertexNormal()
+    {}
+
+    void VertexNormal::SetAttributes()
+    {
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+    }
+}

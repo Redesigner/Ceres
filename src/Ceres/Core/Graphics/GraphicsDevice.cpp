@@ -2,9 +2,6 @@
 
 #include "Context.h"
 #include "Effect.h"
-#include "VertexArrayObject.h"
-#include "VertexBufferObject.h"
-#include "VertexCollection.h"
 
 #include <stdexcept>
 #include <fmt/core.h>
@@ -41,11 +38,6 @@ namespace Ceres
         {
             delete _vertexCollections[i];
         }
-    }
-
-    void GraphicsDevice::LoadCollection(VertexCollection* collection)
-    {
-        _vertexCollections.push_back(collection);
     }
 
     void GraphicsDevice::Render()

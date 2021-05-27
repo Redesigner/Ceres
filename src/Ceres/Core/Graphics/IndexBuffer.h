@@ -8,9 +8,7 @@ extern "C"
 }
 
 namespace Ceres
-{
-    class VertexArrayObject;
-    
+{    
     class IndexBuffer
     {
         public:

@@ -3,6 +3,7 @@
 #include "Core/Common/Vector3.h"
 #include "Core/Graphics/GraphicsDevice.h"
 #include "Core/Graphics/VertexCollection.h"
+#include "Core/Graphics/VertexTypes/VertexPosition.h"
 
 namespace Ceres
 {
@@ -24,7 +25,7 @@ namespace Ceres
 
     void Game::Load()
     {
-        Vector3 verts[] = {
+        VertexPosition verts[] = {
             Vector3(-1, -1, 1), Vector3(-1, 1, 1), Vector3(1, 1, 1), Vector3(1, -1, 1),
             Vector3(-1, -1, -1), Vector3(-1, 1, -1), Vector3(1, 1, -1), Vector3(1, -1, -1)};
         unsigned int indices[] = {
@@ -35,8 +36,9 @@ namespace Ceres
             0, 1, 4, 1, 4, 5,
             2, 3, 6, 3, 6, 7
         };
-        _testCollection = new VertexCollection(verts, 8, indices, 36);
-        _graphicsDevice->LoadCollection(_testCollection);
+        _testCollection = new VertexCollection<VertexPosition>(verts, 8, indices, 36);
+        _testCollection->Render();
+        _graphicsDevice->LoadCollection<VertexPosition>(_testCollection);
     }
 
     void Game::Update()
@@ -46,6 +48,6 @@ namespace Ceres
 
     void Game::Draw()
     {
-        _graphicsDevice->Render();
+         _graphicsDevice->Render();
     }
 }
