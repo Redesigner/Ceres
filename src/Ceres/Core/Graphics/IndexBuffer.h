@@ -12,16 +12,16 @@ namespace Ceres
     class IndexBuffer
     {
         public:
-            IndexBuffer(unsigned int size);
+            IndexBuffer(int size);
             ~IndexBuffer();
 
-            void SetData(unsigned int indices[], unsigned int count, unsigned int offset);
-            void SetData(unsigned int indices[], unsigned int count);
+            void SetData(unsigned int indices[], int count, int offset);
+            void SetData(unsigned int indices[], int count);
             void Bind();
 
         private:
             GLuint _iBO;
-            unsigned int _currentCount;
-            unsigned int _capacity;
+            int _currentCount;
+            int _capacity;
     };
 }

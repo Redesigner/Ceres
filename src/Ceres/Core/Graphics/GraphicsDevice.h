@@ -1,11 +1,11 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
-#include "VertexCollection.h"
-#include "../Common/Matrix.h"
+#include "Mesh.h"
 #include "VertexTypes/IVertexType.h"
-#include "VertexTypes/VertexPosition.h"
+#include "../Common/Matrix.h"
 
 struct SDL_Window;
 struct SDL_Surface;
@@ -17,6 +17,9 @@ namespace Ceres
 
     struct Vector3;
 
+    using EffectPtr = std::shared_ptr<Effect>;
+    using MeshPtr = std::shared_ptr<Mesh>;
+
     class GraphicsDevice
     {
         public:
@@ -24,17 +27,18 @@ namespace Ceres
             GraphicsDevice();
             ~GraphicsDevice();
 
-            template <typename V>
-            void LoadCollection(VertexCollection<V> *collection)
-            {
-                _vertexCollections.push_back( (VertexCollection<IVertexType>*) collection);
-            } 
             void Render();
+
+            EffectPtr LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
+            MeshPtr LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount);
             
         private:
             void beginRender();
-            void printError();
             void endRender();
+            void printError();
+
+            void unloadEffects();
+            void unloadMeshes();
 
             SDL_Window* createWindow();
             
@@ -42,8 +46,10 @@ namespace Ceres
             SDL_Surface* _screenSurface;
 
             Context* _currentContext;
-            Effect* _currentEffect;
+            EffectPtr _currentEffect;
+            Matrix _viewMatrix;
 
-            std::vector<VertexCollection<IVertexType>*> _vertexCollections;
+            std::vector<EffectPtr> _loadedEffects;
+            std::vector<MeshPtr> _loadedMeshes;
     };
 }

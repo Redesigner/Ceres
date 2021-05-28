@@ -11,8 +11,6 @@ namespace Ceres
             VertexPosition(Vector3 position);
             ~VertexPosition();
 
-            static void SetAttributes();
-
             Vector3 Position;
     };
 }

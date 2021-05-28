@@ -11,5 +11,6 @@ void main()
 {
     vec4 pos = vec4(aPos, 1.0);
     gl_Position = model * projection * pos;
+    // gl_Position = pos;
     vertexColor = vec4(pos.x + 0.5, 0.5, 0.5, 1.0);
 }

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "IndexBuffer.h"
-#include "VertexBufferObject.h"
+#include "VertexTypes/IVertexLayout.h"
 
 extern "C"
 {
@@ -12,39 +11,17 @@ extern "C"
 
 namespace Ceres
 {
-    template <typename V>
     class VertexArrayObject
     {
         public:
-            VertexArrayObject()
-            {
-                _gVAO = 0;
-                glGenVertexArrays(1, &_gVAO);
-                glBindVertexArray(_gVAO);
-            }
-            ~VertexArrayObject()
-            {
-                glDeleteVertexArrays(1, &_gVAO);
-            }
+            VertexArrayObject(const IVertexLayout& vertexLayout);
+            ~VertexArrayObject();            
 
-            void Bind()
-            {
-                glBindVertexArray(_gVAO);
-            }
-
-            void BindTo(VertexBufferObject<V>* vBO)
-            {
-                glBindVertexArray(_gVAO);
-                vBO->Bind();
-            }
-
-            void BindTo(IndexBuffer* iBO)
-            {
-                glBindVertexArray(_gVAO);
-                iBO->Bind();
-            }
+            void Bind();
+            void SetAttributes();
 
         private:
             GLuint _gVAO;
+            const IVertexLayout& _vertexLayout;
     };
 }

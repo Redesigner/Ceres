@@ -2,20 +2,17 @@
 
 #include "Core/Common/Vector3.h"
 #include "Core/Graphics/GraphicsDevice.h"
-#include "Core/Graphics/VertexCollection.h"
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
+#include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
 namespace Ceres
 {
     Game::Game()
     {
-        _status = 0;
-        _graphicsDevice = new GraphicsDevice();
     }
 
     Game::~Game()
     {
-        delete _graphicsDevice;
     }
 
     bool Game::Initialize()
@@ -36,18 +33,16 @@ namespace Ceres
             0, 1, 4, 1, 4, 5,
             2, 3, 6, 3, 6, 7
         };
-        _testCollection = new VertexCollection<VertexPosition>(verts, 8, indices, 36);
-        _testCollection->Render();
-        _graphicsDevice->LoadCollection<VertexPosition>(_testCollection);
+
+        _graphicsDevice.LoadMesh(verts, VertexPositionLayout(), 8, indices, 36);
     }
 
     void Game::Update()
     {
-        _testCollection->ApplyTransform(Matrix::RotationAlongY(0.0001f));
     }
 
     void Game::Draw()
     {
-         _graphicsDevice->Render();
+         _graphicsDevice.Render();
     }
 }

@@ -24,11 +24,12 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/Effect.cpp
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
 	src/Ceres/Core/Graphics/IndexBuffer.cpp
+	src/Ceres/Core/Graphics/Mesh.cpp
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
-	src/Ceres/Core/Graphics/VertexCollection.cpp
 
-	src/Ceres/Core/Graphics/VertexTypes/IVertexType.cpp
+	src/Ceres/Core/Graphics/VertexTypes/IVertexLayout.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPositionLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
 
