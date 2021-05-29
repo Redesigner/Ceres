@@ -47,7 +47,7 @@ namespace Ceres
 
             Context* _currentContext;
             EffectPtr _currentEffect;
-            Matrix _viewMatrix;
+            Matrix _defaultModelMatrix;
 
             std::vector<EffectPtr> _loadedEffects;
             std::vector<MeshPtr> _loadedMeshes;

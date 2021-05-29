@@ -25,7 +25,7 @@ namespace Ceres
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
         _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
-        _viewMatrix = Matrix::Perspective(1, 1, 1, 20);
+        _defaultModelMatrix = Matrix::Identity();
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -41,10 +41,12 @@ namespace Ceres
 
     void GraphicsDevice::Render()
     {
+        _defaultModelMatrix = _defaultModelMatrix * Matrix::RotationAlongY(0.0001f);
         beginRender();
         for(MeshPtr mesh : _loadedMeshes)
         {
-            glUniformMatrix4fv(1, 1, GL_FALSE, _viewMatrix.M[0]);
+            mesh->VertexArray();
+            glUniformMatrix4fv(1, 1, GL_FALSE, _defaultModelMatrix.M[0]);
             glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, NULL);
         }
         endRender();

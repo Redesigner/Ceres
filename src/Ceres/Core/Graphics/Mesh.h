@@ -22,10 +22,12 @@ namespace Ceres
 
             int Size();
             EffectPtr GetEffect();
+            VertexArrayObject* VertexArray();
 
         private:
             EffectPtr _effect;
             int _vertexCount;
+            int _indexCount;
             IndexBuffer* _iB;
             VertexArrayObject* _vAO;
             VertexBufferObject* _vBO;

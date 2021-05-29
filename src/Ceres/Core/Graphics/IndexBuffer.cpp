@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-const GLsizei INDEXSIZE = sizeof(int);
+const GLsizei INDEXSIZE = sizeof(unsigned int);
 
 namespace Ceres
 {
