@@ -37,6 +37,7 @@ target_sources(ceres PRIVATE
 
 	src/Ceres/Core/Memory/Align.cpp
 	src/Ceres/Core/Memory/PoolAllocator.cpp
+	src/Ceres/Core/Memory/StackAllocator.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)
 target_include_directories(ceres PUBLIC src/)
