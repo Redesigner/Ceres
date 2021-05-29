@@ -1,5 +1,9 @@
 #include "Align.h"
 
+#include <cassert>
+
+#include "Ceres/Core/Math/Bitwise.h"
+
 namespace Ceres
 {
     uint8* alignPointer(uint8* data, SizeType alignment)
@@ -11,6 +15,8 @@ namespace Ceres
 
     uint8* allocAligned(SizeType size, SizeType alignment)
     {
+        assert(isPowerOfTwo(alignment));
+
         // Allocate at least enough extra memory for realignment and
         // storing the original address
         SizeType allocSize = size + alignment + sizeof(SizeType) - 1;
@@ -36,6 +42,7 @@ namespace Ceres
 
     void freeAligned(uint8* data)
     {
+        // Retrieve the original unaligned pointer stashed at the start of the block
         uint8* unalignedPointer = reinterpret_cast<uint8*>(reinterpret_cast<SizeType*>(data)[-1]);
         delete[] unalignedPointer;
     }
