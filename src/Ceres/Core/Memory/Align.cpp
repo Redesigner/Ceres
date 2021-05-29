@@ -28,14 +28,14 @@ namespace Ceres
         // Make sure we have enough memory to store the original
         // unaligned address. Since we're already aligned we need to
         // increment the address by the alignment
-        if (offset < sizeof(SizeType))
+        if (offset < sizeof(uint8*))
         {
             offset += alignment;
             alignedData += alignment;
         }
 
         // Store the original address at the start of the block
-        reinterpret_cast<SizeType*>(alignedData)[-1] = reinterpret_cast<SizeType>(data);
+        reinterpret_cast<uint8**>(alignedData)[-1] = data;
 
         return alignedData;
     }
@@ -43,7 +43,7 @@ namespace Ceres
     void freeAligned(uint8* data)
     {
         // Retrieve the original unaligned pointer stashed at the start of the block
-        uint8* unalignedPointer = reinterpret_cast<uint8*>(reinterpret_cast<SizeType*>(data)[-1]);
+        uint8* unalignedPointer = reinterpret_cast<uint8**>(data)[-1];
         delete[] unalignedPointer;
     }
 }
