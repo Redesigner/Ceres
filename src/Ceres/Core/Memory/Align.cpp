@@ -17,21 +17,24 @@ namespace Ceres
     {
         assert(isPowerOfTwo(alignment));
 
-        // Allocate at least enough extra memory for realignment and
-        // storing the original address
+        // Allocate at least enough extra memory for realignment and storing the
+        // original address
         SizeType allocSize = size + alignment + sizeof(SizeType) - 1;
         uint8* data = new uint8[allocSize];
 
         uint8* alignedData = alignPointer(data, alignment);
-        SizeType offset = static_cast<uint8>(alignedData - data);
+        SizeType offset = static_cast<SizeType>(alignedData - data);
 
-        // Make sure we have enough memory to store the original
-        // unaligned address. Since we're already aligned we need to
-        // increment the address by the alignment
+        // Make sure we have enough memory to store the original unaligned address. Since
+        // we're already aligned we need to increment the address by the alignment until
+        // we have enough memory to store an address
         if (offset < sizeof(uint8*))
         {
-            offset += alignment;
-            alignedData += alignment;
+            while (offset < sizeof(uint8*))
+            {
+                offset += alignment;
+                alignedData += alignment;
+            }
         }
 
         // Store the original address at the start of the block

@@ -5,6 +5,7 @@
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
+#include "Core/Memory/Align.h"
 #include "Core/Memory/PoolAllocator.h"
 
 namespace Ceres
@@ -37,6 +38,9 @@ namespace Ceres
         };
 
         _graphicsDevice.LoadMesh(verts, VertexPositionLayout(), 8, indices, 36);
+
+        uint8* data = allocAligned(128, 2);
+        freeAligned(data);
     }
 
     void Game::Update()
