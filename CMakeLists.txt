@@ -34,8 +34,12 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp
+
+	src/Ceres/Core/Memory/Align.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)
+target_include_directories(ceres PUBLIC src/)
+
 
 # Compiler options
 target_compile_features(ceres PRIVATE cxx_std_17)

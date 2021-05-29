@@ -5,7 +5,7 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/releasewdebug/ceres.exe",
+            "program": "${workspaceFolder}/bin/debug/ceres.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

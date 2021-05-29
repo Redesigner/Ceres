@@ -5,6 +5,8 @@
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
+#include <Core/Memory/Align.h>
+
 namespace Ceres
 {
     Game::Game()
