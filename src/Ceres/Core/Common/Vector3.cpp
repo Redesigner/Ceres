@@ -6,7 +6,5 @@ namespace Ceres
         : X(x), Y(y), Z(z){}
 
     Vector3::~Vector3()
-    {
-        
-    }
+    {}
 }

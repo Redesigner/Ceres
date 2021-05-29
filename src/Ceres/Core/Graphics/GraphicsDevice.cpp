@@ -43,11 +43,14 @@ namespace Ceres
     {
         _defaultModelMatrix = _defaultModelMatrix * Matrix::RotationAlongY(0.0001f);
         beginRender();
-        for(MeshPtr mesh : _loadedMeshes)
+        MeshPtr componentMesh = _loadedMeshes[0];
+        for(const RenderComponent& renderComponent : _renderComponents)
         {
-            mesh->VertexArray();
-            glUniformMatrix4fv(1, 1, GL_FALSE, _defaultModelMatrix.M[0]);
-            glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, NULL);
+            componentMesh = _loadedMeshes[renderComponent.MeshId];
+            componentMesh->GetVertexArray().Bind();
+            glUniformMatrix4fv(1, 1, GL_FALSE, (GLfloat*) &( renderComponent.Transform.GetMatrix() ) );
+            glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
+
         }
         endRender();
     }
@@ -59,11 +62,17 @@ namespace Ceres
         return effect;
     }
 
-    MeshPtr GraphicsDevice::LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount)
+    uint8_t GraphicsDevice::LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount)
     {
         MeshPtr mesh = MeshPtr(new Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, _currentEffect));
         _loadedMeshes.push_back(mesh);
-        return mesh;
+        return (uint8_t) (_loadedMeshes.size() - 1);
+    }
+
+    RenderComponent& GraphicsDevice::CreateRenderComponent(uint8_t meshId)
+    {
+        _renderComponents.push_back(RenderComponent(meshId));
+        return _renderComponents[_renderComponents.size() - 1];
     }
 
 

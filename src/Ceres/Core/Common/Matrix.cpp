@@ -13,23 +13,17 @@ namespace Ceres
         float m21, float m22, float m23, float m24,
         float m31, float m32, float m33, float m34,
         float m41, float m42, float m43, float m44)
+        : M{{m11, m12, m13, m14}, {m21, m22, m23, m24}, {m31, m32, m33, m34}, {m41, m42, m43, m44}}
+    {}
+
+    Matrix Matrix::Translation(float x, float y, float z)
     {
-        M[0][0] = m11;
-        M[0][1] = m12;
-        M[0][2] = m13;
-        M[0][3] = m14;
-        M[1][0] = m21;
-        M[1][1] = m22;
-        M[1][2] = m23;
-        M[1][3] = m24;
-        M[2][0] = m31;
-        M[2][1] = m32;
-        M[2][2] = m33;
-        M[2][3] = m34;
-        M[3][0] = m41;
-        M[3][1] = m42;
-        M[3][2] = m43;
-        M[3][3] = m44;
+        return Matrix(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            x, y, z, 1
+        );
     }
 
     Matrix Matrix::RotationAlongX(float angle)
@@ -40,7 +34,8 @@ namespace Ceres
             1, 0, 0, 0,
             0, cos, sin, 0,
             0, -sin, cos, 0,
-            0, 0, 0, 1);
+            0, 0, 0, 1
+        );
     }
 
     Matrix Matrix::RotationAlongY(float angle)
@@ -51,7 +46,8 @@ namespace Ceres
             cos, 0, -sin, 0,
             0, 1, 0, 0,
             sin, 0, cos, 0,
-            0, 0, 0, 1);
+            0, 0, 0, 1
+        );
     }
 
     Matrix Matrix::RotationAlongZ(float angle)
@@ -62,16 +58,47 @@ namespace Ceres
             cos, sin, 0, 0,
             -sin, cos, 0, 0,
             0, 0, 1, 0,
-            0, 0, 0, 1);
+            0, 0, 0, 1
+        );
     }
 
-    Matrix Matrix::Translation(float x, float y, float z)
+    Matrix Matrix::RotationFromEuler(float roll, float pitch, float yaw)
+    {
+        float cosA = std::cos(roll);
+        float sinA = std::sin(roll);
+        
+        float cosB = std::cos(pitch);
+        float sinB = std::sin(pitch);
+
+        float cosR = std::cos(yaw);
+        float sinR = std::sin(yaw);
+
+        return Matrix(
+            (cosA * cosB), (cosA * sinB * sinR) - (sinA * cosR), (cosA * sinB * cosR) + (sinA * sinR), 0,
+            (sinA * cosB), (sinA * sinB * sinR) + (cosA * cosR), (sinA * sinB * cosR) - (cosA * sinR), 0,
+            -sinB, (cosB * sinR), (cosB * cosR), 0,
+            0, 0, 0, 1
+        );
+    }
+
+    Matrix Matrix::TranslationScale(float xPos, float yPos, float zPos, float xScale, float yScale, float zScale)
     {
         return Matrix(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            x, y, z, 1);
+            xScale, 0, 0, xPos,
+            0, yScale, 0, yPos,
+            0, 0, zScale, zPos,
+            0, 0, 0, 1
+        );
+    }
+
+    Matrix Matrix::Scale(float x, float y, float z)
+    {
+        return Matrix(
+          x, 0, 0, 0,
+          0, y, 0, 0,
+          0, 0, z, 0,
+          0, 0, 0, 1
+        );
     }
 
     Matrix Matrix::Identity()
@@ -80,7 +107,8 @@ namespace Ceres
             1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
-            0, 0, 0, 1);
+            0, 0, 0, 1
+        );
     }
 
     Matrix Matrix::Zero()
@@ -89,7 +117,8 @@ namespace Ceres
             0, 0, 0, 0,
             0, 0, 0, 0,
             0, 0, 0, 0,
-            0, 0, 0, 0);
+            0, 0, 0, 0
+        );
     }
 
     Matrix Matrix::Perspective(float width, float height, float near, float far)
@@ -102,7 +131,8 @@ namespace Ceres
             ((2 * near) / (r - l)), 0, 0, 0,
             0, ((2 * near) / (t - b)), 0, 0,
             ((r + l) / (r - l)), ((t + b) / (t - b)), -((far + near) / (far - near)), -1,
-            0, 0, ((-2 * near * far) / (far - near)), 1);
+            0, 0, ((-2 * near * far) / (far - near)), 1
+        );
     }
 
     Matrix Matrix::operator*(const Matrix& b)

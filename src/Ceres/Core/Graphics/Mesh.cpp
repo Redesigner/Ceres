@@ -9,24 +9,16 @@
 namespace Ceres
 {
     Mesh::Mesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount,  EffectPtr effect)
+        :_vertexCount(vertexCount), _indexCount(indexCount),
+        _vAO(vertexLayout), _vBO(_vertexCount, vertexLayout), _iBO(indexCount)
     {
-        _vertexCount = vertexCount;
-        _indexCount = indexCount;
-        _vAO = new VertexArrayObject(vertexLayout);
-        _vBO = new VertexBufferObject(vertexCount, vertexLayout);
-        _iB = new IndexBuffer(indexCount);
-        _vBO->SetData(vertexData, vertexCount);
-        _vAO->SetAttributes();
-        _iB->SetData(indices, indexCount);
+        _vBO.SetData(vertexData, vertexCount);
+        _vAO.SetAttributes();
+        _iBO.SetData(indices, indexCount);
     }
 
     Mesh::~Mesh()
     {
-        // Each wrapper class should handle its own deletion via OpenGL
-        fmt::print("Destroying mesh...");
-        delete _vAO;
-        delete _iB;
-        delete _vBO;
     }
 
     int Mesh::Size()
@@ -39,9 +31,8 @@ namespace Ceres
         return _effect;
     }
 
-    VertexArrayObject* Mesh::VertexArray()
+    const VertexArrayObject& Mesh::GetVertexArray() const
     {
-        _vAO->Bind();
         return _vAO;
     }
 }
