@@ -18,7 +18,11 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Program.cpp
 
 	src/Ceres/Core/Common/Matrix.cpp
+	src/Ceres/Core/Common/Transform.cpp
 	src/Ceres/Core/Common/Vector3.cpp
+
+	src/Ceres/Core/Components/IComponent.cpp
+	src/Ceres/Core/Components/RenderComponent.cpp
 
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp

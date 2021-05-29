@@ -16,7 +16,7 @@ namespace Ceres
         glDeleteVertexArrays(1, &_gVAO);
     }
 
-    void VertexArrayObject::Bind()
+    void VertexArrayObject::Bind() const
     {
         glBindVertexArray(_gVAO);
     }

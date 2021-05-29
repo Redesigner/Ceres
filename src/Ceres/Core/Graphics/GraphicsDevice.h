@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "VertexTypes/IVertexType.h"
 #include "../Common/Matrix.h"
+#include "../Components/RenderComponent.h"
 
 struct SDL_Window;
 struct SDL_Surface;
@@ -30,8 +31,11 @@ namespace Ceres
             void Render();
 
             EffectPtr LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
-            MeshPtr LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount);
+            uint8_t LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount);
             
+            // TODO: return appropriate type, manage with separate class?
+            RenderComponent& CreateRenderComponent(uint8_t meshId);
+
         private:
             void beginRender();
             void endRender();
@@ -51,5 +55,7 @@ namespace Ceres
 
             std::vector<EffectPtr> _loadedEffects;
             std::vector<MeshPtr> _loadedMeshes;
+
+            std::vector<RenderComponent> _renderComponents;
     };
 }

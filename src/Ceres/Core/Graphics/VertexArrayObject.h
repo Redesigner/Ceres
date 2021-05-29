@@ -17,7 +17,7 @@ namespace Ceres
             VertexArrayObject(const IVertexLayout& vertexLayout);
             ~VertexArrayObject();            
 
-            void Bind();
+            void Bind() const;
             void SetAttributes();
 
         private:

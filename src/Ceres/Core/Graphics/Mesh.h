@@ -1,5 +1,9 @@
 #pragma once
 
+#include "IndexBuffer.h"
+#include "VertexArrayObject.h"
+#include "VertexBufferObject.h"
+
 #include "VertexTypes/IVertexType.h"
 
 #include <memory>
@@ -8,9 +12,6 @@ namespace Ceres
 {
     class Effect;
     class IVertexLayout;
-    class IndexBuffer;
-    class VertexArrayObject;
-    class VertexBufferObject;
 
     using EffectPtr = std::shared_ptr<Effect>;
 
@@ -22,14 +23,14 @@ namespace Ceres
 
             int Size();
             EffectPtr GetEffect();
-            VertexArrayObject* VertexArray();
+            const VertexArrayObject& GetVertexArray() const;
 
         private:
             EffectPtr _effect;
             int _vertexCount;
             int _indexCount;
-            IndexBuffer* _iB;
-            VertexArrayObject* _vAO;
-            VertexBufferObject* _vBO;
+            IndexBuffer _iBO;
+            VertexArrayObject _vAO;
+            VertexBufferObject _vBO;
     };
 }
