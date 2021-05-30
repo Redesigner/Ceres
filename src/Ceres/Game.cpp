@@ -37,14 +37,14 @@ namespace Ceres
         };
 
         _graphicsDevice.LoadMesh(verts, VertexPositionLayout(), 8, indices, 36);
-        GenericAllocator allocator(4096, 32);
-        GenericAllocator::WeakHandle weakData1;
-        {
-            GenericAllocator::Handle data1 = allocator.allocate(256);
-            data1.getData()[0] = 'Q';
-            weakData1 = data1;
-        }
-        weakData1.pin().getData();
+
+        GenericAllocator allocator(8192, 64);
+
+        GenericAllocator::Handle data1 = allocator.allocate(4096);
+        GenericAllocator::Handle data2 = allocator.allocate(2048);
+        GenericAllocator::Handle data3 = allocator.allocate(4096);
+        data1.clear();
+        GenericAllocator::Handle data4 = allocator.allocate(4096);
     }
 
     void Game::Update()

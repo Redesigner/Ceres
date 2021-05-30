@@ -32,6 +32,7 @@ namespace Ceres
 
                     Handle& operator=(const Handle& other)
                     {
+                        clear();
                         _allocator = other._allocator; _index = other._index; _id = other._id;
                         return *this;
                     }
@@ -50,6 +51,7 @@ namespace Ceres
                     bool isExplictlyNull() const { return _allocator == nullptr; }
                     bool isValid() const;
                     uint8* getData() const;
+                    void clear();
 
                 private:
 
@@ -105,6 +107,8 @@ namespace Ceres
         private:
 
             struct BlockEntry;
+            struct FreeBlockEntry;
+            struct FreeBlockSearchResult;
 
             BlockEntry* findBlockEntry(const Handle& handle) const;
             uint8* getData(const Handle& handle) const;
@@ -112,20 +116,33 @@ namespace Ceres
             void incrementReferences(const Handle& handle);
             void decrementReferences(const Handle& handle);
 
-            int32 findFirstFreeBlockIndex() const;
+            int32 findFirstUnusedBlockIndex() const;
             void freeBlock(BlockEntry& entry);
+
+            FreeBlockSearchResult findFreeBlock(SizeType size) const;
+            FreeBlockSearchResult findFreeBlock(const BlockEntry& entry) const;
 
             struct BlockEntry
             {
-                BlockEntry() = default;
-                
                 uint32 id = 0;
                 uint32 referenceCount = 0;
                 uint8* data = nullptr;
                 SizeType size = 0;
-                SizeType alignment = 0;
+                SizeType offset = 0;
 
                 static const int32 INVALID_INDEX = -1;
+            };
+
+            struct FreeBlockEntry
+            {
+                SizeType size = 0;
+                FreeBlockEntry* nextFreeBlock = nullptr;
+            };
+
+            struct FreeBlockSearchResult
+            {
+                FreeBlockEntry* freeBlock;
+                FreeBlockEntry* previousFreeBlock;
             };
 
             // Block table at start of allocated data
@@ -133,6 +150,8 @@ namespace Ceres
 
             // Start of generic data (after block table)
             uint8* _genericData;
+
+            FreeBlockEntry* _freeHead;
 
             SizeType _genericSize;
             uint32 _numBlocks;
