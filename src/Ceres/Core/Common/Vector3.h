@@ -19,7 +19,7 @@ namespace Ceres
             float LengthSquared();
             Vector3 Normalize();
             Vector3 Cross(const Vector3& vector);
-            Vector3 Dot(const Vector3& vector);
+            float Dot(const Vector3& vector);
 
             Vector3& operator+=(const Vector3& vector);
             Vector3 operator+(const Vector3& vector);
@@ -33,4 +33,6 @@ namespace Ceres
             bool operator==(const Vector3& vector);
         private:
     };
+
+    Vector3 operator*(float scalar, const Vector3& vector);
 }

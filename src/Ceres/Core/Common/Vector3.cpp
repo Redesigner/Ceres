@@ -16,16 +16,6 @@ namespace Ceres
     Vector3::~Vector3() {}
 
 
-    float Vector3::Length()
-    {
-        return std::sqrtf(LengthSquared());
-    }
-
-    float Vector3::LengthSquared()
-    {
-        return (X * X) + (Y * Y) + (Z * Z);
-    }
-
     Vector3 Vector3::Zero()
     {
         return Vector3(0);
@@ -36,10 +26,39 @@ namespace Ceres
         return Vector3(0, 1, 0);
     }
 
+
+    float Vector3::Length()
+    {
+        return std::sqrtf(LengthSquared());
+    }
+
+    float Vector3::LengthSquared()
+    {
+        return (X * X) + (Y * Y) + (Z * Z);
+    }
+
     Vector3 Vector3::Normalize()
     {
         return *this / Length();
     }
+
+    Vector3 Vector3::Cross(const Vector3& vector)
+    {
+        return Vector3(
+            (Y * vector.Z) - (Z * vector.Y),
+            (Z * vector.X) - (X * vector.Z),
+            (X * vector.Y) - (Y * vector.X)
+        );
+    }
+
+    float Vector3::Dot(const Vector3& vector)
+    {
+        return (X * vector.X) + (Y * vector.Y) + (Z * vector.Z);
+    }
+
+
+
+    // ====Operator overloads====
 
     Vector3& Vector3::operator+=(const Vector3& vector)
     {
@@ -90,5 +109,10 @@ namespace Ceres
     bool Vector3::operator==(const Vector3& vector)
     {
         return (X == vector.X) && (Y == vector.Y) && (Z == vector.Z);
+    }
+
+    Vector3 operator*(float scalar, const Vector3& vector)
+    {
+        return Vector3(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
     }
 }
