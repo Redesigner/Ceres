@@ -5,7 +5,7 @@
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
-#include "Core/Memory/StackAllocator.h"
+#include "Core/Memory/GenericAllocator.h"
 
 namespace Ceres
 {
@@ -37,6 +37,14 @@ namespace Ceres
         };
 
         _graphicsDevice.LoadMesh(verts, VertexPositionLayout(), 8, indices, 36);
+        GenericAllocator allocator(4096, 32);
+        GenericAllocator::WeakHandle weakData1;
+        {
+            GenericAllocator::Handle data1 = allocator.allocate(256);
+            data1.getData()[0] = 'Q';
+            weakData1 = data1;
+        }
+        weakData1.pin().getData();
     }
 
     void Game::Update()
