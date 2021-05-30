@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector3.h"
+
 namespace Ceres
 {
     struct Matrix
@@ -24,7 +26,9 @@ namespace Ceres
 
             static Matrix Identity();
             static Matrix Zero();
+
             static Matrix Perspective(float width, float height, float near, float far);
+            static Matrix LookAt(const Vector3& eyePos, const Vector3& target, const Vector3& up);
 
             Matrix operator*(const Matrix& b);
 

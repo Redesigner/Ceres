@@ -27,22 +27,22 @@ namespace Ceres
     }
 
 
-    float Vector3::Length()
+    float Vector3::Length() const
     {
         return std::sqrtf(LengthSquared());
     }
 
-    float Vector3::LengthSquared()
+    float Vector3::LengthSquared() const
     {
         return (X * X) + (Y * Y) + (Z * Z);
     }
 
-    Vector3 Vector3::Normalize()
+    Vector3 Vector3::Normalize() const
     {
         return *this / Length();
     }
 
-    Vector3 Vector3::Cross(const Vector3& vector)
+    Vector3 Vector3::Cross(const Vector3& vector) const
     {
         return Vector3(
             (Y * vector.Z) - (Z * vector.Y),
@@ -51,7 +51,7 @@ namespace Ceres
         );
     }
 
-    float Vector3::Dot(const Vector3& vector)
+    float Vector3::Dot(const Vector3& vector) const
     {
         return (X * vector.X) + (Y * vector.Y) + (Z * vector.Z);
     }
@@ -68,7 +68,7 @@ namespace Ceres
         return *this;
     }
 
-    Vector3 Vector3::operator+(const Vector3& vector)
+    Vector3 Vector3::operator+(const Vector3& vector) const
     {
         return Vector3(*this) += vector;
     }
@@ -81,27 +81,27 @@ namespace Ceres
         return *this;
     }
 
-    Vector3 Vector3::operator-(const Vector3& vector)
+    Vector3 Vector3::operator-(const Vector3& vector) const
     {
         return Vector3(*this) -= vector;
     }
 
-    Vector3 Vector3::operator*(const Vector3& vector)
+    Vector3 Vector3::operator*(const Vector3& vector) const
     {
         return Vector3(X * vector.X, Y * vector.Y, Z * vector.Z);
     }
 
-    Vector3 Vector3::operator*(float scalar)
+    Vector3 Vector3::operator*(float scalar) const
     {
         return Vector3(X * scalar, Y * scalar, Z * scalar);
     }
 
-    Vector3 Vector3::operator/(const Vector3& vector)
+    Vector3 Vector3::operator/(const Vector3& vector) const
     {
         return Vector3(X / vector.X, Y / vector.Y, Z / vector.Z);
     }
 
-    Vector3 Vector3::operator/(float scalar)
+    Vector3 Vector3::operator/(float scalar) const
     {
         return Vector3(X / scalar, Y / scalar, Z / scalar);
     }

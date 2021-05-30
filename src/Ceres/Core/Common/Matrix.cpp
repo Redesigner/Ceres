@@ -135,6 +135,21 @@ namespace Ceres
         );
     }
 
+    Matrix Matrix::LookAt(const Vector3& eyePos, const Vector3& targetPos, const Vector3& up)
+    {
+        Vector3 zAxis = (eyePos - targetPos).Normalize();
+        Vector3 xAxis = up.Cross(zAxis).Normalize();
+        Vector3 yAxis = zAxis.Cross(xAxis);
+
+        return Matrix(
+            xAxis.X, yAxis.X, zAxis.X, 0,
+            xAxis.Y, yAxis.Y, zAxis.Y, 0,
+            xAxis.Z, yAxis.Z, zAxis.Z, 0,
+            -xAxis.Dot(eyePos), -yAxis.Dot(eyePos), -zAxis.Dot(eyePos), 1
+        );
+    }
+
+
     Matrix Matrix::operator*(const Matrix& b)
     {
         Matrix result = Zero();

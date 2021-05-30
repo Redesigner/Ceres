@@ -22,6 +22,11 @@ namespace Ceres
         GLenum glewError = glewInit();
 
         fmt::print("Initializing GLEW... {}\n", glewGetErrorString(glewError));
+
+        if(SDL_GL_SetSwapInterval(1) != 0)
+        {
+            fmt::print("Failed to enable VSync. {}\n", glewGetErrorString(glewError));
+        }
     }
 
     Context::~Context()

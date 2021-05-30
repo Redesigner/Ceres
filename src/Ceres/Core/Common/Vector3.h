@@ -15,20 +15,20 @@ namespace Ceres
             static Vector3 Zero();
             static Vector3 Up();
             
-            float Length();
-            float LengthSquared();
-            Vector3 Normalize();
-            Vector3 Cross(const Vector3& vector);
-            float Dot(const Vector3& vector);
+            float Length() const;
+            float LengthSquared() const;
+            Vector3 Normalize() const;
+            Vector3 Cross(const Vector3& vector) const;
+            float Dot(const Vector3& vector) const;
 
             Vector3& operator+=(const Vector3& vector);
-            Vector3 operator+(const Vector3& vector);
+            Vector3 operator+(const Vector3& vector) const;
             Vector3& operator-=(const Vector3& vector);
-            Vector3 operator-(const Vector3& vector);
-            Vector3 operator*(const Vector3& vector);
-            Vector3 operator*(float scalar);
-            Vector3 operator/(const Vector3& vector);
-            Vector3 operator/(float scalar);
+            Vector3 operator-(const Vector3& vector) const;
+            Vector3 operator*(const Vector3& vector) const;
+            Vector3 operator*(float scalar) const;
+            Vector3 operator/(const Vector3& vector) const;
+            Vector3 operator/(float scalar) const;
 
             bool operator==(const Vector3& vector);
         private:
