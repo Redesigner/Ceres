@@ -5,7 +5,7 @@
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
-#include "Core/Memory/GenericAllocator.h"
+#include "Core/Memory/FirstFreeAllocator.h"
 
 namespace Ceres
 {
@@ -38,13 +38,24 @@ namespace Ceres
 
         _graphicsDevice.LoadMesh(verts, VertexPositionLayout(), 8, indices, 36);
 
-        GenericAllocator allocator(8192, 64);
+        FirstFreeAllocator allocator(8192, 64);
 
-        GenericAllocator::Handle data1 = allocator.allocate(4096);
-        GenericAllocator::Handle data2 = allocator.allocate(2048);
-        GenericAllocator::Handle data3 = allocator.allocate(4096);
-        data1.clear();
-        GenericAllocator::Handle data4 = allocator.allocate(4096);
+        uint8* data1 = allocator.allocateBlock(4096);
+        uint8* data2 = allocator.allocateBlock(2048);
+        uint8* data3 = allocator.allocateBlock(8192);
+        uint8* data4 = allocator.allocateBlock(2048);
+        
+        allocator.freeBlock(data2, 2048);
+        allocator.freeBlock(data4, 2048);
+
+        uint8* data5 = allocator.allocateBlock(4096);
+
+        allocator.freeBlock(data1, 4096);
+        allocator.freeBlock(data5, 4096);
+        if (data3)
+        {
+            allocator.freeBlock(data3, 8192);
+        }
     }
 
     void Game::Update()
