@@ -10,7 +10,7 @@ namespace Ceres
     class RenderComponent : IComponent
     {
         public:
-            RenderComponent(uint8_t meshId);
+            RenderComponent(const IEntity& parent, uint8_t meshId);
             ~RenderComponent();
 
             uint8_t MeshId;

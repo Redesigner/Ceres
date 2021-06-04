@@ -2,6 +2,8 @@
 
 #include "Game.h"
 
+#include <fmt/core.h>
+
 extern "C" 
 {
 	#include <SDL2/SDL.h>
@@ -38,6 +40,10 @@ namespace Ceres
                 {
                     _exit = true;
                     break;
+                }
+            case SDL_KEYDOWN:
+                {
+                    fmt::print("Key pressed: {}", (int) (event.key.keysym.scancode));
                 }
             }
         }

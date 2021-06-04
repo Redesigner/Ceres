@@ -2,12 +2,11 @@
 
 namespace Ceres
 {
-    RenderComponent::RenderComponent(uint8_t meshId)
-        :MeshId(meshId), Transform()
+    RenderComponent::RenderComponent(const IEntity& parent, uint8_t meshId)
+        :IComponent(parent), MeshId(meshId), Transform()
     {}
 
     RenderComponent::~RenderComponent()
     {}
-
 
 }

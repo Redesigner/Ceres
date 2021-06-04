@@ -2,10 +2,19 @@
 
 namespace Ceres
 {
+    class IEntity;
+
     class IComponent
     {
         public:
+            IComponent(const IEntity& parent);
+            ~IComponent();
+            
+            virtual bool recieveMessage();
+
         private:
-        // Entity& _parent
+
+        protected:
+            const IEntity& parent;
     };
 }

@@ -24,6 +24,8 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Components/IComponent.cpp
 	src/Ceres/Core/Components/RenderComponent.cpp
 
+	src/Ceres/Core/Entities/IEntity.cpp
+
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
@@ -36,6 +38,8 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
+
+	src/Ceres/Core/Input/InputHandler.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp
 )

@@ -3,6 +3,7 @@
 #include "Context.h"
 #include "Effect.h"
 #include "Mesh.h"
+#include "../Entities/IEntity.h"
 
 #include <stdexcept>
 #include <fmt/core.h>
@@ -71,7 +72,7 @@ namespace Ceres
 
     RenderComponent& GraphicsDevice::CreateRenderComponent(uint8_t meshId)
     {
-        _renderComponents.push_back(RenderComponent(meshId));
+        _renderComponents.push_back(RenderComponent(IEntity(), meshId));
         return _renderComponents[_renderComponents.size() - 1];
     }
 
