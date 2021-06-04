@@ -40,22 +40,17 @@ namespace Ceres
 
         FirstFreeAllocator allocator(8192, 64);
 
-        uint8* data1 = allocator.allocateBlock(4096);
+        uint8* data1 = allocator.allocateBlock(2048);
         uint8* data2 = allocator.allocateBlock(2048);
-        uint8* data3 = allocator.allocateBlock(8192);
+        uint8* data3 = allocator.allocateBlock(2048);
         uint8* data4 = allocator.allocateBlock(2048);
         
         allocator.freeBlock(data2, 2048);
-        allocator.freeBlock(data4, 2048);
-
-        uint8* data5 = allocator.allocateBlock(4096);
-
-        allocator.freeBlock(data1, 4096);
-        allocator.freeBlock(data5, 4096);
-        if (data3)
-        {
-            allocator.freeBlock(data3, 8192);
-        }
+        data3 = allocator.tryShiftBlock(data3, 2048);
+        allocator.freeBlock(data1, 2048);
+        data3 = allocator.tryShiftBlock(data3, 2048);
+        allocator.freeBlock(data3, 2048);
+        data4 = allocator.tryShiftBlock(data4, 2048);
     }
 
     void Game::Update()

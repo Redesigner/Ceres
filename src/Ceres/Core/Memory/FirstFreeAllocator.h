@@ -13,6 +13,9 @@ namespace Ceres
             uint8* allocateBlock(SizeType size);
             void freeBlock(uint8* data, SizeType size);
 
+            /* Try to shift the block to the left if there is a free block. Returns the next address */
+            uint8* tryShiftBlock(uint8* data, SizeType size);
+
         private:
 
             /* Entry in a linked list that stores the size of the free block */

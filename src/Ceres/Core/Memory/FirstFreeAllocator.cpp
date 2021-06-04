@@ -1,6 +1,7 @@
 #include "FirstFreeAllocator.h"
 
 #include <cassert>
+#include <cstring>
 #include "Core/Memory/Align.h"
 
 namespace Ceres
@@ -97,6 +98,56 @@ namespace Ceres
         {
             _freeListHead = newFreeBlock;
         }
+    }
+
+    uint8* FirstFreeAllocator::tryShiftBlock(uint8* data, SizeType size)
+    {
+        // Special search that finds two blocks to the left of the data
+        FreeBlockEntry* leftFreeBlock = nullptr;
+        FreeBlockEntry* consideredBlock = nullptr;
+        FreeBlockEntry* rightFreeBlock = _freeListHead;
+        while (rightFreeBlock && (reinterpret_cast<SizeType>(rightFreeBlock) < reinterpret_cast<SizeType>(data)))
+        {
+            leftFreeBlock = consideredBlock;
+            consideredBlock = rightFreeBlock;
+            rightFreeBlock = rightFreeBlock->next;
+        }
+
+        // If there is a block to the left of the data and it touches the data
+        if (consideredBlock && data == (reinterpret_cast<uint8*>(consideredBlock) + consideredBlock->size))
+        {
+            // Copy the size of the free block since it will be overwritten
+            const SizeType originalBlockSize = consideredBlock->size;
+
+            // Shift the data left
+            std::memmove(consideredBlock, data, size);
+            data = reinterpret_cast<uint8*>(consideredBlock);
+
+            // Move the free block to the right
+            FreeBlockEntry* newFreeBlock = reinterpret_cast<FreeBlockEntry*>(reinterpret_cast<uint8*>(consideredBlock) + size);
+            newFreeBlock->size = originalBlockSize;
+
+            // Add the new block to the list
+            if (rightFreeBlock && !FreeBlockEntry::tryMergeBlocks(newFreeBlock, rightFreeBlock))
+            {
+                newFreeBlock->next = rightFreeBlock;
+            }
+            else if (!rightFreeBlock)
+            {
+                newFreeBlock->next = nullptr;
+            }
+
+            if (leftFreeBlock)
+            {
+                leftFreeBlock->next = newFreeBlock;
+            }
+            else
+            {
+                _freeListHead = newFreeBlock;
+            }
+        }
+
+        return data;
     }
 
     FirstFreeAllocator::FreeBlockSearchResult FirstFreeAllocator::findFreeBlockOfSize(SizeType size) const
