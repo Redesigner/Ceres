@@ -1,6 +1,7 @@
 #include "Program.h"
 
 #include "Game.h"
+#include "Input/Buttons.h"
 
 #include <fmt/core.h>
 
@@ -43,7 +44,13 @@ namespace Ceres
                 }
             case SDL_KEYDOWN:
                 {
-                    fmt::print("Key pressed: {}", (int) (event.key.keysym.scancode));
+                    _game->InputHandler.HandleInput(Buttons::GetButton(event.key.keysym.scancode));
+                    break;
+                }
+            case SDL_CONTROLLERBUTTONDOWN:
+                {
+
+                    break;
                 }
             }
         }

@@ -7,6 +7,13 @@
 
 #include "Core/Components/RenderComponent.h"
 
+#include <fmt/core.h>
+
+void testFunc()
+{
+    fmt::print("Test!");
+}
+
 namespace Ceres
 {
     Game::Game()
@@ -19,6 +26,7 @@ namespace Ceres
 
     bool Game::Initialize()
     {
+        InputHandler.BindInput(Button::Key_space, &testFunc);
         return true;
     }
 
