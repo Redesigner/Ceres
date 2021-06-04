@@ -19,6 +19,7 @@ target_sources(ceres PRIVATE
 
 	src/Ceres/Core/Common/Matrix.cpp
 	src/Ceres/Core/Common/Transform.cpp
+	src/Ceres/Core/Common/Vector2.cpp
 	src/Ceres/Core/Common/Vector3.cpp
 
 	src/Ceres/Core/Components/IComponent.cpp
@@ -39,6 +40,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
 
+	src/Ceres/Core/Input/Axis.cpp
 	src/Ceres/Core/Input/Buttons.cpp
 	src/Ceres/Core/Input/InputHandler.cpp
 

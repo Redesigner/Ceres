@@ -21,12 +21,15 @@ namespace Ceres
 
     void Program::Loop()
     {
+        uint64_t ticks = SDL_GetPerformanceCounter();
+        uint64_t freq = SDL_GetPerformanceFrequency();
         while(!_exit)
         {
             handleEvents();
 
-            _game->Update();
+            _game->Update((double) (SDL_GetPerformanceCounter() - ticks) / freq);
             _game->Draw();
+            ticks = SDL_GetPerformanceCounter();
         }
     }
 

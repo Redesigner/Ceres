@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Graphics/GraphicsDevice.h"
+#include "Core/Components/RenderComponent.h"
 #include "Core/Input/InputHandler.h"
 
 namespace Ceres
@@ -15,7 +16,7 @@ namespace Ceres
 
             bool Initialize();
             void Load();
-            void Update();
+            void Update(double seconds);
             void Draw();
 
             InputHandler InputHandler;
@@ -23,5 +24,7 @@ namespace Ceres
         private:
             int _status;
             GraphicsDevice _graphicsDevice;
+
+            RenderComponent* _testRender;
     };
 }

@@ -1,7 +1,7 @@
 #include "Game.h"
 
+#include "Core/Common/Vector2.h"
 #include "Core/Common/Vector3.h"
-#include "Core/Graphics/GraphicsDevice.h"
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
@@ -27,6 +27,8 @@ namespace Ceres
     bool Game::Initialize()
     {
         InputHandler.BindInput(Button::Key_space, &testFunc);
+        InputHandler.BindAxis("test", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
+
         return true;
     }
 
@@ -56,12 +58,20 @@ namespace Ceres
         // position/translation, rotation, and scale.
         // This avoids having to calculate reverse transform matrices
         // or trying to solve rotation angles from a matrix.
-        _graphicsDevice.CreateRenderComponent(meshId).Transform.SetScale(Vector3(1, 4, 1));
-        _graphicsDevice.CreateRenderComponent(meshId).Transform.SetPosition(Vector3(-10, 0, 0));
+
+        _testRender = &_graphicsDevice.CreateRenderComponent(meshId);
+        _testRender->Transform.SetScale(Vector3(1, 4, 1));
+        // _graphicsDevice.CreateRenderComponent(meshId).Transform.SetPosition(Vector3(-10, 0, 0));
     }
 
-    void Game::Update()
+    void Game::Update(double seconds)
     {
+        seconds++;
+        Vector2 inputAxis = InputHandler.GetAxisValue("test");
+        inputAxis.X = inputAxis.X * (float) seconds;
+        inputAxis.Y = inputAxis.Y * (float) seconds;
+        Vector3 newPos = _testRender->Transform.GetPosition();
+        _testRender->Transform.SetPosition(Vector3(newPos.X + inputAxis.X, newPos.Y, newPos.Z - inputAxis.Y));
     }
 
     void Game::Draw()
