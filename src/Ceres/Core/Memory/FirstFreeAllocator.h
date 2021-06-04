@@ -7,7 +7,7 @@ namespace Ceres
     class FirstFreeAllocator
     {
         public:
-            FirstFreeAllocator(SizeType size, SizeType alignment);
+            FirstFreeAllocator(SizeType size, SizeType alignment = 1);
             ~FirstFreeAllocator();
 
             uint8* allocateBlock(SizeType size);

@@ -1,20 +1,52 @@
 #pragma once
 
 #include "Ceres/Core/Common/Types.h"
+#include "Ceres/Core/Memory/FirstFreeAllocator.h"
 
 namespace Ceres
 {
     class GenericAllocator
     {
+        private:
+            struct DataBlockEntry;
         public:
-
             class Handle;
+            class WeakHandle;
 
-            GenericAllocator(SizeType size, uint32 maxBlocks);
-            ~GenericAllocator();
+        public:
+            GenericAllocator(SizeType size, SizeType numBlocks);
 
-            Handle allocate(SizeType size, SizeType alignment = 0);
-            void defragment(uint32 numBlocks);
+            /* Allocates a reference counted block of the given size */
+            Handle allocateBlock(SizeType size);
+
+            /**
+             * Defragments a number of blocks by shifting them to the left.
+             * Returns the number of blocks actually shifted.
+             */
+            SizeType defragmentBlocks(SizeType num);
+            SizeType getNumBlocksUsed() const { return _numUsedBlocks; }
+
+        private:
+
+            DataBlockEntry* getBlockEntry(const Handle& handle) const;
+            uint8* getBlockData(const Handle& handle) const;
+            void incrementReferenceCount(const Handle& handle);
+            void decrementReferenceCount(const Handle& handle);
+
+            FirstFreeAllocator _allocator;
+            DataBlockEntry* _dataBlockTable;
+            SizeType _maxNumBlocks;
+            SizeType _numUsedBlocks;
+
+            struct DataBlockEntry
+            {
+                uint8* data;
+                SizeType size;
+                uint64 id;
+                uint64 referenceCount;
+            };
+
+        public:
 
             class Handle
             {
@@ -22,138 +54,47 @@ namespace Ceres
                 friend class WeakHandle;
 
                 public:
-                    Handle()
-                        : _allocator(nullptr), _index(0), _id(0)
-                    {}
-
-                    Handle(const Handle& other)
-                        : _allocator(other._allocator), _index(other._index), _id(other._id)
-                    {}
-
-                    Handle& operator=(const Handle& other)
-                    {
-                        clear();
-                        _allocator = other._allocator; _index = other._index; _id = other._id;
-                        return *this;
-                    }
-
+                    Handle();
+                    Handle(const Handle& other);
+                    Handle(Handle&& other);
                     ~Handle();
 
-                    bool operator==(const Handle& other) const
-                    {
-                        return _allocator == other._allocator && _index == other._index && _id == other._id;
-                    }
+                    Handle& operator=(const Handle& other);
+                    Handle& operator=(Handle&& other);
+                    bool operator==(const Handle& other) const;
+                    bool operator!=(const Handle& other) const { return !(*this == other); }
 
-                    bool operator==(std::nullptr_t) { return !isValid(); }
-
-                    operator bool() const { return isValid(); }
-
-                    bool isExplictlyNull() const { return _allocator == nullptr; }
-                    bool isValid() const;
-                    uint8* getData() const;
+                    bool isExplicitlyNull() const;
+                    uint8* get() const;
                     void clear();
 
                 private:
-
-                    Handle(GenericAllocator& allocator, uint32 index, uint32 id);
+                    Handle(GenericAllocator& allocator, uint64 index, uint64 id);
 
                     GenericAllocator* _allocator;
-                    uint32 _index;
-                    uint32 _id;
+                    SizeType _index;
+                    uint64 _id;
             };
 
             class WeakHandle
             {
                 public:
+                    WeakHandle();
+                    WeakHandle(const WeakHandle& other);
+                    WeakHandle(const Handle& other);
 
-                    WeakHandle()
-                        : _allocator(nullptr), _index(0), _id(0)
-                    {}
+                    WeakHandle& operator=(const WeakHandle& other);
+                    WeakHandle& operator=(const Handle& other);
+                    bool operator==(const WeakHandle& other) const;
+                    bool operator!=(const WeakHandle& other) const { return !(*this == other); }
 
-                    WeakHandle(const Handle& other)
-                        : _allocator(other._allocator), _index(other._index), _id(other._id)
-                    {}
-
-                    WeakHandle(const WeakHandle& other)
-                        : _allocator(other._allocator), _index(other._index), _id(other._id)
-                    {}
-
-                    WeakHandle& operator=(const Handle& other)
-                    {
-                        _allocator = other._allocator; _index = other._index; _id = other._id;
-                        return *this;
-                    }
-
-                    WeakHandle& operator=(const WeakHandle& other)
-                    {
-                        _allocator = other._allocator; _index = other._index; _id = other._id;
-                        return *this;
-                    }
-
-                    bool operator==(const WeakHandle& other) const
-                    {
-                        return _allocator == other._allocator && _index == other._index && _id == other._id;
-                    }
-
+                    bool isExplicitlyNull() const;
                     Handle pin() const;
 
                 private:
-
                     GenericAllocator* _allocator;
-                    uint32 _index;
-                    uint32 _id;
+                    SizeType _index;
+                    uint64 _id;
             };
-
-        private:
-
-            struct BlockEntry;
-            struct FreeBlockEntry;
-            struct FreeBlockSearchResult;
-
-            BlockEntry* findBlockEntry(const Handle& handle) const;
-            uint8* getData(const Handle& handle) const;
-
-            void incrementReferences(const Handle& handle);
-            void decrementReferences(const Handle& handle);
-
-            int32 findFirstUnusedBlockIndex() const;
-            void freeBlock(BlockEntry& entry);
-
-            FreeBlockSearchResult findFreeBlock(SizeType size) const;
-            FreeBlockSearchResult findFreeBlock(const BlockEntry& entry) const;
-
-            struct BlockEntry
-            {
-                uint32 id = 0;
-                uint32 referenceCount = 0;
-                uint8* data = nullptr;
-                SizeType size = 0;
-                SizeType offset = 0;
-
-                static const int32 INVALID_INDEX = -1;
-            };
-
-            struct FreeBlockEntry
-            {
-                SizeType size = 0;
-                FreeBlockEntry* nextFreeBlock = nullptr;
-            };
-
-            struct FreeBlockSearchResult
-            {
-                FreeBlockEntry* freeBlock;
-                FreeBlockEntry* previousFreeBlock;
-            };
-
-            // Block table at start of allocated data
-            BlockEntry* _blockTable;
-
-            // Start of generic data (after block table)
-            uint8* _genericData;
-
-            FreeBlockEntry* _freeHead;
-
-            SizeType _genericSize;
-            uint32 _numBlocks;
     };
 }

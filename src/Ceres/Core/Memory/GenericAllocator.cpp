@@ -1,285 +1,239 @@
 #include "GenericAllocator.h"
 
 #include <cassert>
-#include <new>
-#include "Ceres/Core/Memory/Align.h"
 
 namespace Ceres
 {
-    // Generic allocator
-
-    GenericAllocator::GenericAllocator(SizeType size, uint32 maxBlocks)
-        : _genericSize(size), _numBlocks(maxBlocks)
+    GenericAllocator::GenericAllocator(SizeType size, SizeType numBlocks)
+        : _allocator(size + sizeof(DataBlockEntry) * numBlocks), _maxNumBlocks(numBlocks), _numUsedBlocks(0)
     {
-        // Allocate a chunk of memory large enough for the block table and our actual data
-        const SizeType blockSize = sizeof(BlockEntry) * maxBlocks;
-        const SizeType totalSize = blockSize + _genericSize;
-        _blockTable = reinterpret_cast<BlockEntry*>(allocAligned(totalSize, alignof(BlockEntry)));
-        _genericData = reinterpret_cast<uint8*>(_blockTable) + blockSize;
+        // Allocate a chunk of memory to store the block table
+        _dataBlockTable = reinterpret_cast<DataBlockEntry*>(_allocator.allocateBlock(sizeof(DataBlockEntry) * _maxNumBlocks));
 
-        // Initialize the block table entries
-        for (uint32 i = 0; i < _numBlocks; i++)
+        // Fill the block table with empty entries
+        for (SizeType i = 0; i < _maxNumBlocks; i++)
         {
-            new (&_blockTable[i]) BlockEntry();
+            _dataBlockTable[i].data = nullptr;
+            _dataBlockTable[i].size = 0;
+            _dataBlockTable[i].id = 0;
+            _dataBlockTable[i].referenceCount = 0;
         }
-
-        // Store one big free chunk at the start of our generic data
-        _freeHead = new (_genericData) FreeBlockEntry();
-        _freeHead->nextFreeBlock = nullptr;
-        _freeHead->size = _genericSize;
     }
 
-    GenericAllocator::~GenericAllocator()
+    GenericAllocator::Handle GenericAllocator::allocateBlock(SizeType size)
     {
-        freeAligned(reinterpret_cast<uint8*>(_blockTable));
-    }
-
-    GenericAllocator::Handle GenericAllocator::allocate(SizeType size, SizeType alignment)
-    {
-        // First find if we have a block large enough to store our data
-        FreeBlockSearchResult foundFreeBlock = findFreeBlock(size);
-        if (foundFreeBlock.freeBlock != nullptr)
+        if (_numUsedBlocks < _maxNumBlocks)
         {
-            // Find if we have an open entry in our block table
-            int32 blockIndex = findFirstUnusedBlockIndex();
-            if (blockIndex != BlockEntry::INVALID_INDEX)
+            for (SizeType i = 0; i < _maxNumBlocks; i++)
             {
-                // Split the free block entry if needed
-                if (foundFreeBlock.freeBlock->size > size)
+                // Find the first unused block in our table
+                if (_dataBlockTable[i].data == nullptr)
                 {
-                    // Copy the data since it might get overwritten
-                    const SizeType previousFreeSize = foundFreeBlock.freeBlock->size;
-                    FreeBlockEntry* nextFreeBlockEntry = foundFreeBlock.freeBlock->nextFreeBlock;
-
-                    // Insert a new block entry into the list
-                    FreeBlockEntry* newFreeBlockEntry = new (reinterpret_cast<uint8*>(foundFreeBlock.freeBlock) + size) FreeBlockEntry();
-                    newFreeBlockEntry->size = previousFreeSize - size;
-                    newFreeBlockEntry->nextFreeBlock = nextFreeBlockEntry;
-
-                    // If the previous block is null, then we're at the start of the list
-                    if (foundFreeBlock.previousFreeBlock == nullptr)
+                    _dataBlockTable[i].data = _allocator.allocateBlock(size);
+                    if (!_dataBlockTable[i].data)
                     {
-                        _freeHead = newFreeBlockEntry;
+                        // If we failed to allocate our new memory, exit immediately
+                        break;
                     }
-                    else
-                    {
-                        foundFreeBlock.previousFreeBlock->nextFreeBlock = newFreeBlockEntry;
-                    }
+                    _dataBlockTable[i].size = size;
+
+                    // Increment the number of used blocks for bookkeeping
+                    _numUsedBlocks++;
+                    return GenericAllocator::Handle(*this, i, _dataBlockTable[i].id);
                 }
-                else
-                {
-                    if (foundFreeBlock.previousFreeBlock == nullptr)
-                    {
-                        _freeHead = foundFreeBlock.freeBlock->nextFreeBlock;
-                    }
-                    else
-                    {
-                        foundFreeBlock.previousFreeBlock->nextFreeBlock = foundFreeBlock.freeBlock->nextFreeBlock;
-                    }
-                }
-
-                // Assign the block entry to our new data
-                BlockEntry& blockEntry = _blockTable[blockIndex];
-                blockEntry.referenceCount = 0;
-                blockEntry.data = reinterpret_cast<uint8*>(foundFreeBlock.freeBlock);
-                blockEntry.size = size;
-                blockEntry.offset = alignment;
-
-                return Handle(*this, blockIndex, blockEntry.id);
             }
         }
 
-        return Handle();
+        // If allocation failed (either due to using all of our blocks or
+        // the allocator running out of memory) return a null handle
+        return GenericAllocator::Handle();
     }
 
-    void GenericAllocator::defragment(uint32)
+    SizeType GenericAllocator::defragmentBlocks(SizeType numBlocks)
     {
-        // Todo - defragment a chunk of memory!
-    }
+        SizeType numBlocksDefragmented = 0;
+        SizeType numBlocksChecked = 0;
 
-    GenericAllocator::BlockEntry* GenericAllocator::findBlockEntry(const Handle& handle) const
-    {
-        if (handle._allocator == this)
+        for (SizeType i = 0; i < _maxNumBlocks; i++)
         {
-            // Find the entry corresponding to the handle's index
-            assert(handle._index < _numBlocks);
-            BlockEntry& foundEntry = _blockTable[handle._index];
-
-            // Verify that the handle is not stale
-            if (foundEntry.id == handle._id)
+            if (_dataBlockTable[i].data != nullptr)
             {
-                return &foundEntry;
+                // Count the number of blocks that are in use so we can early out
+                // if we've already checked all used blocks
+                numBlocksChecked++;
+
+                // Track the previous address of the data before the shift
+                const uint8* previousBlockAddress = _dataBlockTable[i].data;
+                _dataBlockTable[i].data = _allocator.tryShiftBlock(_dataBlockTable[i].data, _dataBlockTable[i].size);
+
+                // If the address changed then we've successfully defragmented a block
+                if (previousBlockAddress != _dataBlockTable[i].data)
+                {
+                    numBlocksDefragmented++;
+                }
+
+                // Early out if we've checked the number of blocks we need or all of them
+                if (numBlocksChecked >= _numUsedBlocks || numBlocksDefragmented >= numBlocks)
+                {
+                    break;
+                }
+            }
+        }
+
+        return numBlocksDefragmented;
+    }
+
+    GenericAllocator::DataBlockEntry* GenericAllocator::getBlockEntry(const Handle& handle) const
+    {
+        if (handle._allocator == this && handle._index < _maxNumBlocks)
+        {
+            DataBlockEntry* blockEntry = &_dataBlockTable[handle._index];
+            if (blockEntry->id == handle._id)
+            {
+                return blockEntry;
             }
         }
 
         return nullptr;
     }
 
-    uint8* GenericAllocator::getData(const Handle& handle) const
+    uint8* GenericAllocator::getBlockData(const Handle& handle) const
     {
-        if (const BlockEntry* foundEntry = findBlockEntry(handle))
+        if (const DataBlockEntry* blockEntry = getBlockEntry(handle))
         {
-            return foundEntry->data;
+            return blockEntry->data;
         }
 
         return nullptr;
     }
 
-    void GenericAllocator::incrementReferences(const Handle& handle)
+    void GenericAllocator::incrementReferenceCount(const Handle& handle)
     {
-        if (BlockEntry* blockEntry = findBlockEntry(handle))
+        if (DataBlockEntry* blockEntry = getBlockEntry(handle))
         {
             blockEntry->referenceCount++;
         }
     }
 
-    void GenericAllocator::decrementReferences(const Handle& handle)
+    void GenericAllocator::decrementReferenceCount(const Handle& handle)
     {
-        if (BlockEntry* blockEntry = findBlockEntry(handle))
+        if (DataBlockEntry* blockEntry = getBlockEntry(handle))
         {
+            assert(blockEntry->referenceCount > 0);
+
             if (--blockEntry->referenceCount == 0)
             {
-                freeBlock(*blockEntry);
+                // If our reference count has reached zero, deallocate the data
+                // and free the block in the table
+                _allocator.freeBlock(blockEntry->data, blockEntry->size);
+                blockEntry->data = nullptr;
+                blockEntry->size = 0;
+                blockEntry->id++;
+                _numUsedBlocks--;
             }
         }
     }
 
-    int32 GenericAllocator::findFirstUnusedBlockIndex() const
+
+    GenericAllocator::Handle::Handle()
+        : _allocator(nullptr), _index(0), _id(0)
+    {};
+
+    GenericAllocator::Handle::Handle(const Handle& other)
+        : _allocator(other._allocator), _index(other._index), _id(other._id)
     {
-        for (uint32 i = 0; i < _numBlocks; i++)
+        if (_allocator)
         {
-            const BlockEntry& blockEntry = _blockTable[i];
-
-            if (blockEntry.data == nullptr)
-            {
-                return static_cast<int32>(i);
-            } 
+            _allocator->incrementReferenceCount(*this);
         }
-
-        return BlockEntry::INVALID_INDEX;
     }
 
-    void GenericAllocator::freeBlock(BlockEntry& entry)
+    GenericAllocator::Handle::Handle(Handle&& other)
+        : _allocator(other._allocator), _index(other._index), _id(other._id)
     {
-        static const auto tryMergeBlocks = [](FreeBlockEntry* block1, FreeBlockEntry* block2) -> bool
-        {
-            // Check if the blocks are touching
-            if ((reinterpret_cast<uint8*>(block1) + block1->size) == reinterpret_cast<uint8*>(block2))
-            {
-                block1->nextFreeBlock = block2->nextFreeBlock;
-                block1->size += block2->size;
-                return true;
-            }
-
-            return false;
-        };
-
-        assert(entry.referenceCount == 0);
-
-        // Create a new free block entry where the block data used to live
-        FreeBlockEntry* newFreeBlock = new (entry.data) FreeBlockEntry();
-        newFreeBlock->size = entry.size;
-
-        // Find the free blocks on either side of this used block
-        FreeBlockSearchResult foundFreeBlocks = findFreeBlock(entry);
-
-        // If the next free block is null then this block is at the end
-        // We should try to merge it with the next entry, and insert it to the list if we can't
-        if (foundFreeBlocks.freeBlock != nullptr && !tryMergeBlocks(newFreeBlock, foundFreeBlocks.freeBlock))
-        {
-            newFreeBlock->nextFreeBlock = foundFreeBlocks.freeBlock;
-        }
-
-        // If the previous block is null then the new free block is the head
-        if (foundFreeBlocks.previousFreeBlock == nullptr)
-        {
-            _freeHead = newFreeBlock;
-        }
-        else if (!tryMergeBlocks(foundFreeBlocks.previousFreeBlock, newFreeBlock))
-        {
-            // If we can't merge the blocks insert the new block into the list
-            foundFreeBlocks.previousFreeBlock->nextFreeBlock = newFreeBlock;
-        }
-
-        // Clean the block entry and increment its ID
-        entry.id++;
-        entry.data = nullptr;
-        entry.size = 0;
-        entry.offset = 0;
-    }
-
-    GenericAllocator::FreeBlockSearchResult GenericAllocator::findFreeBlock(SizeType size) const
-    {
-        FreeBlockSearchResult result;
-        result.freeBlock = _freeHead;
-        result.previousFreeBlock = nullptr;
-
-        // Find the first free block entry (and the preceeding block entry)
-        while (result.freeBlock != nullptr)
-        {
-            if (result.freeBlock->size >= size)
-            {
-                return result;
-            }
-
-            result.previousFreeBlock = result.freeBlock;
-            result.freeBlock = result.freeBlock->nextFreeBlock;
-        }
-
-        return result;
-    }
-
-    GenericAllocator::FreeBlockSearchResult GenericAllocator::findFreeBlock(const BlockEntry& entry) const
-    {
-        FreeBlockSearchResult result;
-        result.freeBlock = _freeHead;
-        result.previousFreeBlock = nullptr;
-
-        // Find the free block entries on either side of the used block entry
-        while (result.freeBlock != nullptr)
-        {
-            if (reinterpret_cast<SizeType>(result.previousFreeBlock) < reinterpret_cast<SizeType>(entry.data) &&
-                reinterpret_cast<SizeType>(result.freeBlock) > reinterpret_cast<SizeType>(entry.data))
-            {
-                return result;
-            }
-
-            result.previousFreeBlock = result.freeBlock;
-            result.freeBlock = result.freeBlock->nextFreeBlock;
-        }
-
-        return result;
-    }
-
-
-    // GenericAllocator::Handle
-
-    GenericAllocator::Handle::Handle(GenericAllocator& allocator, uint32 index, uint32 id)
-        : _allocator(&allocator), _index(index), _id(id)
-    {
-        _allocator->incrementReferences(*this);
+        // Because we're moving the underlying data, no reference counts should've changed
+        other._allocator = nullptr;
+        other._index = 0;
+        other._id = 0;
     }
 
     GenericAllocator::Handle::~Handle()
     {
-        clear();
-    }
-
-    bool GenericAllocator::Handle::isValid() const
-    {
         if (_allocator)
         {
-            return _allocator->findBlockEntry(*this) != nullptr;
+            _allocator->decrementReferenceCount(*this);
+        }
+    }
+
+    GenericAllocator::Handle& GenericAllocator::Handle::operator=(const Handle& other)
+    {
+        // If these handles refer to the exact same object already we can skip
+        // everything and avoid doing reference count changes
+        if (*this != other)
+        {
+            // We have to decrement our previous reference count (if any)
+            if (_allocator)
+            {
+                _allocator->decrementReferenceCount(*this);
+            }
+
+            _allocator = other._allocator;
+            _index = other._index;
+            _id = other._id;
+
+            // And increment our new reference count (if any)
+            if (_allocator)
+            {
+                _allocator->incrementReferenceCount(*this);
+            }
         }
 
-        return false;
+        return *this;
     }
 
-    uint8* GenericAllocator::Handle::getData() const
+    GenericAllocator::Handle& GenericAllocator::Handle::operator=(Handle&& other)
+    {
+        // If these handles are the same we can avoid some reference count changes
+        // (like in copy assignment)
+        if (*this != other)
+        {
+            if (_allocator)
+            {
+                _allocator->decrementReferenceCount(*this);
+            }
+
+            _allocator = other._allocator;
+            _index = other._index;
+            _id = other._id;
+
+            other._allocator = nullptr;
+            other._index = 0;
+            other._id = 0;
+        }
+        // We still expect that the other object gets zeroed out though
+        else
+        {
+            other.clear();
+        }
+
+        return *this;
+    }
+
+    bool GenericAllocator::Handle::operator==(const Handle& other) const
+    {
+        return (_allocator == other._allocator) && (_index == other._index) && (_id == other._id);
+    }
+
+    bool GenericAllocator::Handle::isExplicitlyNull() const
+    {
+        return _allocator == nullptr;
+    }
+
+    uint8* GenericAllocator::Handle::get() const
     {
         if (_allocator)
         {
-            return _allocator->getData(*this);
+            return _allocator->getBlockData(*this);
         }
 
         return nullptr;
@@ -289,7 +243,7 @@ namespace Ceres
     {
         if (_allocator)
         {
-            _allocator->decrementReferences(*this);
+            _allocator->decrementReferenceCount(*this);
         }
 
         _allocator = nullptr;
@@ -297,8 +251,52 @@ namespace Ceres
         _id = 0;
     }
 
+    GenericAllocator::Handle::Handle(GenericAllocator& allocator, SizeType index, SizeType id)
+        : _allocator(&allocator), _index(index), _id(id)
+    {
+        _allocator->incrementReferenceCount(*this);
+    }
 
-    // GenericAllocator::WeakHandle
+
+    GenericAllocator::WeakHandle::WeakHandle()
+        : _allocator(nullptr), _index(0), _id(0)
+    {}
+
+    GenericAllocator::WeakHandle::WeakHandle(const WeakHandle& other)
+        : _allocator(other._allocator), _index(other._index), _id(other._id)
+    {}
+
+    GenericAllocator::WeakHandle::WeakHandle(const Handle& other)
+        : _allocator(other._allocator), _index(other._index), _id(other._id)
+    {}
+
+    GenericAllocator::WeakHandle& GenericAllocator::WeakHandle::operator=(const WeakHandle& other)
+    {
+        _allocator = other._allocator;
+        _index = other._index;
+        _id = other._id;
+
+        return *this;
+    }
+
+    GenericAllocator::WeakHandle& GenericAllocator::WeakHandle::operator=(const Handle& other)
+    {
+        _allocator = other._allocator;
+        _index = other._index;
+        _id = other._id;
+
+        return *this;
+    }
+
+    bool GenericAllocator::WeakHandle::operator==(const WeakHandle& other) const
+    {
+        return (_allocator == other._allocator) && (_index == other._index) && (_id == other._id);
+    }
+
+    bool GenericAllocator::WeakHandle::isExplicitlyNull() const
+    {
+        return _allocator == nullptr;
+    }
 
     GenericAllocator::Handle GenericAllocator::WeakHandle::pin() const
     {

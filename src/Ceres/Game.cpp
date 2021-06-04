@@ -5,7 +5,7 @@
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
-#include "Core/Memory/FirstFreeAllocator.h"
+#include "Core/Memory/GenericAllocator.h"
 
 namespace Ceres
 {
@@ -38,19 +38,20 @@ namespace Ceres
 
         _graphicsDevice.LoadMesh(verts, VertexPositionLayout(), 8, indices, 36);
 
-        FirstFreeAllocator allocator(8192, 64);
+        GenericAllocator testAllocator(8192, 1024);
+        GenericAllocator::Handle testData1 = testAllocator.allocateBlock(2048);
+        GenericAllocator::Handle testData2 = testAllocator.allocateBlock(2048);
+        GenericAllocator::Handle testData3 = testAllocator.allocateBlock(2048);
+        GenericAllocator::Handle testData4 = testAllocator.allocateBlock(2048);
+        GenericAllocator::Handle testData5 = testAllocator.allocateBlock(2048);
 
-        uint8* data1 = allocator.allocateBlock(2048);
-        uint8* data2 = allocator.allocateBlock(2048);
-        uint8* data3 = allocator.allocateBlock(2048);
-        uint8* data4 = allocator.allocateBlock(2048);
-        
-        allocator.freeBlock(data2, 2048);
-        data3 = allocator.tryShiftBlock(data3, 2048);
-        allocator.freeBlock(data1, 2048);
-        data3 = allocator.tryShiftBlock(data3, 2048);
-        allocator.freeBlock(data3, 2048);
-        data4 = allocator.tryShiftBlock(data4, 2048);
+        testData4.get()[0] = 'H';
+        testData4.get()[1] = 'i';
+        testData4.get()[2] = '!';
+        testData4.get()[3] = '\0';
+
+        testData3.clear();
+        testAllocator.defragmentBlocks(1);
     }
 
     void Game::Update()
