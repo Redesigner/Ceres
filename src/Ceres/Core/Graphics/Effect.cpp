@@ -8,12 +8,11 @@
 namespace Ceres
 {
     Effect::Effect(const char* vertFile, const char* fragFile)
-        : _viewProjection(Matrix::Identity())
+        : _viewProjection(Matrix::Perspective(1280, 720, 90, .1f, 100))
     {
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
         _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        _viewProjection = Matrix::Perspective(1.77f, 1, 1, 10000);
         Matrix translation = Matrix::Translation(0, -2, -20);
         _viewProjection = translation * _viewProjection;
         if(compileShader(_vertexShader, vertFile, _vertexShaderSource) && compileShader(_fragmentShader, fragFile, _fragmentShaderSource))
@@ -36,20 +35,20 @@ namespace Ceres
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
             glUseProgram(_glProgram);
-            GLint location = glGetUniformLocation(_glProgram, "viewProjection");
-            glUniformMatrix4fv(location, 1, GL_FALSE, _viewProjection.M[0]);
+            SetMatrix("viewProjection", _viewProjection);
         }
     }
     
     Effect::~Effect()
     {
-        
+        glDeleteShader(_fragmentShader);
+        glDeleteShader(_vertexShader);
+        glDeleteProgram(_glProgram);
     }
 
     void Effect::Begin()
     {
         glUseProgram(_glProgram);
-        glUniformMatrix4fv(0, 1, GL_FALSE, _viewProjection.M[0]);
     }
 
     void Effect::SetMatrix(std::string name, Matrix matrix)

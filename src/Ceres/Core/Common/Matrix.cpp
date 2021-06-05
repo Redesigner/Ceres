@@ -118,17 +118,20 @@ namespace Ceres
         );
     }
 
-    Matrix Matrix::Perspective(float width, float height, float near, float far)
+    Matrix Matrix::Perspective(float width, float height, float fOV, float near, float far)
     {
-        float r = width / 2;
-        float l = -r;
-        float t = height / 2;
+        float rFOV = fOV / 180 * (float) std::acos(0);
+        float ratio = width / height;
+        float t = std::tan(rFOV / 2) * near;
         float b = -t;
+        float r = t * ratio;
+        float l = (-t) * ratio;
+
         return Matrix(
-            ((2 * near) / (r - l)), 0, 0, 0,
-            0, ((2 * near) / (t - b)), 0, 0,
-            ((r + l) / (r - l)), ((t + b) / (t - b)), -((far + near) / (far - near)), -1,
-            0, 0, ((-2 * near * far) / (far - near)), 1
+            ((2 * near) / (r - l)),     0,                      0,                                  0,
+            0,                          ((2 * near) / (t - b)), 0,                                  0,
+            ((r + l) / (r - l)),        ((t + b) / (t - b)),    -((far + near) / (far - near)),     ((-2 * near * far) / (far - near)),
+            0,                          0,                      -1,                                 0
         );
     }
 

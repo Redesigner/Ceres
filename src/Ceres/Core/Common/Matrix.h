@@ -28,7 +28,7 @@ namespace Ceres
             static Matrix Identity();
             static Matrix Zero();
 
-            static Matrix Perspective(float width, float height, float near, float far);
+            static Matrix Perspective(float width, float height, float fOV, float near, float far);
             static Matrix LookAt(const Vector3& eyePos, const Vector3& target, const Vector3& up);
             
             std::string ToString() const;

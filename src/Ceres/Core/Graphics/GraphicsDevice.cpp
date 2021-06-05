@@ -48,12 +48,10 @@ namespace Ceres
         MeshPtr componentMesh = _loadedMeshes[0];
         for(const RenderComponent& renderComponent : _renderComponents)
         {
-            _currentEffect->Begin();
-            // GLint location = glGetUniformLocation(0, "model");
-            // glUniformMatrix4fv(1, 1, GL_FALSE, renderComponent.Transform.GetMatrix().M[0] );
-            _currentEffect->SetMatrix("model", renderComponent.Transform.GetMatrix());
             componentMesh = _loadedMeshes[renderComponent.MeshId];
             componentMesh->GetVertexArray().Bind();
+            _currentEffect->Begin();
+            _currentEffect->SetMatrix("model", renderComponent.Transform.GetMatrix());
             glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
 
         }

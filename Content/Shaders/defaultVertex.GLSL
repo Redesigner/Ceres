@@ -1,6 +1,6 @@
 #version 400
 
-layout (location = 0) in vec3 aPos;
+in vec3 aPos;
 out vec4 vertexColor;
 
 uniform mat4 viewProjection;
