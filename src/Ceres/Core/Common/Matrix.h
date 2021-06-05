@@ -2,12 +2,13 @@
 
 #include "Vector3.h"
 
+#include <string>
+
 namespace Ceres
 {
     struct Matrix
     {
         public:
-            Matrix();
             Matrix(
                 float m11, float m12, float m13, float m14,
                 float m21, float m22, float m23, float m24,
@@ -29,6 +30,8 @@ namespace Ceres
 
             static Matrix Perspective(float width, float height, float near, float far);
             static Matrix LookAt(const Vector3& eyePos, const Vector3& target, const Vector3& up);
+            
+            std::string ToString() const;
 
             Matrix operator*(const Matrix& b);
 

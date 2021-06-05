@@ -1,28 +1,25 @@
 #include "Matrix.h"
 
 #include <cmath>
+#include <fmt/core.h>
 
 namespace Ceres
 {
-    Matrix::Matrix()
-    {
-    }
-
     Matrix::Matrix(
         float m11, float m12, float m13, float m14,
         float m21, float m22, float m23, float m24,
         float m31, float m32, float m33, float m34,
         float m41, float m42, float m43, float m44)
-        : M{{m11, m12, m13, m14}, {m21, m22, m23, m24}, {m31, m32, m33, m34}, {m41, m42, m43, m44}}
+        : M{{m11, m21, m31, m41}, {m12, m22, m32, m42}, {m13, m23, m33, m43}, {m14, m24, m34, m44}}
     {}
 
     Matrix Matrix::Translation(float x, float y, float z)
     {
         return Matrix(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            x, y, z, 1
+            1, 0, 0, x,
+            0, 1, 0, y,
+            0, 0, 1, z,
+            0, 0, 0, 1
         );
     }
 
@@ -147,6 +144,17 @@ namespace Ceres
             xAxis.Z, yAxis.Z, zAxis.Z, 0,
             -xAxis.Dot(eyePos), -yAxis.Dot(eyePos), -zAxis.Dot(eyePos), 1
         );
+    }
+
+    std::string Matrix::ToString() const
+    {
+        std::string result = "M:\n";
+        for(int i = 0; i < 4; i++)
+        {
+            result += fmt::format("{}, {}, {}, {}\n",
+                M[i][0], M[i][1], M[i][2], M[i][3]);
+        }
+        return result;
     }
 
 

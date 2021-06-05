@@ -59,17 +59,17 @@ namespace Ceres
         // This avoids having to calculate reverse transform matrices
         // or trying to solve rotation angles from a matrix.
 
-        _testRender = &_graphicsDevice.CreateRenderComponent(meshId);
+        _testRender = &(_graphicsDevice.CreateRenderComponent(meshId));
         _testRender->Transform.SetScale(Vector3(1, 4, 1));
-        // _graphicsDevice.CreateRenderComponent(meshId).Transform.SetPosition(Vector3(-10, 0, 0));
+        _graphicsDevice.CreateRenderComponent(meshId).Transform.SetPosition(Vector3(-10, 0, 0));
+        _testRender = &(_graphicsDevice.getRenderComponent(0));
     }
 
     void Game::Update(double seconds)
     {
-        seconds++;
         Vector2 inputAxis = InputHandler.GetAxisValue("test");
-        inputAxis.X = inputAxis.X * (float) seconds;
-        inputAxis.Y = inputAxis.Y * (float) seconds;
+        inputAxis.X = inputAxis.X * (float) seconds * 10;
+        inputAxis.Y = inputAxis.Y * (float) seconds * 10;
         Vector3 newPos = _testRender->Transform.GetPosition();
         _testRender->Transform.SetPosition(Vector3(newPos.X + inputAxis.X, newPos.Y, newPos.Z - inputAxis.Y));
     }

@@ -21,6 +21,7 @@ const int SCREEN_HEIGHT = 720;
 namespace Ceres
 {
     GraphicsDevice::GraphicsDevice()
+        : _defaultModelMatrix(Matrix::Identity())
     {
         _window = createWindow();
         _currentContext = new Context(_window);
@@ -47,9 +48,12 @@ namespace Ceres
         MeshPtr componentMesh = _loadedMeshes[0];
         for(const RenderComponent& renderComponent : _renderComponents)
         {
+            _currentEffect->Begin();
+            // GLint location = glGetUniformLocation(0, "model");
+            // glUniformMatrix4fv(1, 1, GL_FALSE, renderComponent.Transform.GetMatrix().M[0] );
+            _currentEffect->SetMatrix("model", renderComponent.Transform.GetMatrix());
             componentMesh = _loadedMeshes[renderComponent.MeshId];
             componentMesh->GetVertexArray().Bind();
-            glUniformMatrix4fv(1, 1, GL_FALSE, (GLfloat*) &( renderComponent.Transform.GetMatrix() ) );
             glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
 
         }
@@ -72,8 +76,7 @@ namespace Ceres
 
     RenderComponent& GraphicsDevice::CreateRenderComponent(uint8_t meshId)
     {
-        _renderComponents.push_back(RenderComponent(IEntity(), meshId));
-        return _renderComponents[_renderComponents.size() - 1];
+        return _renderComponents.emplace_back(IEntity(), meshId);
     }
 
 
@@ -82,7 +85,6 @@ namespace Ceres
         glClearColor(1.0, 1.0, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
-        _currentEffect->Begin();
     }
 
     void GraphicsDevice::endRender()

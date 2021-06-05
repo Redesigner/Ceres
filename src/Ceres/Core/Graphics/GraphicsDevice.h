@@ -35,6 +35,7 @@ namespace Ceres
             
             // TODO: return appropriate type, manage with separate class?
             RenderComponent& CreateRenderComponent(uint8_t meshId);
+            RenderComponent& getRenderComponent(uint8_t id) { return _renderComponents[id]; }
 
         private:
             void beginRender();

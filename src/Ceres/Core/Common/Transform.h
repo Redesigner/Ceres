@@ -11,16 +11,16 @@ namespace Ceres
             Transform();
             ~Transform();
 
-            void SetPosition(Vector3 position);
-            const Vector3& GetPosition();
+            void SetPosition(const Vector3& position);
+            Vector3 GetPosition() const;
 
-            void SetRotation(Vector3 rotation);
-            const Vector3& GetRotation();
+            void SetRotation(const Vector3& rotation);
+            Vector3 GetRotation() const;
 
-            void SetScale(Vector3 scale);
-            const Vector3& GetScale();
+            void SetScale(const Vector3& scale);
+            Vector3 GetScale() const;
 
-            const Matrix& GetMatrix() const;
+            Matrix GetMatrix() const;
 
         private:
             void calculateMatrix();

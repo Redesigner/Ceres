@@ -20,6 +20,7 @@ namespace Ceres
             ~Effect();
 
             void Begin();
+            void SetMatrix(std::string name, Matrix matrix);
 
         private:
             bool compileShader(GLuint shader, const char* filename, std::string source);

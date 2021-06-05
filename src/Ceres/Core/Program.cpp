@@ -21,15 +21,17 @@ namespace Ceres
 
     void Program::Loop()
     {
+        uint64_t last = 0;
         uint64_t ticks = SDL_GetPerformanceCounter();
         uint64_t freq = SDL_GetPerformanceFrequency();
         while(!_exit)
         {
+            last = ticks;
+            ticks = SDL_GetPerformanceCounter();
             handleEvents();
 
-            _game->Update((double) (SDL_GetPerformanceCounter() - ticks) / freq);
+            _game->Update((double) (ticks - last) / freq);
             _game->Draw();
-            ticks = SDL_GetPerformanceCounter();
         }
     }
 
@@ -47,6 +49,11 @@ namespace Ceres
                 }
             case SDL_KEYDOWN:
                 {
+                    if(event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+                    {
+                        _exit = true;
+                        break;
+                    }
                     _game->InputHandler.HandleInput(Buttons::GetButton(event.key.keysym.scancode));
                     break;
                 }

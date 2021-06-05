@@ -1,48 +1,52 @@
 #include "Transform.h"
 
+#include <fmt/core.h>
+
 namespace Ceres
 {
     Transform::Transform()
         :_matrix(Matrix::Identity()), _position(0, 0, 0), _rotation(0, 0, 0), _scale(1, 1, 1)
-    {}
+    {
+        calculateMatrix();
+    }
 
     Transform::~Transform()
     {}
 
 
-    void Transform::SetPosition(Vector3 position)
+    void Transform::SetPosition(const Vector3& position)
     {
         _position = position;
         calculateMatrix();
     }
-    const Vector3& Transform::GetPosition()
+    Vector3 Transform::GetPosition() const
     {
         return _position;
     }
 
 
-    void Transform::SetRotation(Vector3 rotation)
+    void Transform::SetRotation(const Vector3& rotation)
     {
         _rotation = rotation;
         calculateMatrix();
     }
-    const Vector3& Transform::GetRotation()
+    Vector3 Transform::GetRotation() const
     {
         return _rotation;
     }
 
 
-    void Transform::SetScale(Vector3 scale)
+    void Transform::SetScale(const Vector3& scale)
     {
         _scale = scale;
         calculateMatrix();
     }
-    const Vector3& Transform::GetScale()
+    Vector3 Transform::GetScale() const
     {
         return _scale;
     }
 
-    const Matrix& Transform::GetMatrix() const
+    Matrix Transform::GetMatrix() const
     {
         return _matrix;
     }
