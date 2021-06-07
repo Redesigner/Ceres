@@ -34,8 +34,8 @@ namespace Ceres
             uint8_t LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount);
             
             // TODO: return appropriate type, manage with separate class?
-            RenderComponent& CreateRenderComponent(uint8_t meshId);
-            RenderComponent& getRenderComponent(uint8_t id) { return _renderComponents[id]; }
+            uint8_t CreateRenderComponent(uint8_t meshId);
+            RenderComponent& GetRenderComponent(uint8_t id) { return _renderComponents[id]; }
 
         private:
             void beginRender();

@@ -25,6 +25,6 @@ namespace Ceres
             int _status;
             GraphicsDevice _graphicsDevice;
 
-            RenderComponent* _testRender;
+            uint8_t _testRender;
     };
 }
