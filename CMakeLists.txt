@@ -22,6 +22,8 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Common/Vector2.cpp
 	src/Ceres/Core/Common/Vector3.cpp
 
+	src/Ceres/Core/Components/ComponentList.cpp
+	src/Ceres/Core/Components/ComponentRef.cpp
 	src/Ceres/Core/Components/IComponent.cpp
 	src/Ceres/Core/Components/RenderComponent.cpp
 
@@ -45,12 +47,16 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Input/InputHandler.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp
+
+	src/Ceres/Core/Services/IService.cpp
+	src/Ceres/Core/Services/RenderService.cpp
+	src/Ceres/Core/Services/ServiceContainer.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)
 
 # Compiler options
 target_compile_features(ceres PRIVATE cxx_std_17)
-target_enable_all_warnings(ceres)
+#target_enable_all_warnings(ceres)
 
 # Set output directiories
 set_target_properties(ceres PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin/release)

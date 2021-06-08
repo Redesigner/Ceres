@@ -4,6 +4,9 @@
 #include "Core/Components/RenderComponent.h"
 #include "Core/Input/InputHandler.h"
 
+#include "Core/Services/RenderService.h"
+#include "Core/Services/ServiceContainer.h"
+
 namespace Ceres
 {
     class GraphicsDevice;
@@ -20,11 +23,10 @@ namespace Ceres
             void Draw();
 
             InputHandler InputHandler;
+            GraphicsDevice GraphicsDevice;
+            ServiceContainer ServiceContainer;
             
         private:
             int _status;
-            GraphicsDevice _graphicsDevice;
-
-            uint8_t _testRender;
     };
 }

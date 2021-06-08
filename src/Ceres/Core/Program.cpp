@@ -31,7 +31,10 @@ namespace Ceres
             handleEvents();
 
             _game->Update((double) (ticks - last) / freq);
+
+            _game->GraphicsDevice.BeginRender();
             _game->Draw();
+            _game->GraphicsDevice.EndRender();
         }
     }
 

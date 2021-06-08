@@ -1,0 +1,50 @@
+#include "RenderService.h"
+
+#include <exception>
+#include <fmt/core.h>
+
+namespace Ceres
+{
+    RenderService::RenderService(const GraphicsDevice& graphicsDevice)
+        :_parentDevice(graphicsDevice), _components(4)
+    {}
+
+    RenderService::~RenderService()
+    {
+    }
+
+    ComponentRef RenderService::GenerateComponent(std::string typeName, int argCount, void* args)
+    {
+        fmt::print("Generating component.");
+        if(typeName == "RenderComponent")
+        {
+            if(argCount == 1)
+            {
+                uint8_t meshId = *(uint8_t*) args;
+                _components.Insert(_parentDevice.CreateRenderComponent(meshId));
+                return ComponentRef(&_components, _components.Size() - 1);
+            }
+            else
+            {
+                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", typeName));
+            }
+        }
+        else
+        {
+            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", typeName));
+        }
+    }
+
+    ComponentRef RenderService::GetComponent(unsigned int id)
+    {
+        return ComponentRef(&_components, id);
+    }
+
+    void RenderService::RenderComponents()
+    {
+        for(int i = 0; i < _components.Size(); i++)
+        {
+            _parentDevice.Render((RenderComponent*) _components[i]);
+        }
+    }
+}

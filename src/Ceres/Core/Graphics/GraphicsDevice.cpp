@@ -21,13 +21,13 @@ const int SCREEN_HEIGHT = 720;
 namespace Ceres
 {
     GraphicsDevice::GraphicsDevice()
-        : _defaultModelMatrix(Matrix::Identity())
     {
         _window = createWindow();
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
         _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
-        _defaultModelMatrix = Matrix::Identity();
+
+        _loadedMeshes = std::vector<MeshPtr>();
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -41,9 +41,8 @@ namespace Ceres
         }
     }
 
-    void GraphicsDevice::Render()
+    /* void GraphicsDevice::Render()
     {
-        _defaultModelMatrix = _defaultModelMatrix * Matrix::RotationAlongY(0.0001f);
         beginRender();
         MeshPtr componentMesh = _loadedMeshes[0];
         for(const RenderComponent& renderComponent : _renderComponents)
@@ -56,13 +55,20 @@ namespace Ceres
 
         }
         endRender();
+    } */
+
+    void GraphicsDevice::Render(RenderComponent* renderComponent) const
+    {
+        MeshPtr componentMesh = _loadedMeshes[renderComponent->MeshId];
+        componentMesh->GetVertexArray().Bind();
+        _currentEffect->Begin();
+        _currentEffect->SetMatrix("model", renderComponent->Transform.GetMatrix());
+        glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
     }
 
     EffectPtr GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName)
     {
-        EffectPtr effect = EffectPtr(new Effect(vertexShaderName, fragmentShaderName));
-        _loadedEffects.push_back(effect);
-        return effect;
+        return EffectPtr(new Effect(vertexShaderName, fragmentShaderName));
     }
 
     uint8_t GraphicsDevice::LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount)
@@ -72,21 +78,20 @@ namespace Ceres
         return (uint8_t) (_loadedMeshes.size() - 1);
     }
 
-    uint8_t GraphicsDevice::CreateRenderComponent(uint8_t meshId)
+    RenderComponent* GraphicsDevice::CreateRenderComponent(uint8_t meshId) const
     {
-       _renderComponents.emplace_back(IEntity(), meshId);
-       return (uint8_t) (_renderComponents.size() - 1);
+       return new RenderComponent(IEntity(), meshId);
     }
 
 
-    void GraphicsDevice::beginRender()
+    void GraphicsDevice::BeginRender()
     {
         glClearColor(1.0, 1.0, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
     }
 
-    void GraphicsDevice::endRender()
+    void GraphicsDevice::EndRender()
     {
         SDL_GL_SwapWindow(_window);
         printError();

@@ -28,18 +28,22 @@ namespace Ceres
             GraphicsDevice();
             ~GraphicsDevice();
 
+            void BeginRender();
+            void EndRender();
+
             void Render();
+            void Render(RenderComponent* renderComponent) const;
 
             EffectPtr LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
             uint8_t LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount);
             
             // TODO: return appropriate type, manage with separate class?
-            uint8_t CreateRenderComponent(uint8_t meshId);
-            RenderComponent& GetRenderComponent(uint8_t id) { return _renderComponents[id]; }
+
+
+            RenderComponent* CreateRenderComponent(uint8_t meshId) const;
 
         private:
-            void beginRender();
-            void endRender();
+
             void printError();
 
             void unloadEffects();
@@ -52,11 +56,10 @@ namespace Ceres
 
             Context* _currentContext;
             EffectPtr _currentEffect;
-            Matrix _defaultModelMatrix;
 
             std::vector<EffectPtr> _loadedEffects;
             std::vector<MeshPtr> _loadedMeshes;
 
-            std::vector<RenderComponent> _renderComponents;
+            // std::vector<RenderComponent> _renderComponents;
     };
 }
