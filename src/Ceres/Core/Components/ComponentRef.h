@@ -13,8 +13,8 @@ namespace Ceres
 
             ~ComponentRef();
 
-            const IComponent* operator->();
-            const ComponentRef& operator =(const ComponentRef& value);
+            IComponent* operator->();
+            const ComponentRef& operator=(const ComponentRef& value);
         private:
             int _localID;
             ComponentList* _listRef;

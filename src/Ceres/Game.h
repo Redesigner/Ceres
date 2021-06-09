@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Graphics/GraphicsDevice.h"
-#include "Core/Components/RenderComponent.h"
+#include "Core/Components/ComponentRef.h"
 #include "Core/Input/InputHandler.h"
 
 #include "Core/Services/RenderService.h"
@@ -28,5 +28,6 @@ namespace Ceres
             
         private:
             int _status;
+            ComponentRef _testComponent;
     };
 }

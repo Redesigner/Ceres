@@ -13,17 +13,17 @@ namespace Ceres
 
     }
 
-    bool IEntity::SendMessage(int message)
+    bool IEntity::SendMessage(Message* message)
     {
         bool handled = false;
         for(IComponent& component : _components)
         {
-            if(component.recieveMessage())
+            if(component.RecieveMessage(message))
             {
                 handled = true;
             }
         }
-        message += 1;
+        delete message;
         return handled;
     }
 }

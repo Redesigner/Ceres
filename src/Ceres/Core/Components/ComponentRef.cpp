@@ -17,14 +17,15 @@ namespace Ceres
     ComponentRef::~ComponentRef()
     {}
 
-    const IComponent* ComponentRef::operator ->()
+    IComponent* ComponentRef::operator ->()
     {
         return (*_listRef)[_localID];
     }
 
-    const ComponentRef& ComponentRef::operator =(const ComponentRef& value)
+    const ComponentRef& ComponentRef::operator=(const ComponentRef& value)
     {
-        ComponentList list = *value._listRef;
-        return ComponentRef(&list, value._localID);
+        _listRef = value._listRef;
+        _localID = value._localID;
+        return *this;
     }
 }

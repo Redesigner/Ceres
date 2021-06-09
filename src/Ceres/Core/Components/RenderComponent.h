@@ -13,6 +13,8 @@ namespace Ceres
             RenderComponent(const IEntity& parent, uint8_t meshId);
             ~RenderComponent();
 
+            virtual bool RecieveMessage(Message* message) override;
+
             uint8_t MeshId;
             Transform Transform;
 

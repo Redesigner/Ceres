@@ -15,7 +15,6 @@ namespace Ceres
 
     ComponentRef RenderService::GenerateComponent(std::string typeName, int argCount, void* args)
     {
-        fmt::print("Generating component.");
         if(typeName == "RenderComponent")
         {
             if(argCount == 1)

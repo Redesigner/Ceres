@@ -13,7 +13,7 @@ namespace Ceres
             IEntity();
             ~IEntity();
             /// Returns true if message is recieved by a component, otherwise returns false.
-            virtual bool SendMessage(int message);
+            bool SendMessage(Message* Message);
         private:
             std::vector<IComponent> _components;
 

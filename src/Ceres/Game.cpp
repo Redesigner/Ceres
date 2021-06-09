@@ -12,7 +12,7 @@
 
 void testFunc()
 {
-    fmt::print("Test!");
+    fmt::print("Test!\n");
 }
 
 namespace Ceres
@@ -61,23 +61,20 @@ namespace Ceres
         // This avoids having to calculate reverse transform matrices
         // or trying to solve rotation angles from a matrix.
 
-        ServiceContainer.GetService("render")->GenerateComponent("RenderComponent", 1, &meshId);
-        // _graphicsDevice.GetRenderComponent(_testRender).Transform.SetScale(Vector3(1, 4, 1));
+        _testComponent = ServiceContainer.GetService("render")->GenerateComponent("RenderComponent", 1, &meshId);
     }
 
     void Game::Update(double seconds)
     {
-        seconds += 0;
-        /* Vector2 inputAxis = InputHandler.GetAxisValue("test");
-        inputAxis.X = inputAxis.X * (float) seconds * 10;
-        inputAxis.Y = inputAxis.Y * (float) seconds * 10;
-        Vector3 newPos = _graphicsDevice.GetRenderComponent(_testRender).Transform.GetPosition();
-        _graphicsDevice.GetRenderComponent(_testRender).Transform.SetPosition(Vector3(newPos.X + inputAxis.X, newPos.Y, newPos.Z - inputAxis.Y)); */
+        Vector2 inputAxis = InputHandler.GetAxisValue("test");
+        Vector3 testPos = Vector3(inputAxis.X * seconds * 10, 0, inputAxis.Y * seconds * -10);
+        Message* testMessage = new Message("Translate", &testPos);
+        _testComponent->RecieveMessage(testMessage);
+        delete testMessage;
     }
 
     void Game::Draw()
     {
-        // _graphicsDevice.Render();
         ((RenderService*) ServiceContainer.GetService("render"))->RenderComponents();
     }
 }

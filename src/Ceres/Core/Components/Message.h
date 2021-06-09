@@ -2,18 +2,22 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace Ceres
 {
     struct Message
     {
         public:
-            Message(std::string messageType, int argCount,...);
+            Message(std::string messageType, void* data);
             ~Message();
 
             std::string Type;
+            template <typename T>
+            T* GetData()
+            {
+                return (T*)(_data);
+            }
         private:
-            std::vector<void*> _data;
+            void* _data;
     };
 }

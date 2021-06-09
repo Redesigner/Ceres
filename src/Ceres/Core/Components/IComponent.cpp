@@ -8,9 +8,4 @@ namespace Ceres
 
     IComponent::~IComponent()
     {}
-
-    bool IComponent::recieveMessage()
-    {
-        return false;
-    }
 }
