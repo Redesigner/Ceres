@@ -2,8 +2,8 @@
 
 namespace Ceres
 {
-    Message::Message(std::string messageType, void* data)
-        :Type(messageType), _data(data)
+    Message::Message(std::string messageType)
+        :Type(messageType)
     {}
 
     Message::~Message()

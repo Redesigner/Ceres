@@ -27,7 +27,8 @@ namespace Ceres
 
     bool Game::Initialize()
     {
-        ServiceContainer.AddService("render", new RenderService(GraphicsDevice));
+        ServiceContainer.AddService<RenderService>(new RenderService(GraphicsDevice));
+        
         InputHandler.BindInput(Button::Key_space, &testFunc);
         InputHandler.BindAxis("test", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
 
@@ -55,26 +56,20 @@ namespace Ceres
         // manages the mesh loading.
         // For now, that is just the GraphicsDevice
         uint8_t meshId = GraphicsDevice.LoadMesh(verts, VertexPositionLayout(), 8, indices, 36);
-
-        // Transforms can be set from each individual aspect,
-        // position/translation, rotation, and scale.
-        // This avoids having to calculate reverse transform matrices
-        // or trying to solve rotation angles from a matrix.
-
-        _testComponent = ServiceContainer.GetService("render")->GenerateComponent("RenderComponent", 1, &meshId);
+        _testComponent = ServiceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", 1, &meshId);
     }
 
     void Game::Update(double seconds)
     {
         Vector2 inputAxis = InputHandler.GetAxisValue("test");
         Vector3 testPos = Vector3(inputAxis.X * seconds * 10, 0, inputAxis.Y * seconds * -10);
-        Message* testMessage = new Message("Translate", &testPos);
+        Message* testMessage = Message::Write<Vector3>("Translate", &testPos);
         _testComponent->RecieveMessage(testMessage);
         delete testMessage;
     }
 
     void Game::Draw()
     {
-        ((RenderService*) ServiceContainer.GetService("render"))->RenderComponents();
+        ServiceContainer.GetService<RenderService>()->RenderComponents();
     }
 }

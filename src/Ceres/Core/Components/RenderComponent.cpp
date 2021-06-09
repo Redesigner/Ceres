@@ -13,7 +13,7 @@ namespace Ceres
     {
         if(message->Type == "Translate")
         {
-            Vector3 position = *message->GetData<Vector3>();
+            Vector3 position = message->GetData<Vector3>();
             Transform.SetPosition(Transform.GetPosition() + position);
             return true;
         }

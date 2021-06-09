@@ -1,6 +1,8 @@
 #pragma once
 
-#include <memory>
+#include <stdexcept>
+#include <typeindex>
+#include <typeinfo>
 #include <string>
 
 namespace Ceres
@@ -8,16 +10,38 @@ namespace Ceres
     struct Message
     {
         public:
-            Message(std::string messageType, void* data);
             ~Message();
+            
+            template <typename T>
+            T GetData()
+            {
+                if(std::type_index(typeid(T)) == _type)
+                {
+                    return *(T*)(_data);
+                }
+                throw std::invalid_argument("That data type is not stored inside the message.");
+            }
+            template <typename T>
+            static Message* Write(std::string name, T* data)
+            {
+                Message* message = new Message(name);
+                message->SetData<T>(data);
+                return message;
+            }
 
             std::string Type;
-            template <typename T>
-            T* GetData()
-            {
-                return (T*)(_data);
-            }
+
         private:
+            Message(std::string messageType);
+
+            template <typename T>
+            void SetData(T* data)
+            {
+                _type = std::type_index(typeid(T));
+                _data = data;
+            }
+
             void* _data;
+            std::type_index _type = (typeid(char));
     };
 }

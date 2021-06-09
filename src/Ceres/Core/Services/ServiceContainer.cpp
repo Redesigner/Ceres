@@ -5,7 +5,7 @@ const int DEFAULT_CONTAINER_SIZE = 5;
 namespace Ceres
 {
     ServiceContainer::ServiceContainer()
-        :_serviceMap(std::unordered_map<std::string, IService*>(DEFAULT_CONTAINER_SIZE))
+        :_serviceMap(std::unordered_map<std::type_index, IService*>(DEFAULT_CONTAINER_SIZE))
     {
 
     }
@@ -16,15 +16,5 @@ namespace Ceres
         {
             delete service.second;
         }
-    }
-
-    void ServiceContainer::AddService(std::string serviceName, IService* service)
-    {
-        _serviceMap.emplace(serviceName, service);
-    }
-
-    IService* ServiceContainer::GetService(std::string serviceName)
-    {
-        return _serviceMap.at(serviceName);
     }
 }
