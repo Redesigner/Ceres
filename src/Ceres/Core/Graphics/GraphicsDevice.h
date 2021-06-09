@@ -40,7 +40,7 @@ namespace Ceres
             // TODO: return appropriate type, manage with separate class?
 
 
-            RenderComponent* CreateRenderComponent(uint8_t meshId) const;
+            RenderComponent* CreateRenderComponent(const IEntity& parent, uint8_t meshId) const;
 
         private:
 

@@ -16,7 +16,7 @@ namespace Ceres
             RenderService(const GraphicsDevice& graphicsDevice);
             ~RenderService();
 
-            ComponentRef GenerateComponent(std::string typeName, int argCount, void* args) override;
+            ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
             ComponentRef GetComponent(unsigned int id) override;
 
             void RenderComponents();

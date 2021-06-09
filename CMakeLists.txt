@@ -26,9 +26,14 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Components/ComponentRef.cpp
 	src/Ceres/Core/Components/Message.cpp
 	src/Ceres/Core/Components/IComponent.cpp
+
 	src/Ceres/Core/Components/RenderComponent.cpp
 
+
 	src/Ceres/Core/Entities/IEntity.cpp
+
+	src/Ceres/Core/Entities/Actor.cpp
+
 
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp

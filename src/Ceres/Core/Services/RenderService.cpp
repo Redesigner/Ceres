@@ -13,14 +13,14 @@ namespace Ceres
     {
     }
 
-    ComponentRef RenderService::GenerateComponent(std::string typeName, int argCount, void* args)
+    ComponentRef RenderService::GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args)
     {
         if(typeName == "RenderComponent")
         {
             if(argCount == 1)
             {
                 uint8_t meshId = *(uint8_t*) args;
-                _components.Insert(_parentDevice.CreateRenderComponent(meshId));
+                _components.Insert(_parentDevice.CreateRenderComponent(parent, meshId));
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else

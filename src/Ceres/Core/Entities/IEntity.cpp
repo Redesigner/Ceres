@@ -16,9 +16,9 @@ namespace Ceres
     bool IEntity::SendMessage(Message* message)
     {
         bool handled = false;
-        for(IComponent& component : _components)
+        for(ComponentRef component : _components)
         {
-            if(component.RecieveMessage(message))
+            if(component->RecieveMessage(message))
             {
                 handled = true;
             }

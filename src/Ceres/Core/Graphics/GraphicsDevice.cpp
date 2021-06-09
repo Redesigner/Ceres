@@ -78,9 +78,9 @@ namespace Ceres
         return (uint8_t) (_loadedMeshes.size() - 1);
     }
 
-    RenderComponent* GraphicsDevice::CreateRenderComponent(uint8_t meshId) const
+    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, uint8_t meshId) const
     {
-       return new RenderComponent(IEntity(), meshId);
+       return new RenderComponent(parent, meshId);
     }
 
 

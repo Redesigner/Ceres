@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Core/Graphics/GraphicsDevice.h"
-#include "Core/Components/ComponentRef.h"
 #include "Core/Input/InputHandler.h"
-
 #include "Core/Services/RenderService.h"
 #include "Core/Services/ServiceContainer.h"
+
+#include "Core/Entities/Actor.h"
 
 namespace Ceres
 {
@@ -28,6 +28,6 @@ namespace Ceres
             
         private:
             int _status;
-            ComponentRef _testComponent;
+            Actor* _testActor;
     };
 }
