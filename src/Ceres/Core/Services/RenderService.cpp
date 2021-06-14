@@ -6,7 +6,7 @@
 namespace Ceres
 {
     RenderService::RenderService(const GraphicsDevice& graphicsDevice)
-        :_parentDevice(graphicsDevice), _components(4)
+        :_parentDevice(graphicsDevice)
     {}
 
     RenderService::~RenderService()
@@ -32,11 +32,6 @@ namespace Ceres
         {
             throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", typeName));
         }
-    }
-
-    ComponentRef RenderService::GetComponent(unsigned int id)
-    {
-        return ComponentRef(&_components, id);
     }
 
     void RenderService::RenderComponents()

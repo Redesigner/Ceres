@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IComponent.h"
+#include "Base/IComponent.h"
 
 #include "../Common/Transform.h"
 #include "../Graphics/Mesh.h"

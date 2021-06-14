@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Components/IComponent.h"
-#include "../Components/ComponentRef.h"
-#include "../Components/Message.h"
+#include "../Components/Base/IComponent.h"
+#include "../Components/Base/ComponentRef.h"
+#include "../Components/Base/Message.h"
 
 #include <vector>
 

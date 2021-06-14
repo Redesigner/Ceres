@@ -22,10 +22,10 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Common/Vector2.cpp
 	src/Ceres/Core/Common/Vector3.cpp
 
-	src/Ceres/Core/Components/ComponentList.cpp
-	src/Ceres/Core/Components/ComponentRef.cpp
-	src/Ceres/Core/Components/Message.cpp
-	src/Ceres/Core/Components/IComponent.cpp
+	src/Ceres/Core/Components/Base/ComponentList.cpp
+	src/Ceres/Core/Components/Base/ComponentRef.cpp
+	src/Ceres/Core/Components/Base/Message.cpp
+	src/Ceres/Core/Components/Base/IComponent.cpp
 
 	src/Ceres/Core/Components/RenderComponent.cpp
 
@@ -55,8 +55,9 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/IO/ContentManager.cpp
 
 	src/Ceres/Core/Services/IService.cpp
-	src/Ceres/Core/Services/RenderService.cpp
 	src/Ceres/Core/Services/ServiceContainer.cpp
+	src/Ceres/Core/Services/RenderService.cpp
+	src/Ceres/Core/Services/InputService.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)
 

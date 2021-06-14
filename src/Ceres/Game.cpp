@@ -6,6 +6,7 @@
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 
 #include "Core/Services/RenderService.h"
+#include "Core/Services/InputService.h"
 
 #include <fmt/core.h>
 
@@ -28,7 +29,8 @@ namespace Ceres
     bool Game::Initialize()
     {
         ServiceContainer.AddService<RenderService>(new RenderService(GraphicsDevice));
-        
+        ServiceContainer.AddService<InputService>(new InputService(InputHandler));
+
         InputHandler.BindInput(Button::Key_space, &testFunc);
         InputHandler.BindAxis("test", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
 

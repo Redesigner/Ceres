@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Graphics/GraphicsDevice.h"
-#include "../Components/ComponentList.h"
-#include "../Components/ComponentRef.h"
+#include "../Components/Base/ComponentList.h"
+#include "../Components/Base/ComponentRef.h"
 #include "IService.h"
 
 namespace Ceres
@@ -23,7 +23,5 @@ namespace Ceres
             
         private:
             const GraphicsDevice& _parentDevice;
-
-            ComponentList _components;
     };
 }
