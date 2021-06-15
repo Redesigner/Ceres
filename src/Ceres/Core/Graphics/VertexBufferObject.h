@@ -23,14 +23,15 @@ namespace Ceres
             VertexBufferObject(int capacity, const IVertexLayout& vertexLayout);
             ~VertexBufferObject();
 
-            void SetData(IVertexType data[], int size, int offset);
-            void SetData(IVertexType data[], int size);            
+            void SetData(const IVertexType data[], const int size, const int offset);
+            void SetData(const IVertexType data[], const int size);            
 
             void Bind();
 
         private:
             int _capacity;
             int _currentIndex;
+            int _size;
             GLuint _gVBO;
     };
 }

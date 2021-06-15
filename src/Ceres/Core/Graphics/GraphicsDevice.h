@@ -35,7 +35,7 @@ namespace Ceres
             void Render(RenderComponent* renderComponent) const;
 
             EffectPtr LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
-            uint8_t LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount);
+            uint8_t LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], const int indexCount);
             
             // TODO: return appropriate type, manage with separate class?
 

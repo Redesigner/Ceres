@@ -8,7 +8,7 @@
 
 namespace Ceres
 {
-    Mesh::Mesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount,  EffectPtr effect)
+    Mesh::Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], const int indexCount,  EffectPtr effect)
         :_vertexCount(vertexCount), _indexCount(indexCount),
         _vAO(vertexLayout), _vBO(_vertexCount, vertexLayout), _iBO(indexCount)
     {

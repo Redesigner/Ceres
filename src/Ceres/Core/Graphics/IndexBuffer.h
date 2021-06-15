@@ -15,8 +15,8 @@ namespace Ceres
             IndexBuffer(int size);
             ~IndexBuffer();
 
-            void SetData(unsigned int indices[], int count, int offset);
-            void SetData(unsigned int indices[], int count);
+            void SetData(const int indices[], const int count, const int offset);
+            void SetData(const int indices[], const int count);
             void Bind();
 
         private:

@@ -2,7 +2,7 @@
 
 #include "../Common/Vector2.h"
 #include "../Common/Vector3.h"
-#include "../Entities/IEntity.h"
+#include "../Entities/Base/IEntity.h"
 
 namespace Ceres
 {

@@ -18,7 +18,7 @@ namespace Ceres
     class Mesh
     {
         public:
-            Mesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount, EffectPtr effect);
+            Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], const int indexCount, EffectPtr effect);
             ~Mesh();
 
             int Size();

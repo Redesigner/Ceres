@@ -22,6 +22,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Common/Vector2.cpp
 	src/Ceres/Core/Common/Vector3.cpp
 
+	
 	src/Ceres/Core/Components/Base/ComponentList.cpp
 	src/Ceres/Core/Components/Base/ComponentRef.cpp
 	src/Ceres/Core/Components/Base/Message.cpp
@@ -31,7 +32,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Components/ControllerComponent.cpp
 
 
-	src/Ceres/Core/Entities/IEntity.cpp
+	src/Ceres/Core/Entities/Base/IEntity.cpp
 
 	src/Ceres/Core/Entities/Actor.cpp
 
@@ -44,10 +45,14 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
 
+	src/Ceres/Core/Graphics/Primitives/Cube.cpp
+
 	src/Ceres/Core/Graphics/VertexTypes/IVertexLayout.cpp
-	src/Ceres/Core/Graphics/VertexTypes/VertexPositionLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPositionLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalLayout.cpp
+
 
 	src/Ceres/Core/Input/Axis.cpp
 	src/Ceres/Core/Input/Buttons.cpp

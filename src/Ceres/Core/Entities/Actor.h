@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEntity.h"
+#include "Base/IEntity.h"
 
 #include "../Services/ServiceContainer.h"
 

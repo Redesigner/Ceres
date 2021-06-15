@@ -3,7 +3,7 @@
 #include "Context.h"
 #include "Effect.h"
 #include "Mesh.h"
-#include "../Entities/IEntity.h"
+#include "../Entities/Base/IEntity.h"
 
 #include <stdexcept>
 #include <fmt/core.h>
@@ -71,7 +71,7 @@ namespace Ceres
         return EffectPtr(new Effect(vertexShaderName, fragmentShaderName));
     }
 
-    uint8_t GraphicsDevice::LoadMesh(IVertexType vertexData[], const IVertexLayout& vertexLayout, int vertexCount, unsigned int indices[], int indexCount)
+    uint8_t GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], int indexCount)
     {
         MeshPtr mesh = MeshPtr(new Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, _currentEffect));
         _loadedMeshes.push_back(mesh);

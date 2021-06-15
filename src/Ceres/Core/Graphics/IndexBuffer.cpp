@@ -20,7 +20,7 @@ namespace Ceres
         glDeleteBuffers(1, &_iBO);
     }
 
-    void IndexBuffer::SetData(unsigned int indices[], int count, int offset)
+    void IndexBuffer::SetData(const int indices[], const int count, const int offset)
     {
         if(offset + count > _capacity)
         {
@@ -31,7 +31,7 @@ namespace Ceres
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, count * INDEXSIZE, indices);
     }
 
-    void IndexBuffer::SetData(unsigned int indices[], int count)
+    void IndexBuffer::SetData(const int indices[], const int count)
     {
         SetData(indices, count, _currentCount);
     }
