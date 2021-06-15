@@ -28,6 +28,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Components/Base/IComponent.cpp
 
 	src/Ceres/Core/Components/RenderComponent.cpp
+	src/Ceres/Core/Components/ControllerComponent.cpp
 
 
 	src/Ceres/Core/Entities/IEntity.cpp

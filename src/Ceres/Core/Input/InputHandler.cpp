@@ -34,7 +34,7 @@ namespace Ceres
         _axisMap.insert(std::pair<std::string, Axis>(id, Axis(up, down, left, right)));
     }
 
-    Vector2 InputHandler::GetAxisValue(std::string id)
+    Vector2 InputHandler::GetAxisValue(std::string id) const
     {
         std::unordered_map<std::string, Axis>::const_iterator get = _axisMap.find(id);
         if(get == _axisMap.end())
@@ -68,7 +68,7 @@ namespace Ceres
 
     }
 
-    bool InputHandler::buttonPressed(Button button)
+    bool InputHandler::buttonPressed(Button button) const
     {
         // Is a keyboard button
         if(button <= Button::Gamepad_invalid)

@@ -17,7 +17,6 @@ namespace Ceres
             ~RenderService();
 
             ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
-            ComponentRef GetComponent(unsigned int id) override;
 
             void RenderComponents();
             

@@ -15,7 +15,7 @@ namespace Ceres
             ~IEntity();
 
             // TODO: move to protected once testing is done
-            bool SendMessage(Message* Message);
+            bool SendMessage(Message* Message) const;
 
         private:
             uint8_t _identifier;

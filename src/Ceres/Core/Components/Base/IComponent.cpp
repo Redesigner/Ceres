@@ -3,7 +3,7 @@
 namespace Ceres
 {
     IComponent::IComponent(const IEntity& parent)
-        :parent(parent)
+        :_parent(parent)
     {}
 
     IComponent::~IComponent()

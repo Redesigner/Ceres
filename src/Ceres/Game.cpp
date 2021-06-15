@@ -63,9 +63,7 @@ namespace Ceres
 
     void Game::Update(double seconds)
     {
-        Vector2 inputAxis = InputHandler.GetAxisValue("test");
-        Vector3 testPos = Vector3(inputAxis.X * seconds * 10, 0, inputAxis.Y * seconds * -10);
-        _testActor->SendMessage(Message::Write<Vector3>("Translate", &testPos));
+        ServiceContainer.GetService<InputService>()->Update(seconds);
     }
 
     void Game::Draw()

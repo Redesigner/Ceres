@@ -17,6 +17,6 @@ namespace Ceres
         private:
 
         protected:
-            const IEntity& parent;
+            const IEntity& _parent;
     };
 }

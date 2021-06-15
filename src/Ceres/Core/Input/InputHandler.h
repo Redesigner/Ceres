@@ -26,10 +26,10 @@ namespace Ceres
             void BindInput(Button input, voidFunctionType function);
 
             void BindAxis(std::string id, Button up, Button down, Button left, Button right);
-            Vector2 GetAxisValue(std::string id);
+            Vector2 GetAxisValue(std::string id) const;
 
         private:
-            bool buttonPressed(Button button);
+            bool buttonPressed(Button button) const;
             std::unordered_map<Button, voidFunctionType> _map;
             std::unordered_map<std::string, Axis> _axisMap;
     };

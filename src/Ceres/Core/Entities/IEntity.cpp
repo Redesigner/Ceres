@@ -13,7 +13,7 @@ namespace Ceres
 
     }
 
-    bool IEntity::SendMessage(Message* message)
+    bool IEntity::SendMessage(Message* message) const
     {
         bool handled = false;
         for(ComponentRef component : _components)
