@@ -1,6 +1,7 @@
 #pragma once
 
-#include"../Common/Matrix.h"
+#include "../Common/Matrix.h"
+#include "../Common/Vector3.h"
 
 #include <string>
 
@@ -21,6 +22,7 @@ namespace Ceres
 
             void Begin();
             void SetMatrix(std::string name, Matrix matrix);
+            void SetVector3(std::string name, Vector3 vector);
 
         private:
             bool compileShader(GLuint shader, const char* filename, std::string source);

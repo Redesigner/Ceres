@@ -36,6 +36,7 @@ namespace Ceres
             }
             glUseProgram(_glProgram);
             SetMatrix("viewProjection", _viewProjection);
+            SetVector3("lightPos", Vector3(-15, 15, 40));
         }
     }
     
@@ -57,6 +58,19 @@ namespace Ceres
         if(location != -1)
         {
             glUniformMatrix4fv(location, 1, GL_FALSE, matrix.M[0]);
+        }
+        else
+        {
+            fmt::print("Unable to find GL_Uniform {}.\n", name);
+        }
+    }
+
+    void Effect::SetVector3(std::string name, Vector3 vector)
+    {
+        GLint location = glGetUniformLocation(_glProgram, name.c_str());
+        if(location != -1)
+        {
+            glUniform3f(location, vector.X, vector.Y, vector.Z);
         }
         else
         {
