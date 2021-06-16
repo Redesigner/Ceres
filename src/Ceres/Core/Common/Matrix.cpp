@@ -13,6 +13,13 @@ namespace Ceres
         : M{{m11, m21, m31, m41}, {m12, m22, m32, m42}, {m13, m23, m33, m43}, {m14, m24, m34, m44}}
     {}
 
+    Matrix::Matrix()
+        : M{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}
+    {}
+
+    Matrix::~Matrix()
+    {}
+
     Matrix Matrix::Translation(float x, float y, float z)
     {
         return Matrix(
@@ -142,10 +149,10 @@ namespace Ceres
         Vector3 yAxis = zAxis.Cross(xAxis);
 
         return Matrix(
-            xAxis.X, yAxis.X, zAxis.X, 0,
-            xAxis.Y, yAxis.Y, zAxis.Y, 0,
-            xAxis.Z, yAxis.Z, zAxis.Z, 0,
-            -xAxis.Dot(eyePos), -yAxis.Dot(eyePos), -zAxis.Dot(eyePos), 1
+            xAxis.X, xAxis.Y, xAxis.Z, -xAxis.Dot(eyePos),
+            yAxis.X, yAxis.Y, yAxis.Z, -yAxis.Dot(eyePos),
+            zAxis.X, zAxis.Y, zAxis.Z, -zAxis.Dot(eyePos),
+            0, 0, 0, 1
         );
     }
 

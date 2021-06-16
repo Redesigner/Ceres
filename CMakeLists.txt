@@ -30,6 +30,7 @@ target_sources(ceres PRIVATE
 
 	src/Ceres/Core/Components/RenderComponent.cpp
 	src/Ceres/Core/Components/ControllerComponent.cpp
+	src/Ceres/Core/Components/CameraComponent.cpp
 
 
 	src/Ceres/Core/Entities/Base/IEntity.cpp

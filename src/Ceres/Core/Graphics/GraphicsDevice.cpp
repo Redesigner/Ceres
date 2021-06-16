@@ -22,6 +22,9 @@ namespace Ceres
 {
     GraphicsDevice::GraphicsDevice()
     {
+        // TODO: properly initalize cameracomponent?
+
+
         _window = createWindow();
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
@@ -41,49 +44,6 @@ namespace Ceres
         }
     }
 
-    /* void GraphicsDevice::Render()
-    {
-        beginRender();
-        MeshPtr componentMesh = _loadedMeshes[0];
-        for(const RenderComponent& renderComponent : _renderComponents)
-        {
-            componentMesh = _loadedMeshes[renderComponent.MeshId];
-            componentMesh->GetVertexArray().Bind();
-            _currentEffect->Begin();
-            _currentEffect->SetMatrix("model", renderComponent.Transform.GetMatrix());
-            glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
-
-        }
-        endRender();
-    } */
-
-    void GraphicsDevice::Render(RenderComponent* renderComponent) const
-    {
-        MeshPtr componentMesh = _loadedMeshes[renderComponent->MeshId];
-        componentMesh->GetVertexArray().Bind();
-        _currentEffect->Begin();
-        _currentEffect->SetMatrix("model", renderComponent->Transform.GetMatrix());
-        glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
-    }
-
-    EffectPtr GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName)
-    {
-        return EffectPtr(new Effect(vertexShaderName, fragmentShaderName));
-    }
-
-    uint8_t GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], int indexCount)
-    {
-        MeshPtr mesh = MeshPtr(new Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, _currentEffect));
-        _loadedMeshes.push_back(mesh);
-        return (uint8_t) (_loadedMeshes.size() - 1);
-    }
-
-    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, uint8_t meshId) const
-    {
-       return new RenderComponent(parent, meshId);
-    }
-
-
     void GraphicsDevice::BeginRender()
     {
         glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -97,6 +57,44 @@ namespace Ceres
         printError();
     }
 
+    void GraphicsDevice::Render(RenderComponent* renderComponent) const
+    {
+        MeshPtr componentMesh = _loadedMeshes[renderComponent->MeshId];
+        componentMesh->GetVertexArray().Bind();
+        _currentEffect->Begin();
+        _currentEffect->SetViewMatrix(_currentCamera->GetMatrix());
+        _currentEffect->SetMatrix("model", renderComponent->Transform.GetMatrix());
+        glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
+    }
+    
+
+    EffectPtr GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName)
+    {
+        EffectPtr effect = EffectPtr(new Effect(vertexShaderName, fragmentShaderName));
+        _loadedEffects.push_back(effect);
+        return effect;
+    }
+
+    uint8_t GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], int indexCount)
+    {
+        MeshPtr mesh = MeshPtr(new Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, _currentEffect));
+        _loadedMeshes.push_back(mesh);
+        return (uint8_t) (_loadedMeshes.size() - 1);
+    }
+
+    void GraphicsDevice::SetCamera(CameraComponent* camera)
+    {
+        _currentCamera = camera;
+    }
+
+    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, uint8_t meshId) const
+    {
+       return new RenderComponent(parent, meshId);
+    }
+
+
+    // Private methods
+
     void GraphicsDevice::printError()
     {
         GLenum err;
@@ -104,12 +102,6 @@ namespace Ceres
         {
             fmt::print("OpenGL error: {}\n", gluErrorString(err));
         }
-    }
-
-    SDL_Window* GraphicsDevice::createWindow()
-    {
-        if(SDL_Init(SDL_INIT_VIDEO) < 0) { return false; }
-        return SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
     }
 
     void GraphicsDevice::unloadEffects()
@@ -121,4 +113,11 @@ namespace Ceres
     {
         _loadedMeshes.clear();
     }
+
+    SDL_Window* GraphicsDevice::createWindow()
+    {
+        if(SDL_Init(SDL_INIT_VIDEO) < 0) { return false; }
+        return SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+    }
+
 }

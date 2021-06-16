@@ -8,6 +8,7 @@ namespace Ceres
             Vector3(float x, float y, float z);
             Vector3(float a);
             Vector3(const Vector3& vector);
+            Vector3();
             ~Vector3();
 
             float X, Y, Z;

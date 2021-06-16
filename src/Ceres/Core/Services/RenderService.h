@@ -13,14 +13,18 @@ namespace Ceres
     class RenderService : public IService
     {
         public:
-            RenderService(const GraphicsDevice& graphicsDevice);
+            RenderService(GraphicsDevice& graphicsDevice);
             ~RenderService();
 
-            ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
+            virtual ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
 
             void RenderComponents();
             
         private:
-            const GraphicsDevice& _parentDevice;
+            GraphicsDevice& _parentDevice;
+
+            // TODO: How should we handle both types of components when
+            // components like cameras can't be rendered?
+            ComponentList _renderComponents;
     };
 }

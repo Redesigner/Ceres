@@ -15,6 +15,9 @@ namespace Ceres
                 float m31, float m32, float m33, float m34,
                 float m41, float m42, float m43, float m44);
 
+            Matrix();
+            ~Matrix();
+            
             static Matrix Translation(float x, float y, float z);
 
             static Matrix RotationAlongX(float angle);

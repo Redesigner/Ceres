@@ -8,13 +8,12 @@
 namespace Ceres
 {
     Effect::Effect(const char* vertFile, const char* fragFile)
-        : _viewProjection(Matrix::Perspective(1280, 720, 90, .1f, 100))
+        : _viewPerspective(Matrix::Perspective(1280, 720, 90, .1f, 100.f))
     {
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
         _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        Matrix translation = Matrix::Translation(0, -2, -20);
-        _viewProjection = translation * _viewProjection;
+        _viewPosition = Matrix::Translation(0, -2, -20);
         if(compileShader(_vertexShader, vertFile, _vertexShaderSource) && compileShader(_fragmentShader, fragFile, _fragmentShaderSource))
         {
             glAttachShader(_glProgram, _vertexShader);
@@ -35,7 +34,7 @@ namespace Ceres
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
             glUseProgram(_glProgram);
-            SetMatrix("viewProjection", _viewProjection);
+            SetMatrix("viewProjection", _viewPosition * _viewPerspective);
             SetVector3("lightPos", Vector3(-15, 15, 40));
         }
     }
@@ -78,6 +77,14 @@ namespace Ceres
         }
     }
 
+    void Effect::SetViewMatrix(const Matrix& matrix)
+    {
+        _viewPosition = matrix;
+        SetMatrix("viewProjection", _viewPosition * _viewPerspective);
+    }
+
+
+    // Private methods
     bool Effect::compileShader(GLuint shader, const char* filename, std::string source)
     {
         source = ContentManager::LoadString(filename);

@@ -13,6 +13,10 @@ namespace Ceres
     Vector3::Vector3(const Vector3& vector)
         :X(vector.X), Y(vector.Y), Z(vector.Z){}
 
+    Vector3::Vector3()
+        :X(0), Y(0), Z(0)
+    {}
+
     Vector3::~Vector3() {}
 
 

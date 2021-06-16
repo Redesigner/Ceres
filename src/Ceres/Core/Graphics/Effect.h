@@ -23,6 +23,7 @@ namespace Ceres
             void Begin();
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
+            void SetViewMatrix(const Matrix& matrix);
 
         private:
             bool compileShader(GLuint shader, const char* filename, std::string source);
@@ -35,6 +36,7 @@ namespace Ceres
             std::string _vertexShaderSource;
             std::string _fragmentShaderSource;
 
-            Matrix _viewProjection;
+            Matrix _viewPerspective;
+            Matrix _viewPosition;
     };
 }
