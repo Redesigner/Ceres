@@ -10,6 +10,9 @@
 #include "Core/Services/RenderService.h"
 #include "Core/Services/InputService.h"
 
+#include "Core/Entities/Actor.h"
+#include "Core/Entities/Block.h"
+
 #include <fmt/core.h>
 
 void testFunc()
@@ -25,7 +28,10 @@ namespace Ceres
 
     Game::~Game()
     {
-        delete _testActor;
+        for(IEntity* entity : _entities)
+        {
+            delete entity;
+        }
     }
 
     bool Game::Initialize()
@@ -36,6 +42,7 @@ namespace Ceres
         InputHandler.BindInput(Button::Key_space, &testFunc);
         InputHandler.BindAxis("test", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
 
+        _entities = std::vector<IEntity*>(4);
         return true;
     }
 
@@ -43,7 +50,9 @@ namespace Ceres
     {
         Cube cube = Cube(1, 1, 1);
         uint8_t meshId = GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalLayout(), 24, cube.Indices, 36);
-        _testActor = new Actor(ServiceContainer);
+        
+        _entities.emplace_back(new Actor(ServiceContainer));
+        _entities.emplace_back(new Block(ServiceContainer, 5, .1, 5));
     }
 
     void Game::Update(double seconds)

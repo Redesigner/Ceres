@@ -35,6 +35,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Entities/Base/IEntity.cpp
 
 	src/Ceres/Core/Entities/Actor.cpp
+	src/Ceres/Core/Entities/Block.cpp
 
 
 	src/Ceres/Core/Graphics/Context.cpp

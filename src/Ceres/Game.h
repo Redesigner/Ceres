@@ -1,11 +1,13 @@
 #pragma once
 
+#include <vector>
+
 #include "Core/Graphics/GraphicsDevice.h"
 #include "Core/Input/InputHandler.h"
 #include "Core/Services/RenderService.h"
 #include "Core/Services/ServiceContainer.h"
 
-#include "Core/Entities/Actor.h"
+#include "Core/Entities/Base/IEntity.h"
 
 namespace Ceres
 {
@@ -28,6 +30,6 @@ namespace Ceres
             
         private:
             int _status;
-            Actor* _testActor;
+            std::vector<IEntity*> _entities;
     };
 }

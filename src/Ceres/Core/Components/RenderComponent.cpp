@@ -17,6 +17,12 @@ namespace Ceres
             Transform.SetPosition(Transform.GetPosition() + position);
             return true;
         }
+        else if(message->Type == "Scale")
+        {
+            Vector3 scale = message->GetData<Vector3>();
+            Transform.SetScale(scale);
+            return true;
+        }
         return false;
     }
 
