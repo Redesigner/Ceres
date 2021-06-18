@@ -5,15 +5,15 @@ namespace Ceres
     Cube::Cube(float x, float y, float z)
         :Vertices{
             // Front
-            VertexPositionNormal(Vector3(-x / 2, y / 2, -z / 2), Vector3(0, 0, 1)),
-            VertexPositionNormal(Vector3(x / 2, y / 2, -z / 2), Vector3(0, 0, 1)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, -z / 2), Vector3(0, 0, 1)),
-            VertexPositionNormal(Vector3(x / 2, -y / 2, -z / 2), Vector3(0, 0, 1)),
+            VertexPositionNormal(Vector3(-x / 2, y / 2, -z / 2), Vector3(0, 0, -1)),
+            VertexPositionNormal(Vector3(x / 2, y / 2, -z / 2), Vector3(0, 0, -1)),
+            VertexPositionNormal(Vector3(-x / 2, -y / 2, -z / 2), Vector3(0, 0, -1)),
+            VertexPositionNormal(Vector3(x / 2, -y / 2, -z / 2), Vector3(0, 0, -1)),
             // Back
-            VertexPositionNormal(Vector3(x / 2, y / 2, z / 2), Vector3(0, 0, -1)),
-            VertexPositionNormal(Vector3(-x / 2, y / 2, z / 2), Vector3(0, 0, -1)),
-            VertexPositionNormal(Vector3(x / 2, -y / 2, z / 2), Vector3(0, 0, -1)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, z / 2), Vector3(0, 0, -1)),
+            VertexPositionNormal(Vector3(x / 2, y / 2, z / 2), Vector3(0, 0, 1)),
+            VertexPositionNormal(Vector3(-x / 2, y / 2, z / 2), Vector3(0, 0, 1)),
+            VertexPositionNormal(Vector3(x / 2, -y / 2, z / 2), Vector3(0, 0, 1)),
+            VertexPositionNormal(Vector3(-x / 2, -y / 2, z / 2), Vector3(0, 0, 1)),
             // Right
             VertexPositionNormal(Vector3(x / 2, y / 2, z / 2), Vector3(1, 0, 0)),
             VertexPositionNormal(Vector3(x / 2, y / 2, -z / 2), Vector3(1, 0, 0)),

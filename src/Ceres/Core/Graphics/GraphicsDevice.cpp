@@ -44,6 +44,8 @@ namespace Ceres
         }
     }
 
+    // This method is called by the Program object, which abstracts it away from
+    // our Game object. It will always/only be called on the start of a frame.
     void GraphicsDevice::BeginRender()
     {
         glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -51,6 +53,9 @@ namespace Ceres
         glEnable(GL_DEPTH_TEST);
     }
 
+    // This method is called by the Program object, which abstracts it away from
+    // our Game object. It will always/only be called on the end of a frame,
+    // after any logic in Game.Render() has been executed.
     void GraphicsDevice::EndRender()
     {
         SDL_GL_SwapWindow(_window);

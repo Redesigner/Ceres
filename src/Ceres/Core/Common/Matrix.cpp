@@ -184,4 +184,9 @@ namespace Ceres
         }
         return result;
     }
+
+    Matrix::operator float *()
+    {
+        return M[0];
+    }
 }

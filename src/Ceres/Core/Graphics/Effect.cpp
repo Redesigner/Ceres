@@ -8,7 +8,7 @@
 namespace Ceres
 {
     Effect::Effect(const char* vertFile, const char* fragFile)
-        : _viewPerspective(Matrix::Perspective(1280, 720, 90, .1f, 100.f))
+        : _frustrum(Matrix::Perspective(1280, 720, 90, .1f, 100.f))
     {
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -34,8 +34,8 @@ namespace Ceres
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
             glUseProgram(_glProgram);
-            SetMatrix("viewProjection", _viewPosition * _viewPerspective);
-            SetVector3("lightPos", Vector3(-15, 15, 40));
+            SetMatrix("viewProjection", _viewPosition * _frustrum);
+            SetVector3("lightPos", Vector3(0, 0, 1));
         }
     }
     
@@ -56,7 +56,7 @@ namespace Ceres
         GLint location = glGetUniformLocation(_glProgram, name.c_str());
         if(location != -1)
         {
-            glUniformMatrix4fv(location, 1, GL_FALSE, matrix.M[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
         }
         else
         {
@@ -80,7 +80,8 @@ namespace Ceres
     void Effect::SetViewMatrix(const Matrix& matrix)
     {
         _viewPosition = matrix;
-        SetMatrix("viewProjection", _viewPosition * _viewPerspective);
+        SetMatrix("view", _viewPosition);
+        SetMatrix("viewProjection", _viewPosition * _frustrum);
     }
 
 

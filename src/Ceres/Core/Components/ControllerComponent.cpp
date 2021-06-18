@@ -7,7 +7,7 @@
 namespace Ceres
 {
     ControllerComponent::ControllerComponent(const IEntity& parent, const InputHandler& inputHandler)
-        :IComponent(parent), _inputHandler(inputHandler)
+        :IComponent(parent, std::type_index(typeid(ControllerComponent))), _inputHandler(inputHandler)
     {}
 
     ControllerComponent::~ControllerComponent()

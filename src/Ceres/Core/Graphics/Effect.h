@@ -36,7 +36,7 @@ namespace Ceres
             std::string _vertexShaderSource;
             std::string _fragmentShaderSource;
 
-            Matrix _viewPerspective;
+            Matrix _frustrum;
             Matrix _viewPosition;
     };
 }

@@ -3,9 +3,10 @@
 namespace Ceres
 {
     CameraComponent::CameraComponent(const IEntity& parent)
-        :IComponent(parent)
+        :IComponent(parent, std::type_index(typeid(CameraComponent)))
     {
-        Offset = Vector3(0, 5, 5);
+        Direction = Vector3(0, -10, -1);
+        Offset = Vector3(0, 10, 1);
     }
 
     CameraComponent::~CameraComponent()
@@ -28,23 +29,35 @@ namespace Ceres
 
     const Matrix& CameraComponent::GetMatrix()
     {
-        return _viewMatrix;
+        return _matrix;
+    }
+
+    const Matrix& CameraComponent::GetRotationMatrix()
+    {
+        return _viewRotation;
+    }
+
+    const Matrix& CameraComponent::GetPositionMatrix()
+    {
+        return _viewPosition;
     }
 
     // Private methods
     void CameraComponent::setPosition(const Vector3& position)
     {
-        TargetPosition = position;
+        Position = position;
     }
 
     void CameraComponent::translate(const Vector3& translation)
     {
-        TargetPosition += translation;
+        Position += translation;
         updateTransform();
     }
 
     void CameraComponent::updateTransform()
     {
-        _viewMatrix = Matrix::LookAt(TargetPosition + Offset, TargetPosition, Vector3::Up());
+        _viewRotation = Matrix::LookAt(Vector3(0), Direction, Vector3::Up());
+        _viewPosition = Matrix::Translation(-Position.X - Offset.X, -Position.Y - Offset.Y, -Position.Z - Offset.Z);
+        _matrix = _viewPosition * _viewRotation;
     }
 }

@@ -3,9 +3,12 @@
 #include "../Components/Base/ComponentRef.h"
 
 #include <string>
+#include <vector>
 
 namespace Ceres
 {
+
+    /// Handles creation and deletion of Components, implmenting special logic when necessary.
     class IService
     {
         public:

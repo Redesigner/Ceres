@@ -14,8 +14,11 @@ namespace Ceres
 
             bool virtual RecieveMessage(Message* message) override;
             const Matrix& GetMatrix();
+            const Matrix& GetRotationMatrix();
+            const Matrix& GetPositionMatrix();
 
-            Vector3 TargetPosition;
+            Vector3 Position;
+            Vector3 Direction;
             Vector3 Offset;
 
         private:
@@ -23,6 +26,8 @@ namespace Ceres
             void translate(const Vector3& translation);
             void updateTransform();
 
-            Matrix _viewMatrix;
+            Matrix _matrix;
+            Matrix _viewPosition;
+            Matrix _viewRotation;
     };
 }

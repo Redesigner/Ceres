@@ -8,7 +8,7 @@
 namespace Ceres
 {
     RenderService::RenderService(GraphicsDevice& graphicsDevice)
-        :_parentDevice(graphicsDevice), _renderComponents(ComponentList(4))
+        :_parentDevice(graphicsDevice)
     {}
 
     RenderService::~RenderService()
@@ -24,7 +24,6 @@ namespace Ceres
                 uint8_t meshId = *(uint8_t*) args;
                 RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, meshId);
                 _components.Insert(renderComponent);
-                _renderComponents.Insert(renderComponent);
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else
@@ -55,9 +54,12 @@ namespace Ceres
 
     void RenderService::RenderComponents()
     {
-        for(int i = 0; i < _renderComponents.Size(); i++)
+        for(int i = 0; i < _components.Size(); i++)
         {
-            _parentDevice.Render((RenderComponent*) _renderComponents[i]);
+            if(_components[i]->TypeOf<RenderComponent>())
+            {
+                _parentDevice.Render((RenderComponent*) _components[i]);
+            }
         }
     }
 }

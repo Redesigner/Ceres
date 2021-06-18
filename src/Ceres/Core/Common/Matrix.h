@@ -38,6 +38,8 @@ namespace Ceres
 
             Matrix operator*(const Matrix& b);
 
+            operator float*();
+
             float M[4][4];
     };
 }

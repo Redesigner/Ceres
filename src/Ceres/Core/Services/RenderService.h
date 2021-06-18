@@ -22,9 +22,5 @@ namespace Ceres
             
         private:
             GraphicsDevice& _parentDevice;
-
-            // TODO: How should we handle both types of components when
-            // components like cameras can't be rendered?
-            ComponentList _renderComponents;
     };
 }

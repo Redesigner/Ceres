@@ -3,7 +3,7 @@
 namespace Ceres
 {
     RenderComponent::RenderComponent(const IEntity& parent, uint8_t meshId)
-        :IComponent(parent), MeshId(meshId), Transform()
+        :IComponent(parent, std::type_index(typeid(RenderComponent))), MeshId(meshId), Transform()
     {}
 
     RenderComponent::~RenderComponent()

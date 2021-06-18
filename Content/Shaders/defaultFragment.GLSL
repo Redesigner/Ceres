@@ -1,25 +1,32 @@
 #version 400
 
-in vec4 Position;
-in vec3 Normal;
+in vec3 fNormal;
+in vec4 fPosition;
+in vec4 fLightPos;
 
 out vec4 FragColor;
 
-uniform vec3 lightPos;
-
 void main()
 {
+    vec3 viewPos = vec3(0.0, 0.0, 0.0);
     vec3 color = vec3(0.0, 0.0, 1.0);
-
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
-    vec3 lightDir = normalize(lightPos - Position.xyz);
-    vec3 ambient = 0.2 * lightColor;
 
+    float diffStrength = 0.6;
+    float specularStrength = 0.2;
+    float ambientStrength = 0.2;
 
-    float diff = max(dot(Normal, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
+    vec3 lightDir = normalize(fLightPos.xyz - fPosition.xyz);
+    vec3 viewDir = normalize(viewPos - fPosition.xyz);
+    vec3 reflectDir = reflect(-lightDir, fNormal);  
 
-    vec3 result = color * (ambient + diffuse);
+    float diff = max(dot(fNormal, lightDir), 0.0);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 
-    FragColor = vec4(result, 1.0);
-} 
+    vec3 ambient = ambientStrength * lightColor;
+    vec3 diffuse = diffStrength * diff * lightColor;
+    vec3 specular = specularStrength * spec * lightColor;
+
+    // FragColor = vec4(color * (ambient + diffuse + specular), 1.0);
+    FragColor = vec4(diff, spec, 0.0, 1.0);
+}
