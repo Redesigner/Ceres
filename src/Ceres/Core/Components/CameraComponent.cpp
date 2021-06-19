@@ -5,8 +5,8 @@ namespace Ceres
     CameraComponent::CameraComponent(const IEntity& parent)
         :IComponent(parent, std::type_index(typeid(CameraComponent)))
     {
-        Direction = Vector3(0, -10, -1);
-        Offset = Vector3(0, 10, 1);
+        Direction = Vector3(0, -5, -5);
+        Offset = Vector3(0, 5, 5);
     }
 
     CameraComponent::~CameraComponent()
@@ -56,7 +56,7 @@ namespace Ceres
 
     void CameraComponent::updateTransform()
     {
-        _viewRotation = Matrix::LookAt(Vector3(0), Direction, Vector3::Up());
+        _viewRotation = Matrix::LookAt(Vector3(0), Direction.Normalize(), Vector3::Up());
         _viewPosition = Matrix::Translation(-Position.X - Offset.X, -Position.Y - Offset.Y, -Position.Z - Offset.Z);
         _matrix = _viewPosition * _viewRotation;
     }

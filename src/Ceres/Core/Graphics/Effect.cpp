@@ -35,7 +35,7 @@ namespace Ceres
             }
             glUseProgram(_glProgram);
             SetMatrix("viewProjection", _viewPosition * _frustrum);
-            SetVector3("lightPos", Vector3(0, 0, 1));
+            SetVector3("lightPos", Vector3(0, 1, 0));
         }
     }
     
@@ -80,7 +80,6 @@ namespace Ceres
     void Effect::SetViewMatrix(const Matrix& matrix)
     {
         _viewPosition = matrix;
-        SetMatrix("view", _viewPosition);
         SetMatrix("viewProjection", _viewPosition * _frustrum);
     }
 
