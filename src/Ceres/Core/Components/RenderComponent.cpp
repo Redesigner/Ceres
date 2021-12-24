@@ -23,6 +23,11 @@ namespace Ceres
             Transform.SetScale(scale);
             return true;
         }
+        else if(message->Type == "Rotate")
+        {
+            Transform.SetRotation(Transform.GetRotation() + message->GetData<Vector3>());
+            return true;
+        }
         return false;
     }
 

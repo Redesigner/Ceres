@@ -8,7 +8,7 @@ namespace Ceres
 {
     InputHandler::InputHandler()
         :_map(std::unordered_map<Button, voidFunctionType>(MAX_INPUTMAP_SIZE)),
-        _axisMap(std::unordered_map<std::string, Axis>(MAX_AXIS_SIZE))
+        _axis2DMap(std::unordered_map<std::string, Axis2D>(MAX_AXIS_SIZE))
     {}
 
     InputHandler::~InputHandler()
@@ -29,21 +29,50 @@ namespace Ceres
         get->second();
     }
 
-    void InputHandler::BindAxis(std::string id, Button up, Button down, Button left, Button right)
+    void InputHandler::BindAxis(std::string id, Button positive, Button negative)
     {
-        _axisMap.insert(std::pair<std::string, Axis>(id, Axis(up, down, left, right)));
+        _axisMap.insert(std::pair<std::string, Axis>(id, Axis(positive, negative)));
     }
 
-    Vector2 InputHandler::GetAxisValue(std::string id) const
+    float InputHandler::GetAxisValue(std::string id) const
     {
         std::unordered_map<std::string, Axis>::const_iterator get = _axisMap.find(id);
         if(get == _axisMap.end())
         {
-            fmt::print("Unable to find axis {}", id);
-            return Vector2(0, 0);
+            fmt::print("Unable to find axis {}\n", id);
+            return 0;
         }
 
         Axis axis = get->second;
+
+        float x = 0;
+        if(buttonPressed(axis.Positive))
+        {
+            x++;
+        }
+        if(buttonPressed(axis.Negative))
+        {
+            x--;
+        }
+        return x;
+    }
+
+
+    void InputHandler::BindAxis2D(std::string id, Button up, Button down, Button left, Button right)
+    {
+        _axis2DMap.insert(std::pair<std::string, Axis2D>(id, Axis2D(up, down, left, right)));
+    }
+
+    Vector2 InputHandler::GetAxis2DValue(std::string id) const
+    {
+        std::unordered_map<std::string, Axis2D>::const_iterator get = _axis2DMap.find(id);
+        if(get == _axis2DMap.end())
+        {
+            fmt::print("Unable to find axis {}\n", id);
+            return Vector2(0, 0);
+        }
+
+        Axis2D axis = get->second;
 
         float x = 0;
         float y = 0;
@@ -65,8 +94,8 @@ namespace Ceres
             x++;
         }
         return Vector2(x, y).Normalize();
-
     }
+
 
     bool InputHandler::buttonPressed(Button button) const
     {

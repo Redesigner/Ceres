@@ -24,6 +24,7 @@ namespace Ceres
             Matrix GetScaleMatrix() const;
 
             Matrix GetMatrix() const;
+            Matrix GetInverse() const;
 
         private:
             void calculateMatrix();

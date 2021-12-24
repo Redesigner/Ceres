@@ -1,6 +1,7 @@
 #include "Vector3.h"
 
 #include <cmath>
+#include <fmt/core.h>
 
 namespace Ceres
 {
@@ -113,6 +114,11 @@ namespace Ceres
     bool Vector3::operator==(const Vector3& vector)
     {
         return (X == vector.X) && (Y == vector.Y) && (Z == vector.Z);
+    }
+
+    std::string Vector3::ToString() const
+    {
+        return fmt::format("({}, {}, {})", X, Y, Z);
     }
 
     Vector3 operator*(float scalar, const Vector3& vector)

@@ -70,12 +70,20 @@ namespace Ceres
         return _matrix;
     }
 
+    Matrix Transform::GetInverse() const
+    {
+        return
+        Matrix::Translation(-_position.X, -_position.Y, -_position.Z) *
+        Matrix::Scale(1 / _scale.X, 1 / _scale.Y, 1 / _scale.Z) *
+        _rotationMatrix.Transpose();
+    }
+
 
     void Transform::calculateMatrix()
     {
         _matrix =
-        _positionMatrix *
-        _scaleMatrix *
-        _rotationMatrix;
+        _rotationMatrix *
+        _scaleMatrix * 
+        _positionMatrix;
     }
 }

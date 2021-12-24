@@ -31,6 +31,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Components/RenderComponent.cpp
 	src/Ceres/Core/Components/ControllerComponent.cpp
 	src/Ceres/Core/Components/CameraComponent.cpp
+	src/Ceres/Core/Components/PhysicsComponent.cpp
 
 
 	src/Ceres/Core/Entities/Base/IEntity.cpp
@@ -57,14 +58,20 @@ target_sources(ceres PRIVATE
 
 
 	src/Ceres/Core/Input/Axis.cpp
+	src/Ceres/Core/Input/Axis2D.cpp
 	src/Ceres/Core/Input/Buttons.cpp
 	src/Ceres/Core/Input/InputHandler.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp
 
+	src/Ceres/Core/Physics/ConvexHull.cpp
+	src/Ceres/Core/Physics/IPrimitive.cpp
+	src/Ceres/Core/Physics/Primitives/CubePrimitive.cpp
+
 	src/Ceres/Core/Services/IService.cpp
 	src/Ceres/Core/Services/ServiceContainer.cpp
 	src/Ceres/Core/Services/RenderService.cpp
+	src/Ceres/Core/Services/PhysicsService.cpp
 	src/Ceres/Core/Services/InputService.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)

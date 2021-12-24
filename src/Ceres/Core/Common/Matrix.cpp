@@ -156,6 +156,16 @@ namespace Ceres
         );
     }
 
+    Matrix Matrix::Transpose() const
+    {
+        return Matrix(
+            M[0][0], M[1][0], M[2][0], M[3][0],
+            M[0][1], M[1][1], M[2][1], M[3][1],
+            M[0][2], M[1][2], M[2][2], M[3][2],
+            M[0][3], M[1][3], M[2][3], M[3][3]
+        );
+    }
+
     std::string Matrix::ToString() const
     {
         std::string result = "M:\n";
@@ -184,6 +194,16 @@ namespace Ceres
         }
         return result;
     }
+
+    Vector3 Matrix::operator*(const Vector3& b)
+    {
+        return Vector3(
+            b.X * M[0][0] + b.Y * M[1][0] + b.Z * M[2][0] + M[3][0],
+            b.X * M[0][1] + b.Y * M[1][1] + b.Z * M[2][1] + M[3][1],
+            b.X * M[0][2] + b.Y * M[1][2] + b.Z * M[2][2] + M[3][2]
+        );
+    }
+
 
     Matrix::operator float *()
     {

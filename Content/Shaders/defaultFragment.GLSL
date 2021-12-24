@@ -14,7 +14,7 @@ void main()
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
     float diffStrength = 0.6;
-    float specularStrength = 0.2;
+    float specularStrength = 0.8;
     float ambientStrength = 0.2;
 
     vec3 lightDir = normalize(wLightPos.xyz - wPosition.xyz);

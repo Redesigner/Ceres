@@ -34,9 +34,12 @@ namespace Ceres
             static Matrix Perspective(float width, float height, float fOV, float near, float far);
             static Matrix LookAt(const Vector3& eyePos, const Vector3& target, const Vector3& up);
             
+            Matrix Transpose() const;
+
             std::string ToString() const;
 
             Matrix operator*(const Matrix& b);
+            Vector3 operator*(const Vector3& b);
 
             operator float*();
 

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../Graphics/GraphicsDevice.h"
-#include "../Components/Base/ComponentList.h"
-#include "../Components/Base/ComponentRef.h"
 #include "IService.h"
 
 namespace Ceres
