@@ -33,4 +33,15 @@ namespace Ceres
             throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", typeName));
         }
     }
+
+    void PhysicsService::Update(float deltaSeconds)
+    {
+        for (IComponent* component : _components)
+        {
+            PhysicsComponent* physicsComponent = dynamic_cast<PhysicsComponent*>(component);
+            
+            Vector3 newPosition = physicsComponent->GetPosition() + physicsComponent->Velocity * deltaSeconds;
+            physicsComponent->SetPosition(newPosition);
+        }
+    }
 }

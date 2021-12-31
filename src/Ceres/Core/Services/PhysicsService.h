@@ -11,5 +11,6 @@ namespace Ceres
             ~PhysicsService();
 
             virtual ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
+            void Update(float deltaSeconds);
     };
 }

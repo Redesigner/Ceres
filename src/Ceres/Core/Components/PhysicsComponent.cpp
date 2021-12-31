@@ -1,5 +1,6 @@
 #include "PhysicsComponent.h"
 
+#include "../Entities/Base/IEntity.h"
 #include <fmt/core.h>
 
 namespace Ceres
@@ -15,14 +16,14 @@ namespace Ceres
 
     bool PhysicsComponent::RecieveMessage(Message* message)
     {
-        if (message->Type == "Translate")
-        {
-            Primitive->Transform.SetPosition(Primitive->Transform.GetPosition() + message->GetData<Vector3>());
-            return true;
-        }
-        else if (message->Type == "Rotate")
+    if (message->Type == "Rotate")
         {
             Primitive->Transform.SetRotation(Primitive->Transform.GetRotation() + message->GetData<Vector3>());
+            return true;
+        }
+        else if (message->Type == "Velocity")
+        {
+            Velocity = message->GetData<Vector3>();
             return true;
         }
         else if (message->Type == "Print")
@@ -31,5 +32,16 @@ namespace Ceres
             return true;
         }
         return false;
+    }
+
+    const Vector3 PhysicsComponent::GetPosition() const
+    {
+        return Primitive->Transform.GetPosition();
+    }
+
+    void PhysicsComponent::SetPosition(Vector3 newPosition)
+    {
+        Primitive->Transform.SetPosition(newPosition);
+        _parent.SendMessage(Message::Write<Vector3>("Position", &newPosition));
     }
 }

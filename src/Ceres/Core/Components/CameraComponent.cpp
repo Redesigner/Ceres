@@ -18,7 +18,12 @@ namespace Ceres
     {
         if(message->Type == "Translate")
         {
-            translate(message->GetData<Vector3>());
+            _translate(message->GetData<Vector3>());
+            return true;
+        }
+        else if (message->Type == "Position")
+        {
+            _setPosition(message->GetData<Vector3>());
             return true;
         }
         else
@@ -43,18 +48,19 @@ namespace Ceres
     }
 
     // Private methods
-    void CameraComponent::setPosition(const Vector3& position)
+    void CameraComponent::_setPosition(const Vector3& position)
     {
         Position = position;
+        _updateTransform();
     }
 
-    void CameraComponent::translate(const Vector3& translation)
+    void CameraComponent::_translate(const Vector3& translation)
     {
         Position += translation;
-        updateTransform();
+        _updateTransform();
     }
 
-    void CameraComponent::updateTransform()
+    void CameraComponent::_updateTransform()
     {
         _viewRotation = Matrix::LookAt(Vector3(0), Direction.Normalize(), Vector3::Up());
         _viewPosition = Matrix::Translation(-Position.X - Offset.X, -Position.Y - Offset.Y, -Position.Z - Offset.Z);

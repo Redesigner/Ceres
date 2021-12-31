@@ -65,6 +65,7 @@ namespace Ceres
     void Game::Update(double seconds)
     {
         ServiceContainer.GetService<InputService>()->Update(seconds);
+        ServiceContainer.GetService<PhysicsService>()->Update(seconds);
     }
 
     void Game::Draw()

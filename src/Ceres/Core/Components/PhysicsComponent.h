@@ -13,6 +13,11 @@ namespace Ceres
 
             virtual bool RecieveMessage(Message* message) override;
 
+            const Vector3 GetPosition() const;
+            void SetPosition(Vector3 newPosition);
+
+            Vector3 Velocity;
+
         private:
             IPrimitive* Primitive;
     };

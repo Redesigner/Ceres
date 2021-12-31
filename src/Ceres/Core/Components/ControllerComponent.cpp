@@ -25,11 +25,11 @@ namespace Ceres
         float verticalInput = _inputHandler.GetAxisValue("Vertical");
         float rotationInput = _inputHandler.GetAxisValue("Rotation");
 
-        Vector3 testPos = Vector3(
-            inputAxis.X * seconds * 10,
-            verticalInput * seconds * 10,
-            inputAxis.Y * seconds * -10);
-        _parent.SendMessage(Message::Write<Vector3>("Translate", &testPos));
+        Vector3 velocity = Vector3(
+            inputAxis.X * 10,
+            verticalInput * 2,
+            inputAxis.Y * -10);
+        _parent.SendMessage(Message::Write<Vector3>("Velocity", &velocity));
         _parent.SendMessage(Message::Write<Vector3>("Rotate", &Vector3(0, .1f * rotationInput, 0)));
     
         if (rotationInput != 0)
