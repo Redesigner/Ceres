@@ -2,14 +2,14 @@
 
 in vec3 wNormal;
 in vec4 wPosition;
-in vec4 vPosition;
 in vec4 wLightPos;
 
 out vec4 FragColor;
 
+uniform vec3 cameraPos;
+
 void main()
 {
-    vec3 viewPos = vec3(0.0, 0.0, 0.0);
     vec3 color = vec3(0.0, 0.0, 1.0);
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
@@ -18,11 +18,13 @@ void main()
     float ambientStrength = 0.2;
 
     vec3 lightDir = normalize(wLightPos.xyz - wPosition.xyz);
-    vec3 viewDir = normalize(viewPos - vPosition.xyz);
-    vec3 reflectDir = reflect(lightDir, wNormal);  
+    vec3 viewDir = normalize(wPosition.xyz - cameraPos);
+    vec3 reflectDir = reflect(lightDir, wNormal);
 
     float diff = max(dot(wNormal, lightDir), 0.0);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    float spec = pow(
+        clamp(dot(viewDir, reflectDir), 0.0, 1.0) * ceil(diff), 
+        16);
 
     vec3 ambient = ambientStrength * lightColor;
     vec3 diffuse = diffStrength * diff * lightColor;

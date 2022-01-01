@@ -1,6 +1,8 @@
 #include "Block.h"
 
 #include "../Services/RenderService.h"
+#include "../Services/PhysicsService.h"
+
 
 namespace Ceres
 {
@@ -8,10 +10,12 @@ namespace Ceres
     {
         uint8_t meshId = 0;
         ComponentRef mesh = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, 1, &meshId);
-        _components = {mesh};
+        ComponentRef physicsComponent = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, 0, nullptr);
 
-        Vector3 scale = Vector3(x, y, z);
-        SendMessage(Message::Write<Vector3>("Scale", &scale));
+        _components = {mesh, physicsComponent};
+
+        SendMessage(Message::Write<Vector3>("Scale", &Vector3(x, y, z)));
+        // SendMessage(Message::Write<Vector3>("Velocity", &Vector3(0, 0, 0.1f)));
     }
     
     Block::~Block()

@@ -34,12 +34,15 @@ namespace Ceres
         }
     }
 
+
     void PhysicsService::Update(float deltaSeconds)
     {
         for (IComponent* component : _components)
         {
             PhysicsComponent* physicsComponent = dynamic_cast<PhysicsComponent*>(component);
-            
+            if (!physicsComponent) { continue; }
+            if (physicsComponent->Velocity == Vector3::Zero() ) { continue; }
+
             Vector3 newPosition = physicsComponent->GetPosition() + physicsComponent->Velocity * deltaSeconds;
             physicsComponent->SetPosition(newPosition);
         }

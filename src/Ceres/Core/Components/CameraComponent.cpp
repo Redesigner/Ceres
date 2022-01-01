@@ -5,8 +5,8 @@ namespace Ceres
     CameraComponent::CameraComponent(const IEntity& parent)
         :IComponent(parent, std::type_index(typeid(CameraComponent)))
     {
-        Direction = Vector3(0, -5, -5);
-        Offset = Vector3(0, 5, 5);
+        Direction = Vector3(5, 0, -5);
+        Offset = Vector3(-5, 0, 5);
     }
 
     CameraComponent::~CameraComponent()

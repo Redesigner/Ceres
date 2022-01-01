@@ -28,7 +28,7 @@ namespace Ceres
 
     Vector3 Vector3::Up()
     {
-        return Vector3(0, 1, 0);
+        return Vector3(0, 0, 1);
     }
 
 

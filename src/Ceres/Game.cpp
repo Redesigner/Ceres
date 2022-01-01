@@ -59,7 +59,7 @@ namespace Ceres
         uint8_t meshId = GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalLayout(), 24, cube.Indices, 36);
 
         _entities.emplace_back(new Actor(ServiceContainer));
-        _entities.emplace_back(new Block(ServiceContainer, 5, .1, 5));
+        _entities.emplace_back(new Block(ServiceContainer, 5.0f, 5.0f, 0.1f));
     }
 
     void Game::Update(double seconds)

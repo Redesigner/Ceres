@@ -25,12 +25,13 @@ namespace Ceres
         float verticalInput = _inputHandler.GetAxisValue("Vertical");
         float rotationInput = _inputHandler.GetAxisValue("Rotation");
 
+        // Using a RH coord system with z up, x and y are switched from the traditional 2D values...
         Vector3 velocity = Vector3(
-            inputAxis.X * 10,
-            verticalInput * 2,
-            inputAxis.Y * -10);
+            inputAxis.Y * 10,
+            inputAxis.X * -10,
+            verticalInput * 2);
         _parent.SendMessage(Message::Write<Vector3>("Velocity", &velocity));
-        _parent.SendMessage(Message::Write<Vector3>("Rotate", &Vector3(0, .1f * rotationInput, 0)));
+        _parent.SendMessage(Message::Write<Vector3>("Rotate", &Vector3(.1f * rotationInput, 0, 0)));
     
         if (rotationInput != 0)
         {

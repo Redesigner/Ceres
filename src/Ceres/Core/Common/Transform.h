@@ -30,6 +30,7 @@ namespace Ceres
             void calculateMatrix();
 
             Matrix _matrix;
+            
             Matrix _positionMatrix;
             Matrix _rotationMatrix;
             Matrix _scaleMatrix;

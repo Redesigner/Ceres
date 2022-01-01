@@ -14,6 +14,8 @@ namespace Ceres
         ComponentRef controller = serviceContainer.GetService<InputService>()->GenerateComponent("ControllerComponent", *this, 0, nullptr);
         ComponentRef physics = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, 0, nullptr);
         _components = {mesh, camera, controller, physics};
+
+        SendMessage(Message::Write<Vector3>("Position", &Vector3::Zero() ));
     }
 
     Actor::~Actor()

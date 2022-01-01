@@ -68,6 +68,7 @@ namespace Ceres
         componentMesh->GetVertexArray().Bind();
         _currentEffect->Begin();
         _currentEffect->SetViewMatrix(_currentCamera->GetMatrix());
+        _currentEffect->SetVector3("cameraPos", _currentCamera->Position);
         _currentEffect->SetMatrix("model", renderComponent->Transform.GetMatrix());
         glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
     }
