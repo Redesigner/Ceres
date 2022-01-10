@@ -69,7 +69,9 @@
 			"xtr1common": "cpp",
 			"xutility": "cpp",
 			"*.rh": "cpp",
-			"typeindex": "cpp"
+			"typeindex": "cpp",
+			"stack": "cpp",
+			"deque": "cpp"
 		}
 	}
 }

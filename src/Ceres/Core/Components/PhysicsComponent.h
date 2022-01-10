@@ -15,10 +15,13 @@ namespace Ceres
 
             const Vector3 GetPosition() const;
             void SetPosition(Vector3 newPosition);
+            float SemiMajorAxis() const;
+            IPrimitive*& GetPrimitive();
+
 
             Vector3 Velocity;
 
         private:
-            IPrimitive* Primitive;
+            IPrimitive* _primitive;
     };
 }

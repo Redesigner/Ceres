@@ -13,7 +13,11 @@
 
 #include "Core/Entities/Actor.h"
 #include "Core/Entities/Block.h"
+
+// test only
 #include "Core/Physics/ConvexHull.h"
+#include "Core/Physics/Primitives/CubePrimitive.h"
+#include "Core/Physics/PhysicsUtilities.h"
 
 #include <fmt/core.h>
 
@@ -50,6 +54,17 @@ namespace Ceres
         InputHandler.BindAxis("Rotation", Button::Key_o, Button::Key_p);
 
         _entities = std::vector<IEntity*>(4);
+
+        VertexList shape = CubePrimitive(4.0f)._vertices;
+        // shape[3] = shape[3] * 4.0f;
+        // shape[1] = shape[1] * 4.0f;
+
+        VertexList wrapped = PhysicsUtilities::GiftWrap(shape);
+        fmt::print("Gift wrapped: {}\n", wrapped.size());
+        for (Vector3 vertex : wrapped)
+        {
+            fmt::print("Vertex {}\n", vertex.ToString());
+        }
         return true;
     }
 
@@ -59,7 +74,7 @@ namespace Ceres
         uint8_t meshId = GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalLayout(), 24, cube.Indices, 36);
 
         _entities.emplace_back(new Actor(ServiceContainer));
-        _entities.emplace_back(new Block(ServiceContainer, 5.0f, 5.0f, 0.1f));
+        _entities.emplace_back(new Block(ServiceContainer, 1.0f, 1.0f, 1.0f));
     }
 
     void Game::Update(double seconds)

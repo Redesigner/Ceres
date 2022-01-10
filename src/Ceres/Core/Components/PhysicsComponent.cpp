@@ -6,20 +6,33 @@
 namespace Ceres
 {
     PhysicsComponent::PhysicsComponent(const IEntity& parent, IPrimitive* primitive)
-        :IComponent(parent, std::type_index(typeid(PhysicsComponent))), Primitive(primitive)
+        :IComponent(parent, std::type_index(typeid(PhysicsComponent))), _primitive(primitive)
     {}
 
     PhysicsComponent::~PhysicsComponent()
     {
-        delete Primitive;
+        delete _primitive;
     }
 
     bool PhysicsComponent::RecieveMessage(Message* message)
     {
-    if (message->Type == "Rotate")
+        if (message->Type == "Position")
         {
-            Primitive->Transform.SetRotation(Primitive->Transform.GetRotation() + message->GetData<Vector3>());
-            return true;
+            Transform newTransform = _primitive->GetTransform();
+            newTransform.SetPosition(message->GetData<Vector3>());
+            _primitive->SetTransform(newTransform);
+        }
+        else if (message->Type == "Rotate")
+        {
+            Transform newTransform = _primitive->GetTransform();
+            newTransform.SetRotation(newTransform.GetRotation() + message->GetData<Vector3>());
+            _primitive->SetTransform(newTransform);
+        }
+        else if (message->Type == "Scale")
+        {
+            Transform newTransfrom = _primitive->GetTransform();
+            newTransfrom.SetScale(message->GetData<Vector3>());
+            _primitive->SetTransform(newTransfrom);
         }
         else if (message->Type == "Velocity")
         {
@@ -28,7 +41,7 @@ namespace Ceres
         }
         else if (message->Type == "Print")
         {
-            fmt::print("Furthest vertex: {}\n", Primitive->FurthestVertex(Vector3(1, 0, 0)).ToString());
+            fmt::print("Furthest vertex: {}\n", _primitive->FurthestVertex(Vector3(1, 0, 0))[0].ToString());
             return true;
         }
         return false;
@@ -36,12 +49,25 @@ namespace Ceres
 
     const Vector3 PhysicsComponent::GetPosition() const
     {
-        return Primitive->Transform.GetPosition();
+        return _primitive->GetTransform().GetPosition();
     }
 
     void PhysicsComponent::SetPosition(Vector3 newPosition)
     {
-        Primitive->Transform.SetPosition(newPosition);
+        // TODO: Change the way we access the private transform?
+        Transform newTransform = _primitive->GetTransform();
+        newTransform.SetPosition(newPosition);
+        _primitive->SetTransform(newTransform);
         _parent.SendMessage(Message::Write<Vector3>("Position", &newPosition));
+    }
+
+    float PhysicsComponent::SemiMajorAxis() const
+    {
+        return _primitive->SemiMajorAxis();
+    }
+
+    IPrimitive*& PhysicsComponent::GetPrimitive()
+    {
+        return _primitive;
     }
 }

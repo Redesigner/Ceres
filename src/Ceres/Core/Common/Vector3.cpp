@@ -34,7 +34,9 @@ namespace Ceres
 
     float Vector3::Length() const
     {
-        return std::sqrtf(LengthSquared());
+        float l2 = LengthSquared();
+        if (l2 == 0) { return 0; }
+        return std::sqrtf(l2);
     }
 
     float Vector3::LengthSquared() const
@@ -44,7 +46,9 @@ namespace Ceres
 
     Vector3 Vector3::Normalize() const
     {
-        return *this / Length();
+        float l = Length();
+        if (l == 0) { return Vector3::Zero(); }
+        return *this / l;
     }
 
     Vector3 Vector3::Cross(const Vector3& vector) const
@@ -54,6 +58,11 @@ namespace Ceres
             (Z * vector.X) - (X * vector.Z),
             (X * vector.Y) - (Y * vector.X)
         );
+    }
+
+    Vector3 Vector3::Triple(const Vector3& vector) const
+    {
+        return Cross(vector).Cross(*this);
     }
 
     float Vector3::Dot(const Vector3& vector) const
@@ -114,6 +123,11 @@ namespace Ceres
     bool Vector3::operator==(const Vector3& vector)
     {
         return (X == vector.X) && (Y == vector.Y) && (Z == vector.Z);
+    }
+
+    bool Vector3::operator!=(const Vector3& vector)
+    {
+        return (X != vector.X) || (Y != vector.Y) || (Z != vector.Z);
     }
 
     std::string Vector3::ToString() const

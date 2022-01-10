@@ -8,9 +8,17 @@ namespace Ceres
     {
         ConvexHull(std::vector<Vector3>(vertices));
 
-        virtual Vector3 FurthestVertex(Vector3 directionUnit) override;
+        virtual std::vector<Vector3> FurthestVertex(Vector3 directionUnit) override;
+        virtual float SemiMajorAxis() override;
+        virtual void SetTransform(Transform transform) override;
+
+        // should be private, access changed for debug
+        std::vector<Vector3> _vertices;
 
         private:
-            std::vector<Vector3> Vertices;
+            bool nearlyEqual(float a, float b);
+
+            bool _semiMajorAxisCached = false;
+            float _semiMajorAxis;
     };
 }

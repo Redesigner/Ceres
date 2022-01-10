@@ -14,4 +14,9 @@ namespace Ceres
             Vector3(-size / 2, -size / 2, -size / 2)
         })
     {}
+
+    CubePrimitive::~CubePrimitive()
+    {
+        
+    }
 }

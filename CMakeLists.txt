@@ -67,6 +67,11 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Physics/ConvexHull.cpp
 	src/Ceres/Core/Physics/IPrimitive.cpp
 	src/Ceres/Core/Physics/Primitives/CubePrimitive.cpp
+	src/Ceres/Core/Physics/PhysicsUtilities.cpp
+
+	src/Ceres/Core/Physics/GJK/GJK.cpp
+	src/Ceres/Core/Physics/GJK/Simplex.cpp
+
 
 	src/Ceres/Core/Services/IService.cpp
 	src/Ceres/Core/Services/ServiceContainer.cpp

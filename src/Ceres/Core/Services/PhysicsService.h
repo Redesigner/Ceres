@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IService.h"
+#include "../Components/PhysicsComponent.h"
 
 namespace Ceres
 {
@@ -14,6 +15,7 @@ namespace Ceres
             void Update(float deltaSeconds);
 
         private:
-            
+            void stepComponent(PhysicsComponent* host, float seconds);
+            std::vector<PhysicsComponent*> _getComponentsWithinDistance(PhysicsComponent* sourceComponent, const float distance);
     };
 }

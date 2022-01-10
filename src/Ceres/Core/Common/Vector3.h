@@ -17,11 +17,13 @@ namespace Ceres
 
             static Vector3 Zero();
             static Vector3 Up();
+            static float Epsilon() { return 0.0001; }
             
             float Length() const;
             float LengthSquared() const;
             Vector3 Normalize() const;
             Vector3 Cross(const Vector3& vector) const;
+            Vector3 Triple(const Vector3& vector) const;
             float Dot(const Vector3& vector) const;
 
             Vector3& operator+=(const Vector3& vector);
@@ -36,6 +38,7 @@ namespace Ceres
             std::string ToString() const;
 
             bool operator==(const Vector3& vector);
+            bool operator!=(const Vector3& vector);
         private:
     };
 

@@ -24,7 +24,6 @@ namespace Ceres
         Vector2 inputAxis = _inputHandler.GetAxis2DValue("test");
         float verticalInput = _inputHandler.GetAxisValue("Vertical");
         float rotationInput = _inputHandler.GetAxisValue("Rotation");
-
         // Using a RH coord system with z up, x and y are switched from the traditional 2D values...
         Vector3 velocity = Vector3(
             inputAxis.Y * 10,
