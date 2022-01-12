@@ -18,6 +18,9 @@ namespace Ceres
 
             void RenderComponents();
             
+            void LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount);
+            void ClearWireframe();
+            
         private:
             GraphicsDevice& _parentDevice;
     };

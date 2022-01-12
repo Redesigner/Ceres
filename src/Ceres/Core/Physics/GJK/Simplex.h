@@ -1,11 +1,12 @@
 #pragma once
 
 #include "../../Common/Vector3.h"
+#include "../../Common/VertexList.h"
 
 #include <vector>
+#include <string>
 
 using uint = unsigned int;
-using VertexList = std::vector<Ceres::Vector3>;
 
 namespace Ceres
 {
@@ -17,6 +18,8 @@ namespace Ceres
 
             bool SafeAdd(Vector3 vertex);
             bool SafeAddList(VertexList vertices);
+
+            const Vector3 GetVertex(uint a) const;
 
             Vector3 GetNormal(uint a, uint b, uint c);
             Vector3 GetNormal(uint a, uint b, Vector3 origin);
@@ -36,6 +39,7 @@ namespace Ceres
             bool FaceContainsPoint(uint a, uint b, uint c, Vector3 point);
 
             uint GetVertexCount() { return _vertexCount; }
+            std::string ToString() const;
 
         private:
             void insertVertex(uint index, Vector3 vertex);

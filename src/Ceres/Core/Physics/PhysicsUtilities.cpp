@@ -39,36 +39,38 @@ namespace Ceres
     {
         VertexList pointsA = shapeA.FurthestVertex(direction);
         VertexList pointsB = shapeB.FurthestVertex(-1 * direction);
+        fmt::print("Shape A points: {}\nShape B points: {}\n", pointsA.ToString(), pointsB.ToString());
 
         VertexList result = VertexList();
         for (Vector3 pointA : pointsA)
         {
             for (Vector3 pointB : pointsB)
             {
-                result.emplace_back(pointA - pointB);
+                result.Append(pointA - pointB);
             }
         }
+        fmt::print("Combined points: {}\n", result.ToString());
         return result;
     }
 
     VertexList PhysicsUtilities::GiftWrap(VertexList vertices)
     {
-        if (vertices.size() < 3) { return vertices; }
-        if (vertices.size() == 4)
+        if (vertices.Size() < 3) { return vertices; }
+        if (vertices.Size() == 4)
         {
             VertexList lineResult = VertexList(vertices);
-            for (int i = 0; i < lineResult.size(); i++)
+            for (int i = 0; i < lineResult.Size(); i++)
             {
-                for (int j = i + 1; j < lineResult.size(); j++)
+                for (int j = i + 1; j < lineResult.Size(); j++)
                 {
-                    for (int k = lineResult.size() - 1; k >= 0; k--)
+                    for (int k = lineResult.Size() - 1; k >= 0; k--)
                     {
                         if (k == i || k == j) { continue; }
                         if (PhysicsUtilities::Colinear(vertices[i], vertices[j], vertices[k]) && PhysicsUtilities::PointBetween(vertices[i], vertices[j], vertices[k]))
                         {
-                            if (lineResult.size() == k - 1)
+                            if (lineResult.Size() == k - 1)
                             {
-                                lineResult.erase(vertices.begin() + k);
+                                lineResult.RemoveAt(k);
                             }
                         }
                     }
@@ -112,7 +114,7 @@ namespace Ceres
         bool leftComplete = false;
         bool rightComplete = false;
 
-        for (int i = 2; i < vertices.size() && (!leftComplete && !rightComplete); i++)
+        for (int i = 2; i < vertices.Size() && (!leftComplete && !rightComplete); i++)
         {
             if (vertices[i] != right && vertices[i] != left)
             {
@@ -167,8 +169,8 @@ namespace Ceres
                 }
             }
         }
-        left = vertices[vertices.size() - 2];
-        right = vertices[vertices.size() - 1];
+        left = vertices[vertices.Size() - 2];
+        right = vertices[vertices.Size() - 1];
         leftDot = left.Dot(axisX);
         rightDot = right.Dot(axisX);
         if (leftDot > rightDot)
@@ -196,7 +198,7 @@ namespace Ceres
         leftSlope = 0;
         rightSlope = 0;
 
-        for (int i = vertices.size() - 3; i > 0 && (!leftComplete && !rightComplete); i--)
+        for (int i = vertices.Size() - 3; i > 0 && (!leftComplete && !rightComplete); i--)
         {
             if (vertices[i] != right && vertices[i] != left)
             {
@@ -262,30 +264,21 @@ namespace Ceres
                 }
             }
         }
-        VertexList result = VertexList();
-        addList(result, copyLS(topLeft));
+        VertexList result = copyLS(topLeft);
         VertexList swap = copyLS(topRight);
-        reverseArray(swap);
-        addList(result, swap);
-        addList(result, copyLS(bottomRight));
+        swap.Reverse();
+        result.Append(swap);
+        result.Append(copyLS(bottomRight));
         swap = copyLS(bottomLeft);
-        reverseArray(swap);
-        addList(result, swap);
+        swap.Reverse();
+        result.Append(swap);
         return result;
-    }
-
-    void PhysicsUtilities::addList(VertexList& src, VertexList list)
-    {
-        for (Vector3 insert : list)
-        {
-            src.emplace_back(insert);
-        }
     }
 
     VertexList PhysicsUtilities::giftAxis(VertexList& points)
     {
         VertexList result = VertexList(2);
-        for (int i = 2; i < points.size() - 2; i++)
+        for (int i = 2; i < points.Size() - 2; i++)
         {
             if (!PhysicsUtilities::Colinear(points[i], points[i + 1], points[i + 2]))
             {
@@ -299,27 +292,15 @@ namespace Ceres
         return result;
     }
 
-    void PhysicsUtilities::reverseArray(VertexList& array)
-    {
-        int size = array.size() - 1;
-        for (int i = 0; i < size / 2; i++)
-        {
-            Vector3 swap = array[size - i];
-            array[size - i] = array[i];
-            array[i] = swap;
-        }
-    }
-
     void PhysicsUtilities::sortByDirection(VertexList& array, Vector3 direction)
     {
         direction = direction.Normalize();
-        // direction = Vector3(-1, 1, 0).Normalize();
-        std::vector<float> evals = std::vector<float>(array.size());
-        for (int i = 0; i < array.size(); i++)
+        std::vector<float> evals = std::vector<float>(array.Size());
+        for (int i = 0; i < array.Size(); i++)
         {
             evals[i] = array[i].Dot(direction);
         }
-        quickSort(array, evals, 0, array.size() - 1);
+        quickSort(array, evals, 0, array.Size() - 1);
     }
 
     void PhysicsUtilities::quickSort(VertexList& array, std::vector<float>& evals, int l, int r)
@@ -364,7 +345,7 @@ namespace Ceres
         VertexList result = VertexList();
         for (; !stack.empty(); stack.pop())
         {
-            result.emplace_back(stack.top());
+            result.Append(stack.top());
         }
         return result;
     }

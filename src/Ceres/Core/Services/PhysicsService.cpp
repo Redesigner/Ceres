@@ -5,12 +5,19 @@
 #include "../Physics/GJK/GJK.h"
 #include "../Physics/GJK/Simplex.h"
 
+#include "RenderService.h"
+#include "../Graphics/VertexTypes/VertexPosition.h"
+
 #include <stdexcept>
 #include <fmt/core.h>
 
 namespace Ceres
 {
     PhysicsService::PhysicsService()
+    {}
+
+    PhysicsService::PhysicsService(RenderService* debugRenderer)
+        :_debugRenderer(debugRenderer)
     {}
 
 
@@ -89,15 +96,22 @@ namespace Ceres
         PhysicsComponent* firstImpact = host;
         GJK::CollisionType status = GJK::CollisionType::None;
 
-        std::vector<PhysicsComponent*> targets = _getComponentsWithinDistance(host, searchDistance);
+        std::vector<PhysicsComponent*> targets = _getComponentsWithinDistance(host, searchDistance * 10000.0f);
         for (PhysicsComponent* target : targets)
         {
             if (host == target) { continue; }
 
             GJK collision = GJK(host, target);
             status = collision.Solve(&d, &dN);
+
+
             // fmt::print("\nObjects at {} and {}\n", host->GetPosition().ToString(), target->GetPosition().ToString());
-            // fmt::print("Distance from target calculated as {}\n", d.ToString());
+            fmt::print("Distance from target calculated as {}\n\n\n", d.ToString());
+            VertexPosition data[] = {VertexPosition(d + host->GetPosition()), VertexPosition(host->GetPosition())};
+            int inds[] = {0, 1};
+            _debugRenderer->ClearWireframe();
+            _debugRenderer->LoadWireframeData(data, inds, 2);
+
 
             double dMag = d.Length();
 
@@ -109,6 +123,10 @@ namespace Ceres
             switch (status)
             {
                 case GJK::CollisionType::Point:
+                    {
+                        delta = d.Dot(vN) * vN - (vN * Vector3::Epsilon());
+                        break;
+                    }
                 case GJK::CollisionType::Line:
                     {
                         delta = d.Dot(vN) * vN - (vN * Vector3::Epsilon());

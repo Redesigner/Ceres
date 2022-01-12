@@ -6,7 +6,6 @@
 #include <vector>
 #include <stack>
 
-using VertexList = std::vector<Ceres::Vector3>;
 using VertexStack = std::stack<Ceres::Vector3>;
 
 namespace Ceres
@@ -23,14 +22,14 @@ namespace Ceres
         static VertexList GiftWrap(VertexList vertices);
 
     private:
-        static void addList(VertexList& src, VertexList addition);
         static VertexList giftAxis(VertexList& points);
-        static void reverseArray(VertexList& array);
 
         static void sortByDirection(VertexList& array, Vector3 direction);
         static void quickSort(VertexList& array, std::vector<float>& evals, int l, int r);
         static int hoareParition(VertexList& array, std::vector<float>& evals, int l, int r);
         static void qSwap(VertexList& array, std::vector<float>& evals, int a, int b);
+
+        /// Creates a VertexList from a stack, used only for the GiftWrap function
         static VertexList copyLS(VertexStack& stack);
     };
 }

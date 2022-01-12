@@ -2,6 +2,8 @@
 
 #include "../PhysicsUtilities.h"
 
+#include <fmt/core.h>
+
 namespace Ceres
 {
     GJK::GJK(PhysicsComponent* shapeA, PhysicsComponent* shapeB)
@@ -19,10 +21,12 @@ namespace Ceres
         *outDirection = Vector3::Zero();
         for (int i = 0; i < maxIterations; i++)
         {
+            fmt::print("{}\n\n", MinkowskiDifference.ToString());
             if (MinkowskiDifference.IsFull())
             {
                 if (MinkowskiDifference.ContainsPoint(Vector3::Zero()))
                 {
+                    fmt::print("{}\n\n", MinkowskiDifference.ToString());
                     return Penetration;
                 }
                 MinkowskiDifference.CullNoncontributingVertices(Vector3::Zero());
@@ -35,6 +39,7 @@ namespace Ceres
                 {
                     *outDistance = MinkowskiDifference.GetShortestDistance(Vector3::Zero());
                     *outDirection = MinkowskiDifference.GetNextNormal();
+                    fmt::print("{}\n\n", MinkowskiDifference.ToString());
                     return static_cast<GJK::CollisionType>(MinkowskiDifference.GetVertexCount());
                 }
             }

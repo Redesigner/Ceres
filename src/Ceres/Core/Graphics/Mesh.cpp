@@ -35,4 +35,9 @@ namespace Ceres
     {
         return _vAO;
     }
+
+    const IndexBuffer& Mesh::GetIndexBuffer() const
+    {
+        return _iBO;
+    }
 }

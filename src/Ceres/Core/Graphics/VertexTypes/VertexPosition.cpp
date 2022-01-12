@@ -13,6 +13,11 @@ namespace Ceres
 {
     VertexPosition::VertexPosition(Vector3 position)
         : Position(position){}
+
+    VertexPosition::VertexPosition()
+        : Position(Vector3(0.0f))
+    {}
+    
     VertexPosition::~VertexPosition()
     {}
 }

@@ -28,9 +28,14 @@ namespace Ceres
         _window = createWindow();
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
-        _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
 
+        _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
         _loadedMeshes = std::vector<MeshPtr>();
+        
+
+        _wireframeEffect = LoadEffect("Shaders\\wireframeVertex.GLSL", "Shaders\\wireframeFragment.GLSL");
+        _wireframeLayout = new VertexPositionLayout();
+        _wireframe = new VertexStream(*_wireframeLayout, 32, _wireframeEffect);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -38,6 +43,8 @@ namespace Ceres
         unloadEffects();
         unloadMeshes();
         delete _currentContext;
+        delete _wireframe;
+        delete _wireframeLayout;
         if(_window != nullptr)
         {
             SDL_DestroyWindow(_window);
@@ -58,6 +65,8 @@ namespace Ceres
     // after any logic in Game.Render() has been executed.
     void GraphicsDevice::EndRender()
     {
+        renderWireframe();
+
         SDL_GL_SwapWindow(_window);
         printError();
     }
@@ -98,6 +107,16 @@ namespace Ceres
        return new RenderComponent(parent, meshId);
     }
 
+    void GraphicsDevice::LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount)
+    {
+        _wireframe->AddData(vertexData, indices, vertexCount);
+    }
+
+    void GraphicsDevice::ClearWireframe()
+    {
+        _wireframe->Clear();
+    }
+
 
     // Private methods
 
@@ -118,6 +137,17 @@ namespace Ceres
     void GraphicsDevice::unloadMeshes()
     {
         _loadedMeshes.clear();
+    }
+
+    void GraphicsDevice::renderWireframe()
+    {
+        if (_wireframe->Size() == 0) { return; }
+
+        glDisable(GL_DEPTH_TEST);
+        _wireframe->GetVertexArray().Bind();
+        _wireframeEffect->Begin();
+        _wireframeEffect->SetViewMatrix(_currentCamera->GetMatrix());
+        glDrawElements(GL_LINE_STRIP, _wireframe->Size(), GL_UNSIGNED_INT, NULL);
     }
 
     SDL_Window* GraphicsDevice::createWindow()

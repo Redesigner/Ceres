@@ -23,7 +23,7 @@ namespace Ceres
 
     void VertexBufferObject::SetData(const IVertexType data[], const int size, const int offset)
     {
-        fmt::print("Loading {} vertices.\n", size);
+        // fmt::print("Loading {} vertices.\n", size);
         if(offset + size > _capacity)
         {
             throw std::out_of_range("VertexBufferObject data out of range.");

@@ -7,9 +7,11 @@ const GLsizei INDEXSIZE = sizeof(unsigned int);
 namespace Ceres
 {
     IndexBuffer::IndexBuffer(int size)
+        :_capacity(size)
     {
+        _iBO = 0;
         _currentCount = 0;
-        _capacity = size;
+        
         glGenBuffers(1, &_iBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _iBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, INDEXSIZE * _capacity, NULL, GL_DYNAMIC_DRAW);
@@ -36,7 +38,7 @@ namespace Ceres
         SetData(indices, count, _currentCount);
     }
 
-    void IndexBuffer::Bind()
+    void IndexBuffer::Bind() const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _iBO);
     }

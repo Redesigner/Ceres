@@ -1,24 +1,26 @@
 #include "ConvexHull.h"
 
+
+#include "PhysicsUtilities.h"
+
 #include <stdexcept>
 #include <cmath>
 #include <fmt/core.h>
 
 namespace Ceres
 {
-    ConvexHull::ConvexHull(std::vector<Vector3>(vertices))
+    ConvexHull::ConvexHull(VertexList(vertices))
         :_vertices(vertices)
     {}
 
-    std::vector<Vector3> ConvexHull::FurthestVertex(Vector3 directionUnit)
+    VertexList ConvexHull::FurthestVertex(Vector3 directionUnit)
     {
-        Vector3 farthestPoint = _vertices[0];
-        farthestPoint = GetTransform().GetMatrix() * farthestPoint;
-        std::vector<Vector3> points = std::vector<Vector3>();
-        points.emplace_back(_vertices[0]);
+        Vector3 farthestPoint = GetTransform().GetMatrix() * _vertices[0];
+        VertexList points = VertexList();
+        points.Append(farthestPoint);
         float max = farthestPoint.Dot(directionUnit);
 
-        for (int i = 1; i < _vertices.size(); i++)
+        for (int i = 1; i < _vertices.Size(); i++)
         {
             Vector3 vertex = GetTransform().GetMatrix() * _vertices[i];
             float distance = vertex.Dot(directionUnit);
@@ -26,12 +28,12 @@ namespace Ceres
             {
                 max = distance;
                 farthestPoint = vertex;
-                points.clear();
-                points.emplace_back(vertex);
+                points.Clear();
+                points.Append(vertex);
             }
             else if (distance >= max - Vector3::Epsilon())
             {
-                points.emplace_back(vertex);
+                points.Append(vertex);
             }
         }
         return points;

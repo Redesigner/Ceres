@@ -1,6 +1,8 @@
 #include "Simplex.h"
 
 #include "../PhysicsUtilities.h"
+#include <fmt/core.h>
+#include <fmt/ranges.h>
 
 namespace Ceres
 {
@@ -16,6 +18,21 @@ namespace Ceres
     Simplex::~Simplex()
     {}
 
+
+    const Vector3 Simplex::GetVertex(uint a) const
+    {
+        if(_vertexCount > a)
+        {
+            return _vertices[a];
+        }
+        return Vector3::Zero();
+    }
+
+    std::string Simplex::ToString() const
+    {
+        return fmt::format("Simplex [{}]: {}", _vertexCount, _vertices.ToString());
+    }
+
     void Simplex::insertVertex(uint index, Vector3 vertex)
     {
         _regenNormalsFlag = true;
@@ -25,7 +42,7 @@ namespace Ceres
             removeLast();
         }
 
-        _vertices.insert(_vertices.begin() + index, vertex);
+        _vertices.Insert(index, vertex);
         if (_vertexCount < 4)
         {
             _vertexCount++;
@@ -37,12 +54,8 @@ namespace Ceres
         _regenNormalsFlag = true;
         _regenNextNormalFlag = true;
         _lastRemovedVertex = _vertices[index];
-        _deletedVertices.emplace_back(_lastRemovedVertex);
-        for (int i = index; i + 1 < _vertexCount; i++)
-        {
-            _vertices[i] = _vertices[i + 1];
-        }
-        _vertices[_vertexCount - 1] = 0;
+        _deletedVertices.Append(_lastRemovedVertex);
+        _vertices.RemoveAt(index);
         _vertexCount--;
     }
 
@@ -55,7 +68,7 @@ namespace Ceres
     {
         for (Vector3 shapeVertex : _vertices)
         {
-            if (vertex == shapeVertex)
+            if (PhysicsUtilities::NearlyZero(vertex - shapeVertex))
             {
                 return true;
             }
@@ -68,7 +81,7 @@ namespace Ceres
     {
         for (Vector3 shapeVertex : _deletedVertices)
         {
-            if (shapeVertex == vertex)
+            if (PhysicsUtilities::NearlyZero(vertex - shapeVertex))
             {
                 return true;
             }
@@ -79,6 +92,7 @@ namespace Ceres
 
     bool Simplex::SafeAdd(Vector3 vertex)
     {
+        fmt::print("Attempting to add point: {}\n", vertex.ToString());
         if (_lastRemovedVertex == vertex) { return false; }
         if (containsVertex(vertex)) { return false; }
         if (deletedContains(vertex)) { return false; };
@@ -91,7 +105,8 @@ namespace Ceres
 
     bool Simplex::SafeAddList(VertexList vertices)
     {
-        for (Vector3 vertex : _vertices)
+        fmt::print("Adding {} points to simplex\n", vertices.Size());
+        for (Vector3 vertex : vertices)
         {
             if (SafeAdd(vertex))
             {
@@ -261,7 +276,7 @@ namespace Ceres
             int culledVertexI = 3;
             float maxDistance = normals[0].Dot(_vertices[0]);
             Vector3 longestNormal = normals[0];
-            for (int i = 1; i < normals.size(); i++)
+            for (int i = 1; i < normals.Size(); i++)
             {
                 double distanceFromNormal = normals[i].Dot(_vertices[i] - point);
                 if (distanceFromNormal < maxDistance)
@@ -274,7 +289,7 @@ namespace Ceres
             removeVertex(culledVertexI);
             return longestNormal;
         }
-        return 0;
+        return Vector3::Zero();
     }
 
     Vector3 Simplex::GetShortestDistance(Vector3 point)
@@ -359,8 +374,8 @@ namespace Ceres
     {
         if (_vertexCount != 3) { return false; }
         Vector3 normal = GetNextNormal();
-        double difference = _vertices[0].Dot(normal) - point.Dot(normal);
-        return Vector3::Epsilon() >= difference && difference >= -1 * Vector3::Epsilon();
+        float difference = _vertices[0].Dot(normal) - point.Dot(normal);
+        return PhysicsUtilities::NearlyZero(difference);
     }
 
     bool Simplex::isColinear(Vector3 point)
@@ -373,10 +388,10 @@ namespace Ceres
     {
         if (!IsFull()) { return false; }
         VertexList normals = GetPrimaryNormals();
-        for (int i = 0; i < normals.size(); i++)
+        for (int i = 0; i < normals.Size(); i++)
         {
             Vector3 vertexInNormal = _vertices[i];
-            if (normals[i].Dot(point - vertexInNormal) > 0)
+            if (normals[i].Dot(point - vertexInNormal) > -1 * Vector3::Epsilon())
             {
                 return false;
             }

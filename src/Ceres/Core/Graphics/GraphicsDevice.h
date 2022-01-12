@@ -9,6 +9,9 @@
 #include "../Components/RenderComponent.h"
 #include "../Components/CameraComponent.h"
 
+#include "VertexStream.h"
+#include "VertexTypes/VertexPositionLayout.h"
+
 struct SDL_Window;
 struct SDL_Surface;
 
@@ -41,12 +44,17 @@ namespace Ceres
 
             RenderComponent* CreateRenderComponent(const IEntity& parent, uint8_t meshId) const;
 
+            void LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount);
+            void ClearWireframe();
+
         private:
 
             void printError();
 
             void unloadEffects();
             void unloadMeshes();
+
+            void renderWireframe();
 
             SDL_Window* createWindow();
             
@@ -59,5 +67,11 @@ namespace Ceres
 
             std::vector<EffectPtr> _loadedEffects;
             std::vector<MeshPtr> _loadedMeshes;
+
+            // Wireframe temp variables
+            EffectPtr _wireframeEffect;
+            VertexStream* _wireframe;
+            VertexPositionLayout* _wireframeLayout;
+
     };
 }

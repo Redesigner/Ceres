@@ -1,19 +1,19 @@
 #pragma once
 
 #include "IPrimitive.h"
+#include "../Common/VertexList.h"
 
 namespace Ceres
 {
     struct ConvexHull : public IPrimitive
     {
-        ConvexHull(std::vector<Vector3>(vertices));
+        ConvexHull(VertexList(vertices));
 
-        virtual std::vector<Vector3> FurthestVertex(Vector3 directionUnit) override;
+        virtual VertexList FurthestVertex(Vector3 directionUnit) override;
         virtual float SemiMajorAxis() override;
         virtual void SetTransform(Transform transform) override;
 
-        // should be private, access changed for debug
-        std::vector<Vector3> _vertices;
+        VertexList _vertices;
 
         private:
             bool nearlyEqual(float a, float b);

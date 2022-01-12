@@ -21,6 +21,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Common/Transform.cpp
 	src/Ceres/Core/Common/Vector2.cpp
 	src/Ceres/Core/Common/Vector3.cpp
+	src/Ceres/Core/Common/VertexList.cpp
 
 	
 	src/Ceres/Core/Components/Base/ComponentList.cpp
@@ -45,6 +46,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
 	src/Ceres/Core/Graphics/IndexBuffer.cpp
 	src/Ceres/Core/Graphics/Mesh.cpp
+	src/Ceres/Core/Graphics/VertexStream.cpp
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
 

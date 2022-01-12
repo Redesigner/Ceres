@@ -5,10 +5,12 @@
 
 namespace Ceres
 {
+    class RenderService;
     class PhysicsService : public IService
     {
         public:
             PhysicsService();
+            PhysicsService(RenderService* debugRenderer);
             ~PhysicsService();
 
             virtual ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
@@ -17,5 +19,6 @@ namespace Ceres
         private:
             void stepComponent(PhysicsComponent* host, float seconds);
             std::vector<PhysicsComponent*> _getComponentsWithinDistance(PhysicsComponent* sourceComponent, const float distance);
+            RenderService* _debugRenderer;
     };
 }

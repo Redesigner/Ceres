@@ -9,6 +9,7 @@ namespace Ceres
     {
         public:
             VertexPosition(Vector3 position);
+            VertexPosition();
             ~VertexPosition();
 
             Vector3 Position;

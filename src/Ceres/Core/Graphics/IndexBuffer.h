@@ -17,7 +17,7 @@ namespace Ceres
 
             void SetData(const int indices[], const int count, const int offset);
             void SetData(const int indices[], const int count);
-            void Bind();
+            void Bind() const;
 
         private:
             GLuint _iBO;

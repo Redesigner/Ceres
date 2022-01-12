@@ -11,15 +11,18 @@
 namespace Ceres
 {
     class Effect;
-    class IVertexLayout;
+    class IVertexType;
 
     using EffectPtr = std::shared_ptr<Effect>;
 
-    class Mesh
+    class VertexStream
     {
         public:
-            Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], const int indexCount, EffectPtr effect);
-            ~Mesh();
+            VertexStream(const IVertexLayout& vertexLayout, const int bufferSize, EffectPtr effect);
+            ~VertexStream();
+
+            void AddData(const IVertexType vertexData[], const int indices[], const int vertexCount);
+            void Clear();
 
             int Size();
             EffectPtr GetEffect();
@@ -30,6 +33,7 @@ namespace Ceres
             EffectPtr _effect;
             int _vertexCount;
             int _indexCount;
+            // TODO: Reallocate VBO if overflow, eliminate need for IBO
             IndexBuffer _iBO;
             VertexArrayObject _vAO;
             VertexBufferObject _vBO;

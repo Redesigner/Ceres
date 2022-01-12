@@ -2,6 +2,7 @@
 
 #include "Core/Common/Vector2.h"
 #include "Core/Common/Vector3.h"
+#include "Core/Common/VertexList.h"
 
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
@@ -44,7 +45,7 @@ namespace Ceres
     {
         ServiceContainer.AddService<RenderService>(new RenderService(GraphicsDevice));
         ServiceContainer.AddService<InputService>(new InputService(InputHandler));
-        ServiceContainer.AddService<PhysicsService>(new PhysicsService());
+        ServiceContainer.AddService<PhysicsService>(new PhysicsService(ServiceContainer.GetService<RenderService>()));
 
         InputHandler.BindInput(Button::Key_space, [] {
             fmt::print("Test!\n");
@@ -60,7 +61,7 @@ namespace Ceres
         // shape[1] = shape[1] * 4.0f;
 
         VertexList wrapped = PhysicsUtilities::GiftWrap(shape);
-        fmt::print("Gift wrapped: {}\n", wrapped.size());
+        fmt::print("Gift wrapped: {}\n", wrapped.Size());
         for (Vector3 vertex : wrapped)
         {
             fmt::print("Vertex {}\n", vertex.ToString());

@@ -14,7 +14,6 @@ namespace Ceres
 {
     void VertexPositionLayout::SetAttributes() const
     {
-        fmt::print("Binding OpenGL attributes of VertexPosition.\n");
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     }

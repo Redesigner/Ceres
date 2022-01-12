@@ -62,4 +62,14 @@ namespace Ceres
             }
         }
     }
+
+    void RenderService::LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount)
+    {
+        _parentDevice.LoadWireframeData(vertexData, indices, vertexCount);
+    }
+
+    void RenderService::ClearWireframe()
+    {
+        _parentDevice.ClearWireframe();
+    }
 }
