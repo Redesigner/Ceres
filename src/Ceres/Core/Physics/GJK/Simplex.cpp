@@ -2,7 +2,6 @@
 
 #include "../PhysicsUtilities.h"
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 
 namespace Ceres
 {
@@ -92,7 +91,6 @@ namespace Ceres
 
     bool Simplex::SafeAdd(Vector3 vertex)
     {
-        fmt::print("Attempting to add point: {}\n", vertex.ToString());
         if (_lastRemovedVertex == vertex) { return false; }
         if (containsVertex(vertex)) { return false; }
         if (deletedContains(vertex)) { return false; };
@@ -105,7 +103,6 @@ namespace Ceres
 
     bool Simplex::SafeAddList(VertexList vertices)
     {
-        fmt::print("Adding {} points to simplex\n", vertices.Size());
         for (Vector3 vertex : vertices)
         {
             if (SafeAdd(vertex))
@@ -391,7 +388,7 @@ namespace Ceres
         for (int i = 0; i < normals.Size(); i++)
         {
             Vector3 vertexInNormal = _vertices[i];
-            if (normals[i].Dot(point - vertexInNormal) > -1 * Vector3::Epsilon())
+            if (normals[i].Dot(point - vertexInNormal) > Vector3::Epsilon())
             {
                 return false;
             }

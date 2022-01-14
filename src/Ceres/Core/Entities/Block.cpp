@@ -15,7 +15,7 @@ namespace Ceres
         _components = {mesh, physicsComponent};
 
         SendMessage(Message::Write<Vector3>("Scale", &Vector3(x, y, z)));
-        // SendMessage(Message::Write<Vector3>("Position", &Vector3(0, 0, -2.0f)));
+        SendMessage(Message::Write<Vector3>("Position", &Vector3(-2.0f, 0, 0)));
     }
     
     Block::~Block()

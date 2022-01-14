@@ -2,6 +2,7 @@
 
 #include "../Components/PhysicsComponent.h"
 #include "../Physics/Primitives/CubePrimitive.h"
+#include "../Physics/PhysicsUtilities.h"
 #include "../Physics/GJK/GJK.h"
 #include "../Physics/GJK/Simplex.h"
 
@@ -83,79 +84,36 @@ namespace Ceres
         float searchDistance = host->Velocity.LengthSquared() * seconds + semiMajorAxis * semiMajorAxis;
 
         Vector3 v = host->Velocity * seconds;
+        Vector3 vN = v.Normalize();
         Vector3 vResult = v;
 
         Vector3 d = Vector3::Zero();
         Vector3 dN = Vector3::Zero();
 
         Vector3 delta = v;
-        Vector3 maxDelta = v;
 
         bool impact = false;
 
         PhysicsComponent* firstImpact = host;
         GJK::CollisionType status = GJK::CollisionType::None;
 
-        std::vector<PhysicsComponent*> targets = _getComponentsWithinDistance(host, searchDistance * 10000.0f);
+        std::vector<PhysicsComponent*> targets = _getComponentsWithinDistance(host, searchDistance);
         for (PhysicsComponent* target : targets)
         {
             if (host == target) { continue; }
 
-            GJK collision = GJK(host, target);
-            status = collision.Solve(&d, &dN);
+            if (PhysicsUtilities::Sweep(*host->GetPrimitive(), *target->GetPrimitive(), v))
+            {
+                fmt::print("Potential collision detected, not moving...\n");
+                return;
+            }
 
-
-            // fmt::print("\nObjects at {} and {}\n", host->GetPosition().ToString(), target->GetPosition().ToString());
-            fmt::print("Distance from target calculated as {}\n\n\n", d.ToString());
-            VertexPosition data[] = {VertexPosition(d + host->GetPosition()), VertexPosition(host->GetPosition())};
-            int inds[] = {0, 1};
+            // DEBUG RENDERER
+            VertexPosition data[] = {VertexPosition(v + host->GetPosition()), VertexPosition(host->GetPosition()), VertexPosition(target->GetPosition()), VertexPosition(target->GetPosition() - dN)};
+            int inds[] = {0, 1, 2, 3};
             _debugRenderer->ClearWireframe();
-            _debugRenderer->LoadWireframeData(data, inds, 2);
-
-
-            double dMag = d.Length();
-
-            Vector3 vN = v.Normalize();
-            Vector3 vGuess = v;
-            bool direct = ( v.Dot(dN) > Vector3::Epsilon());
-            if (!direct) { continue; }
-
-            switch (status)
-            {
-                case GJK::CollisionType::Point:
-                    {
-                        delta = d.Dot(vN) * vN - (vN * Vector3::Epsilon());
-                        break;
-                    }
-                case GJK::CollisionType::Line:
-                    {
-                        delta = d.Dot(vN) * vN - (vN * Vector3::Epsilon());
-                        break;
-                    }
-                case GJK::CollisionType::Face:
-                    {
-                        delta = d.Dot(vN) * vN - (vN * Vector3::Epsilon());
-                        vGuess = v - ((v - (d.Dot(vN) * vN)).Dot(dN) * dN) - (dN * Vector3::Epsilon());
-                        break;
-                    }
-            }
-            bool near = delta.LengthSquared() < dMag * dMag;
-            if (near && delta.LengthSquared() < maxDelta.LengthSquared())
-            {
-                maxDelta = delta;
-                vResult = vGuess;
-                firstImpact = target;
-                impact = true;
-            }
-            fmt::print("Objects can travel {} until colliding with at {} along normal {}.\n", delta.ToString(), d.ToString(), dN.ToString());
+            _debugRenderer->LoadWireframeData(data, inds, 4);
         }
-        if (impact)
-        {
-            host->SetPosition(host->GetPosition() + (Vector3)maxDelta);
-        }
-        else
-        {
-            host->SetPosition(host->GetPosition() + (Vector3)v);
-        }
+        host->SetPosition(host->GetPosition() + delta);
     }
 }

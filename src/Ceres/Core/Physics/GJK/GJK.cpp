@@ -26,7 +26,7 @@ namespace Ceres
             {
                 if (MinkowskiDifference.ContainsPoint(Vector3::Zero()))
                 {
-                    fmt::print("{}\n\n", MinkowskiDifference.ToString());
+                    // fmt::print("{}\n\n", MinkowskiDifference.ToString());
                     return Penetration;
                 }
                 MinkowskiDifference.CullNoncontributingVertices(Vector3::Zero());
@@ -39,12 +39,12 @@ namespace Ceres
                 {
                     *outDistance = MinkowskiDifference.GetShortestDistance(Vector3::Zero());
                     *outDirection = MinkowskiDifference.GetNextNormal();
-                    fmt::print("{}\n\n", MinkowskiDifference.ToString());
+                    // fmt::print("{}\n\n", MinkowskiDifference.ToString());
                     return static_cast<GJK::CollisionType>(MinkowskiDifference.GetVertexCount());
                 }
             }
         }
-        return None;
+        return Penetration;
     }
 
     void GJK::GenerateMinkowskiDifference()

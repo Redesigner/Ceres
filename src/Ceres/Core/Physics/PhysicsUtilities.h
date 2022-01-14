@@ -20,6 +20,7 @@ namespace Ceres
         static bool Colinear(Vector3 a, Vector3 b, Vector3 c);
         static VertexList SupportPoints(IPrimitive& shapeA, IPrimitive& shapeB, Vector3 direction);
         static VertexList GiftWrap(VertexList vertices);
+        static bool Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta);
 
     private:
         static VertexList giftAxis(VertexList& points);
@@ -28,6 +29,7 @@ namespace Ceres
         static void quickSort(VertexList& array, std::vector<float>& evals, int l, int r);
         static int hoareParition(VertexList& array, std::vector<float>& evals, int l, int r);
         static void qSwap(VertexList& array, std::vector<float>& evals, int a, int b);
+        static VertexList supportPointsSweep(IPrimitive& shapeA, IPrimitive& shapeB, Vector3 direction, Vector3 sweepDirection);
 
         /// Creates a VertexList from a stack, used only for the GiftWrap function
         static VertexList copyLS(VertexStack& stack);

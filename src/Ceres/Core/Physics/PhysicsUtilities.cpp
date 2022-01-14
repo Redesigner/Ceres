@@ -1,5 +1,8 @@
 #include "PhysicsUtilities.h"
-#include "fmt/core.h"
+
+#include "GJK/Simplex.h"
+
+#include <fmt/core.h>
 
 #define ERROR_THRESHOLD 0.01f
 
@@ -39,7 +42,6 @@ namespace Ceres
     {
         VertexList pointsA = shapeA.FurthestVertex(direction);
         VertexList pointsB = shapeB.FurthestVertex(-1 * direction);
-        fmt::print("Shape A points: {}\nShape B points: {}\n", pointsA.ToString(), pointsB.ToString());
 
         VertexList result = VertexList();
         for (Vector3 pointA : pointsA)
@@ -49,7 +51,6 @@ namespace Ceres
                 result.Append(pointA - pointB);
             }
         }
-        fmt::print("Combined points: {}\n", result.ToString());
         return result;
     }
 
@@ -346,6 +347,67 @@ namespace Ceres
         for (; !stack.empty(); stack.pop())
         {
             result.Append(stack.top());
+        }
+        return result;
+    }
+
+
+    bool PhysicsUtilities::Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta)
+    {
+        Vector3 direction = delta.Normalize();
+        delta += direction * Vector3::Epsilon();
+
+        Simplex simplex = Simplex();
+        Vector3 searchDirection = (targetShape.GetTransform().GetPosition() - shape.GetTransform().GetPosition()).Normalize();
+        if (PhysicsUtilities::NearlyZero(searchDirection))
+        {
+            searchDirection = Vector3::Up();
+        }
+        VertexList supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, delta));
+        simplex.SafeAdd(supports[0]);
+
+        fmt::print("\n\nStarting new sweep\n");
+        for (int i = 0; i < 16; i++)
+        {
+            fmt::print("{}\n", simplex.ToString());
+            if (simplex.IsFull())
+            {
+                if (simplex.ContainsPoint(Vector3::Zero()))
+                {
+                    return true;
+                }
+                simplex.CullNoncontributingVertices(Vector3::Zero());
+            }
+            else
+            {
+                searchDirection = simplex.GetNextNormal();
+                supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, delta));
+
+                if (!simplex.SafeAddList(supports) && !simplex.CollapseVornoiRegions(Vector3::Zero()))
+                {
+                    simplex.GetShortestDistance(Vector3::Zero());
+                    simplex.GetNextNormal();
+                    return simplex.GetVertexCount() == 4;
+                }
+            }
+        }
+        fmt::print("Overflow of GJK...\n");
+        return false;
+    }
+
+    VertexList PhysicsUtilities::supportPointsSweep(IPrimitive& shapeA, IPrimitive& shapeB, Vector3 direction, Vector3 sweepDirection)
+    {
+        VertexList pointsA = shapeA.FurthestVertex(direction);
+        VertexList pointsB = shapeB.FurthestVertex(-1 * direction);
+
+        Vector3 offset = sweepDirection.Dot(sweepDirection) > 0 ? sweepDirection : Vector3::Zero();
+        VertexList result = VertexList();
+        for (Vector3 pointA : pointsA)
+        {
+            for (Vector3 pointB : pointsB)
+            {
+                result.Append(pointA - pointB + offset);
+            }
         }
         return result;
     }

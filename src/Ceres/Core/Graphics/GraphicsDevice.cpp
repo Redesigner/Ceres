@@ -147,7 +147,7 @@ namespace Ceres
         _wireframe->GetVertexArray().Bind();
         _wireframeEffect->Begin();
         _wireframeEffect->SetViewMatrix(_currentCamera->GetMatrix());
-        glDrawElements(GL_LINE_STRIP, _wireframe->Size(), GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_LINES, _wireframe->Size(), GL_UNSIGNED_INT, NULL);
     }
 
     SDL_Window* GraphicsDevice::createWindow()
