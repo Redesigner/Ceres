@@ -388,7 +388,7 @@ namespace Ceres
         for (int i = 0; i < normals.Size(); i++)
         {
             Vector3 vertexInNormal = _vertices[i];
-            if (normals[i].Dot(point - vertexInNormal) > Vector3::Epsilon())
+            if (normals[i].Dot(point - vertexInNormal) > 0)
             {
                 return false;
             }

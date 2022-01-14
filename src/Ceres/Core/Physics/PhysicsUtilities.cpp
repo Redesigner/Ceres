@@ -224,7 +224,7 @@ namespace Ceres
                         float slope = dy / (dot - rightDot);
                         if (slope == rightSlope)
                         {
-                            topRight.pop();
+                            // topRight.pop();
                         }
                         if (slope > rightSlope)
                         {
@@ -265,12 +265,12 @@ namespace Ceres
                 }
             }
         }
-        VertexList result = copyLS(topLeft);
-        VertexList swap = copyLS(topRight);
+        VertexList result = copyLS(&topLeft);
+        VertexList swap = copyLS(&topRight);
         swap.Reverse();
         result.Append(swap);
-        result.Append(copyLS(bottomRight));
-        swap = copyLS(bottomLeft);
+        result.Append(copyLS(&bottomRight));
+        swap = copyLS(&bottomLeft);
         swap.Reverse();
         result.Append(swap);
         return result;
@@ -341,12 +341,13 @@ namespace Ceres
         evals[a] = eSwap;
     }
 
-    VertexList PhysicsUtilities::copyLS(VertexStack& stack)
+    VertexList PhysicsUtilities::copyLS(VertexStack* stack)
     {
         VertexList result = VertexList();
-        for (; !stack.empty(); stack.pop())
+        for (; !stack->empty(); stack->pop())
         {
-            result.Append(stack.top());
+            if (!stack) { return result; }
+            result.Append(stack->top());
         }
         return result;
     }
@@ -354,6 +355,7 @@ namespace Ceres
 
     bool PhysicsUtilities::Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta)
     {
+        bool printDebug = false;
         Vector3 direction = delta.Normalize();
         delta += direction * Vector3::Epsilon();
 
@@ -366,10 +368,10 @@ namespace Ceres
         VertexList supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, delta));
         simplex.SafeAdd(supports[0]);
 
-        fmt::print("\n\nStarting new sweep\n");
+        if (printDebug) { fmt::print("\n\nBeginning sweep\n"); }
         for (int i = 0; i < 16; i++)
         {
-            fmt::print("{}\n", simplex.ToString());
+            if (printDebug) { fmt::print("{}\n", simplex.ToString()); }
             if (simplex.IsFull())
             {
                 if (simplex.ContainsPoint(Vector3::Zero()))
@@ -387,11 +389,11 @@ namespace Ceres
                 {
                     simplex.GetShortestDistance(Vector3::Zero());
                     simplex.GetNextNormal();
-                    return simplex.GetVertexCount() == 4;
+                    // return simplex.GetVertexCount() == 4;
+                    return false;
                 }
             }
         }
-        fmt::print("Overflow of GJK...\n");
         return false;
     }
 

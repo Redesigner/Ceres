@@ -32,6 +32,6 @@ namespace Ceres
         static VertexList supportPointsSweep(IPrimitive& shapeA, IPrimitive& shapeB, Vector3 direction, Vector3 sweepDirection);
 
         /// Creates a VertexList from a stack, used only for the GiftWrap function
-        static VertexList copyLS(VertexStack& stack);
+        static VertexList copyLS(VertexStack* stack);
     };
 }
