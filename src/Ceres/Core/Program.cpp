@@ -17,6 +17,7 @@ namespace Ceres
         _game = game;
         _exit = !game->Initialize();
         game->Load();
+        SDL_SetRelativeMouseMode(SDL_TRUE);
     }
 
     void Program::Loop()
@@ -63,6 +64,11 @@ namespace Ceres
             case SDL_CONTROLLERBUTTONDOWN:
                 {
 
+                    break;
+                }
+            case SDL_MOUSEMOTION:
+                {
+                    _game->InputHandler.HandleCursorInput(event.motion.xrel, event.motion.yrel);
                     break;
                 }
             }

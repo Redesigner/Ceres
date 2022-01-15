@@ -7,7 +7,7 @@
 
 namespace Ceres
 {
-    InputService::InputService(const InputHandler& inputHandler)
+    InputService::InputService(InputHandler& inputHandler)
         :_inputHandler(inputHandler)
     {}
 

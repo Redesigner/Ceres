@@ -5,14 +5,12 @@ namespace Ceres
     CameraComponent::CameraComponent(const IEntity& parent)
         :IComponent(parent, std::type_index(typeid(CameraComponent)))
     {
-        Direction = Vector3(5, 0, -5);
-        Offset = Vector3(-5, 0, 5);
+        Rotation = Vector3(0, 0.785f, 0);
+        Offset = Vector3(-7, 0, 0);
     }
 
     CameraComponent::~CameraComponent()
-    {
-
-    }
+    {}
 
     bool CameraComponent::RecieveMessage(Message* message)
     {
@@ -24,6 +22,19 @@ namespace Ceres
         else if (message->Type == "Position")
         {
             _setPosition(message->GetData<Vector3>());
+            return true;
+        }
+        else if (message->Type == "CameraRotation")
+        {
+            float angleY = message->GetData<Vector3>().Y / 480.0f;
+            float angleX = message->GetData<Vector3>().X / 640.0f;
+            Vector3 deltaRotation = Vector3(-angleX, angleY, 0);
+            if (Rotation.Y + deltaRotation.Y < 1.57f && Rotation.Y + deltaRotation.Y > -1.57f)
+            {
+                Rotation.Y += deltaRotation.Y;
+            }
+            Rotation.X += deltaRotation.X;
+            _updateTransform();
             return true;
         }
         else
@@ -62,8 +73,8 @@ namespace Ceres
 
     void CameraComponent::_updateTransform()
     {
-        _viewRotation = Matrix::LookAt(Vector3(0), Direction.Normalize(), Vector3::Up());
-        _viewPosition = Matrix::Translation(-Position.X - Offset.X, -Position.Y - Offset.Y, -Position.Z - Offset.Z);
-        _matrix = _viewPosition * _viewRotation;
+        _viewRotation = Matrix::RotationFromEuler(Rotation.X, Rotation.Y, Rotation.Z);
+        _viewRotation = Matrix::LookAt((_viewRotation * Offset) + Position, Position, Vector3::Up());
+        _matrix = _viewRotation;
     }
 }

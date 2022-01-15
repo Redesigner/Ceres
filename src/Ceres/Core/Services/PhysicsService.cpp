@@ -104,33 +104,16 @@ namespace Ceres
 
             if (PhysicsUtilities::Sweep(*host->GetPrimitive(), *target->GetPrimitive(), v))
             {
-                fmt::print("Collision detected by sweep!\n");
                 // delta = PhysicsUtilities::SupportPoints(*host->GetPrimitive(), *target->GetPrimitive(), vN)[0].Dot(vN) * vN * -1 - (vN * Vector3::Epsilon());
                 GJK shortestMove = GJK(host, target);
                 status = shortestMove.Solve(&delta, &dN);
                 delta = delta.Dot(vN) * vN;
                 delta -= dN * Vector3::Epsilon();
-                // DEBUG RENDERER
-                VertexPosition data[] = {
-                    VertexPosition(host->GetPosition()), VertexPosition(host->GetPosition() + delta),
-                    VertexPosition(target->GetPosition()), VertexPosition(target->GetPosition() + v)};
-                int inds[] = {0, 1, 2, 3};
-                _debugRenderer->ClearWireframe();
-                _debugRenderer->LoadWireframeData(data, inds, 4);
-
 
                 if (delta.LengthSquared() > v.LengthSquared() && vN.Dot(delta) < 0)
                 {
                     delta = Vector3::Zero();
                 }
-            }
-            else
-            {
-                // DEBUG RENDERER
-                VertexPosition data[] = {VertexPosition(v + host->GetPosition()), VertexPosition(host->GetPosition()), VertexPosition(target->GetPosition()), VertexPosition(target->GetPosition() - dN)};
-                int inds[] = {0, 1, 2, 3};
-                _debugRenderer->ClearWireframe();
-                _debugRenderer->LoadWireframeData(data, inds, 4);
             }
         }
         if (delta.LengthSquared() < Vector3::Epsilon() * Vector3::Epsilon()) { return; }

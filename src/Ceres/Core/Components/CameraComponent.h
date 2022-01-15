@@ -18,7 +18,7 @@ namespace Ceres
             const Matrix& GetPositionMatrix();
 
             Vector3 Position;
-            Vector3 Direction;
+            Vector3 Rotation;
             Vector3 Offset;
 
         private:

@@ -9,7 +9,7 @@ namespace Ceres
     class ControllerComponent : public IComponent
     {
         public:
-            ControllerComponent(const IEntity& parent, const InputHandler& inputHandler);
+            ControllerComponent(const IEntity& parent, InputHandler& inputHandler);
             ~ControllerComponent();
 
             virtual bool RecieveMessage(Message* message) override;

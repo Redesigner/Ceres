@@ -7,7 +7,7 @@ const int MAX_AXIS_SIZE = 2;
 namespace Ceres
 {
     InputHandler::InputHandler()
-        :_map(std::unordered_map<Button, voidFunctionType>(MAX_INPUTMAP_SIZE)),
+        :_inputMap(std::unordered_map<Button, voidFunctionType>(MAX_INPUTMAP_SIZE)),
         _axis2DMap(std::unordered_map<std::string, Axis2D>(MAX_AXIS_SIZE))
     {}
 
@@ -16,18 +16,35 @@ namespace Ceres
 
     void InputHandler::BindInput(Button input, voidFunctionType function)
     {
-        _map.insert(std::pair<Button, voidFunctionType>(input, function));
+        _inputMap.insert(std::pair<Button, voidFunctionType>(input, function));
     }
+    
+    void InputHandler::BindCursorInput(cursorFunctionType& function)
+    {
+        _cursorInputMap.emplace_front(function);
+    }
+
 
     void InputHandler::HandleInput(Button input)
     {
-        std::unordered_map<Button, voidFunctionType>::const_iterator get = _map.find(input);
-        if(get == _map.end())
+        std::unordered_map<Button, voidFunctionType>::const_iterator get = _inputMap.find(input);
+        if(get == _inputMap.end())
         {
             return;
         }
         get->second();
     }
+
+    void InputHandler::HandleCursorInput(int x, int y)
+    {
+        for (cursorFunctionType function : _cursorInputMap)
+        {
+            function(x, y);
+        }
+    }
+
+
+    // ============ State-based axis logic =============
 
     void InputHandler::BindAxis(std::string id, Button positive, Button negative)
     {

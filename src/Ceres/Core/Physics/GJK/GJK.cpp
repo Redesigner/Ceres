@@ -21,7 +21,6 @@ namespace Ceres
         *outDirection = Vector3::Zero();
         for (int i = 0; i < maxIterations; i++)
         {
-            fmt::print("{}\n\n", MinkowskiDifference.ToString());
             if (MinkowskiDifference.IsFull())
             {
                 if (MinkowskiDifference.ContainsPoint(Vector3::Zero()))

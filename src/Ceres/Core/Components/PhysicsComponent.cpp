@@ -39,11 +39,6 @@ namespace Ceres
             Velocity = message->GetData<Vector3>();
             return true;
         }
-        else if (message->Type == "Print")
-        {
-            fmt::print("Furthest vertex: {}\n", _primitive->FurthestVertex(Vector3(1, 0, 0))[0].ToString());
-            return true;
-        }
         return false;
     }
 

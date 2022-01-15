@@ -55,17 +55,6 @@ namespace Ceres
         InputHandler.BindAxis("Rotation", Button::Key_o, Button::Key_p);
 
         _entities = std::vector<IEntity*>(4);
-
-        VertexList shape = CubePrimitive(4.0f)._vertices;
-        // shape[3] = shape[3] * 4.0f;
-        // shape[1] = shape[1] * 4.0f;
-
-        VertexList wrapped = PhysicsUtilities::GiftWrap(shape);
-        fmt::print("Gift wrapped: {}\n", wrapped.Size());
-        for (Vector3 vertex : wrapped)
-        {
-            fmt::print("Vertex {}\n", vertex.ToString());
-        }
         return true;
     }
 
