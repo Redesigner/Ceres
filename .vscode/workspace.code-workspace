@@ -71,7 +71,8 @@
 			"*.rh": "cpp",
 			"typeindex": "cpp",
 			"stack": "cpp",
-			"deque": "cpp"
+			"deque": "cpp",
+			"forward_list": "cpp"
 		}
 	}
 }

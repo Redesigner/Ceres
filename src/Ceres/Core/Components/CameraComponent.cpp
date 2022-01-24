@@ -58,6 +58,11 @@ namespace Ceres
         return _viewPosition;
     }
 
+    const Vector3 CameraComponent::GetPosition()
+    {
+        return Position + (Matrix::RotationFromEuler(Rotation.X, Rotation.Y, Rotation.Z) * Offset);
+    }
+
     // Private methods
     void CameraComponent::_setPosition(const Vector3& position)
     {

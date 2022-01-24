@@ -16,6 +16,7 @@ namespace Ceres
             const Matrix& GetMatrix();
             const Matrix& GetRotationMatrix();
             const Matrix& GetPositionMatrix();
+            const Vector3 GetPosition();
 
             Vector3 Position;
             Vector3 Rotation;
