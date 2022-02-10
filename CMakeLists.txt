@@ -51,6 +51,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
 
 	src/Ceres/Core/Graphics/Primitives/Cube.cpp
+	src/Ceres/Core/Graphics/Primitives/Sphere.cpp
 
 	src/Ceres/Core/Graphics/VertexTypes/IVertexLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
@@ -69,7 +70,9 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Physics/ConvexHull.cpp
 	src/Ceres/Core/Physics/IPrimitive.cpp
 	src/Ceres/Core/Physics/Primitives/CubePrimitive.cpp
+	src/Ceres/Core/Physics/Primitives/SpherePrimitive.cpp
 	src/Ceres/Core/Physics/PhysicsUtilities.cpp
+	src/Ceres/Core/Physics/SweepResult.cpp
 
 	src/Ceres/Core/Physics/GJK/GJK.cpp
 	src/Ceres/Core/Physics/GJK/Simplex.cpp

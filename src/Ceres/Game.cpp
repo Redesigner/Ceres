@@ -7,6 +7,7 @@
 #include "Core/Graphics/VertexTypes/VertexPosition.h"
 #include "Core/Graphics/VertexTypes/VertexPositionLayout.h"
 #include "Core/Graphics/Primitives/Cube.h"
+#include "Core/Graphics/Primitives/Sphere.h"
 
 #include "Core/Services/RenderService.h"
 #include "Core/Services/InputService.h"
@@ -61,13 +62,19 @@ namespace Ceres
     void Game::Load()
     {
         Cube cube = Cube(1, 1, 1);
-        uint8_t meshId = GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalLayout(), 24, cube.Indices, 36);
+        GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalLayout(), 24, cube.Indices, 36);
+
+        Sphere sphere = Sphere(.25f, 16, 16);
+        GraphicsDevice.LoadMesh(sphere.Vertices, VertexPositionNormalLayout(), sphere.VertexCount, sphere.Indices, sphere.IndexCount);
+
 
         _entities.emplace_back(new Actor(ServiceContainer));
         _entities.emplace_back(new Block(ServiceContainer, 1.0f, 5.0f, 1.0f));
-        Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f);
-        b2->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, -2.5f, 0.0f)));
-        _entities.emplace_back(b2);
+
+        /* Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f);
+        b2->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, -3.0f, 0.0f)));
+        _entities.emplace_back(b2); */
+        // because the entity is in the master list, it will be deleted when the game is destroyed, so we don't have to worry about it
     }
 
     void Game::Update(double seconds)

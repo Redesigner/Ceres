@@ -6,11 +6,14 @@
 
 namespace Ceres
 {
+    struct IPrimitive;
+    
     class Block : public IEntity
     {
         public:
             Block(ServiceContainer& serviceContainer, float x, float y, float z);
             ~Block();
         private:
+            IPrimitive* _primitive;
     };
 }

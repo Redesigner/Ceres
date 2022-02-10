@@ -35,7 +35,7 @@ namespace Ceres
 
         _wireframeEffect = LoadEffect("Shaders\\wireframeVertex.GLSL", "Shaders\\wireframeFragment.GLSL");
         _wireframeLayout = new VertexPositionLayout();
-        _wireframe = new VertexStream(*_wireframeLayout, 32, _wireframeEffect);
+        _wireframe = new VertexStream(*_wireframeLayout, 64, _wireframeEffect);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -75,6 +75,8 @@ namespace Ceres
     {
         MeshPtr componentMesh = _loadedMeshes[renderComponent->MeshId];
         componentMesh->GetVertexArray().Bind();
+        componentMesh->GetIndexBuffer().Bind();
+        
         _currentEffect->Begin();
         _currentEffect->SetViewMatrix(_currentCamera->GetMatrix());
         _currentEffect->SetVector3("cameraPos", _currentCamera->GetPosition());

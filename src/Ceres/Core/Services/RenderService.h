@@ -2,6 +2,7 @@
 
 #include "../Graphics/GraphicsDevice.h"
 #include "IService.h"
+#include "../Common/VertexList.h"
 
 namespace Ceres
 {
@@ -19,6 +20,7 @@ namespace Ceres
             void RenderComponents();
             
             void LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount);
+            void LoadWireframeData(VertexList& vertices);
             void ClearWireframe();
             
         private:

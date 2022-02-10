@@ -6,13 +6,7 @@
             "command": "${command:cmake.tasksBuildCommand}",
             "type": "shell",
             "group": "build",
-            "problemMatcher": [],
-            "options": {
-                "shell": {
-                    "executable": "cmd.exe",
-                    "args": [ "/c" ]
-                }
-            }
+            "problemMatcher": []
         }
     ]
 }

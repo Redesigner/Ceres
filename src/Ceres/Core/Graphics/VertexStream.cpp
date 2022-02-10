@@ -5,7 +5,7 @@
 namespace Ceres
 {
     VertexStream::VertexStream(const IVertexLayout& vertexLayout, const int bufferSize, EffectPtr effect)
-            :_vertexCount(0), _indexCount(0), _vAO(vertexLayout), _vBO(32, vertexLayout), _iBO(bufferSize)
+            :_vertexCount(0), _indexCount(0), _vAO(vertexLayout), _vBO(bufferSize, vertexLayout), _iBO(bufferSize)
     {
     }
     

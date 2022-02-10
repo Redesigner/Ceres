@@ -20,6 +20,10 @@ namespace Ceres
             bool SafeAddList(VertexList vertices);
 
             const Vector3 GetVertex(uint a) const;
+            VertexList GetVertices() const;
+            VertexList GetEdges() const;
+
+            float GetIntersection(Vector3 ray);
 
             Vector3 GetNormal(uint a, uint b, uint c);
             Vector3 GetNormal(uint a, uint b, Vector3 origin);

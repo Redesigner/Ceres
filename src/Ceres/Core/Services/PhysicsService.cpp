@@ -30,9 +30,10 @@ namespace Ceres
     {
         if (typeName == "PhysicsComponent")
         {
-            if (argCount == 0)
+            if (argCount == 1)
             {
-                _components.Insert(new PhysicsComponent(parent, new CubePrimitive(1)));
+                IPrimitive* primitive = static_cast<IPrimitive*>(args);
+                _components.Insert(new PhysicsComponent(parent, primitive));
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else
@@ -102,18 +103,20 @@ namespace Ceres
         {
             if (host == target) { continue; }
 
-            if (PhysicsUtilities::Sweep(*host->GetPrimitive(), *target->GetPrimitive(), v))
+            VertexList debug = VertexList();
+            SweepResult sweep = PhysicsUtilities::Sweep(*host->GetPrimitive(), *target->GetPrimitive(), v + vN * Vector3::Epsilon(), &debug);
+            // Collision found with sweep algorithm
+            if (sweep.Hit())
             {
-                // delta = PhysicsUtilities::SupportPoints(*host->GetPrimitive(), *target->GetPrimitive(), vN)[0].Dot(vN) * vN * -1 - (vN * Vector3::Epsilon());
-                GJK shortestMove = GJK(host, target);
-                status = shortestMove.Solve(&delta, &dN);
-                delta = delta.Dot(vN) * vN;
-                delta -= dN * Vector3::Epsilon();
+                Vector3 shortest;
+                // GJK shortestMove = GJK(host, target);
+                // status = shortestMove.Solve(&shortest, &dN);
 
-                if (delta.LengthSquared() > v.LengthSquared() && vN.Dot(delta) < 0)
-                {
-                    delta = Vector3::Zero();
-                }
+                _debugRenderer->ClearWireframe();
+                debug.Append(VertexList{host->GetPosition(), host->GetPosition() + sweep.GetNormal()});
+                _debugRenderer->LoadWireframeData(debug);
+
+                delta = sweep.GetDelta();
             }
         }
         if (delta.LengthSquared() < Vector3::Epsilon() * Vector3::Epsilon()) { return; }

@@ -2,17 +2,23 @@
 
 #include <cstdarg>
 
+#include <cstdio>
+
 namespace Ceres
 {
     VertexList::VertexList()
         :_internalList()
     {}
 
+    VertexList::VertexList(const VertexList& Other)
+        : _internalList(Other._internalList)
+    {}
+
     VertexList::VertexList(int size)
         :_internalList(size)
     {}
 
-    VertexList::VertexList(std::initializer_list<Vector3>& init)
+    VertexList::VertexList(std::initializer_list<Vector3> init)
         :_internalList(init)
     {}
 
@@ -31,6 +37,27 @@ namespace Ceres
     const Vector3& VertexList::operator[](int index) const
     {
         return _internalList[index];
+    }
+
+    Vector3* VertexList::begin()
+    {
+        if (Size() == 0) { return nullptr; }
+        return _internalList.data();
+    }
+    const Vector3* VertexList::begin() const
+    {
+        if (Size() == 0) { return nullptr; }
+        return _internalList.data();
+    }
+    Vector3* VertexList::end()
+    {
+        if (Size() == 0) { return nullptr; }
+        return _internalList.data() + Size();
+    }
+    const Vector3* VertexList::end() const
+    {
+        if (Size() == 0) { return nullptr; }
+        return _internalList.data() + Size();
     }
 
     void VertexList::Append(Vector3& vertex)

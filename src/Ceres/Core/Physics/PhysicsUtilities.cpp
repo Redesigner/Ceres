@@ -353,48 +353,84 @@ namespace Ceres
     }
 
 
-    bool PhysicsUtilities::Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta)
+    SweepResult PhysicsUtilities::Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta)
+    {
+        VertexList points = VertexList();
+        return Sweep(shape, targetShape, delta, &points);
+    }
+
+    SweepResult PhysicsUtilities::Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta, VertexList* outVertices)
     {
         bool printDebug = false;
         Vector3 direction = delta.Normalize();
         delta += direction * Vector3::Epsilon();
 
+        if (printDebug)
+        {
+            // Generate a cross shape around the origin
+            outVertices->Insert(0, Vector3(0.1f, 0.1f, 0.f));
+            outVertices->Insert(1, Vector3(-0.1f, -0.1f, 0.f));
+            outVertices->Insert(2, Vector3(0.1f, -0.1f, 0.f));
+            outVertices->Insert(3, Vector3(-0.1f, 0.1f, 0.f));
+        }
+
         Simplex simplex = Simplex();
         Vector3 searchDirection = (targetShape.GetTransform().GetPosition() - shape.GetTransform().GetPosition()).Normalize();
-        if (PhysicsUtilities::NearlyZero(searchDirection))
-        {
-            searchDirection = Vector3::Up();
-        }
-        VertexList supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, delta));
+        
+        if (PhysicsUtilities::NearlyZero(searchDirection)) { searchDirection = Vector3::Up(); }
+
+        VertexList supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, /* delta */ Vector3::Zero() ));
         simplex.SafeAdd(supports[0]);
 
         if (printDebug) { fmt::print("\n\nBeginning sweep\n"); }
+
         for (int i = 0; i < 16; i++)
         {
             if (printDebug) { fmt::print("{}\n", simplex.ToString()); }
+
             if (simplex.IsFull())
             {
                 if (simplex.ContainsPoint(Vector3::Zero()))
                 {
-                    return true;
+                    if (printDebug) { outVertices->Append(simplex.GetEdges()); }
+                    return SweepResult(false);
                 }
                 simplex.CullNoncontributingVertices(Vector3::Zero());
             }
             else
             {
                 searchDirection = simplex.GetNextNormal();
-                supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, delta));
+                supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, Vector3::Zero() ));
 
                 if (!simplex.SafeAddList(supports) && !simplex.CollapseVornoiRegions(Vector3::Zero()))
                 {
-                    simplex.GetShortestDistance(Vector3::Zero());
-                    simplex.GetNextNormal();
-                    // return simplex.GetVertexCount() == 4;
-                    return false;
+                    // simplex.GetShortestDistance(Vector3::Zero());
+
+                    Vector3 collisionNormal = simplex.GetNextNormal();
+                    float distance = simplex.GetIntersection(direction);
+                    
+                    fmt::print("Shortest move along {} is {}\n", direction.ToString(), distance);
+
+                    if (printDebug) { outVertices->Append(VertexList{Vector3::Zero(), simplex.GetIntersection(direction)}); }
+                    // if (distance == 0.0f) { return SweepResult(false); }
+                    
+                    if (distance < 0.0f)
+                    {
+                        distance += Vector3::Epsilon();
+                    }
+                    else
+                    {
+                        distance -= Vector3::Epsilon();
+                    }
+                    bool result = distance * distance < delta.LengthSquared() && collisionNormal.Dot(direction) > 0.0f;
+
+                    return SweepResult(result, collisionNormal, distance);
                 }
             }
         }
-        return false;
+
+        if (printDebug) { outVertices->Append(simplex.GetEdges()); }
+        return SweepResult(false);
     }
 
     VertexList PhysicsUtilities::supportPointsSweep(IPrimitive& shapeA, IPrimitive& shapeB, Vector3 direction, Vector3 sweepDirection)

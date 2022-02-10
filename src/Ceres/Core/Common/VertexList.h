@@ -11,8 +11,9 @@ namespace Ceres
     {
         public:
             VertexList();
+            VertexList(const VertexList& Other);
             VertexList(int size);
-            VertexList(std::initializer_list<Vector3>& init);
+            VertexList(std::initializer_list<Vector3> init);
             VertexList(std::initializer_list<Vector3> init, std::allocator<Vector3> allocator);
             ~VertexList();
 
@@ -20,10 +21,10 @@ namespace Ceres
             const Vector3& operator[](int index) const;
 
             // iterator functions
-            Vector3* begin() { return &_internalList[0]; }
-            const Vector3* begin() const { return &_internalList[0]; }
-            Vector3* end() { return &_internalList[Size()]; }
-            const Vector3* end() const { return &_internalList[Size()]; }
+            Vector3* begin();
+            const Vector3* begin() const;
+            Vector3* end();
+            const Vector3* end() const;
 
             void Append(Vector3& vector);
             void Append(VertexList& vertexList);

@@ -27,6 +27,52 @@ namespace Ceres
         return Vector3::Zero();
     }
 
+    VertexList Simplex::GetVertices() const
+    {
+        return _vertices;
+    }
+
+    VertexList Simplex::GetEdges() const
+    {
+        switch (_vertexCount)
+        {
+            default:
+            {
+                return VertexList();
+            }
+            case 1:
+            {
+                return VertexList{_vertices[0]};
+            }
+            case 2:
+            {
+                return VertexList{_vertices[0], _vertices[1]};
+            }
+            case 3:
+            {
+                // Make 3 lines...
+                return VertexList{_vertices[0], _vertices[1], _vertices[1], _vertices[2], _vertices[2], _vertices[0]};
+            }
+            case 4:
+            {
+                return VertexList{
+                    _vertices[0], _vertices[1], _vertices[1], _vertices[2], _vertices[2], _vertices[0], // ABC
+                    _vertices[0], _vertices[2], _vertices[2], _vertices[3], _vertices[3], _vertices[0], // ACD
+                    _vertices[1], _vertices[2], _vertices[2], _vertices[3], _vertices[3], _vertices[1]  // BCD
+                };
+            }
+        }
+    }
+
+    float Simplex::GetIntersection(Vector3 ray)
+    {
+        Vector3 n = GetNextNormal();
+        float divisor = ray.Dot(n);
+        if (PhysicsUtilities::NearlyZero(divisor)) { return 0.0f; }
+        float d = _vertices[0].Dot(n) / divisor;
+        return d;
+    }
+
     std::string Simplex::ToString() const
     {
         return fmt::format("Simplex [{}]: {}", _vertexCount, _vertices.ToString());

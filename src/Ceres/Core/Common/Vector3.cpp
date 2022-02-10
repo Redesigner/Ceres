@@ -132,7 +132,7 @@ namespace Ceres
 
     std::string Vector3::ToString() const
     {
-        return fmt::format("({}, {}, {})", X, Y, Z);
+        return fmt::format("({}, {}, {})", std::round(X * 1000) / 1000, std::round(Y * 1000) / 1000, std::round(Z * 1000) / 1000);
     }
 
     Vector3 operator*(float scalar, const Vector3& vector)
