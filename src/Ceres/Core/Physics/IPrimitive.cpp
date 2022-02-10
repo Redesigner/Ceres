@@ -8,7 +8,12 @@ namespace Ceres
     IPrimitive::~IPrimitive()
     {}
 
-    Transform IPrimitive::GetTransform()
+    float IPrimitive::GetSphereRadius() const
+    {
+        return 0.0f;
+    }
+
+    Transform IPrimitive::GetTransform() const
     {
         return _transform;
     }

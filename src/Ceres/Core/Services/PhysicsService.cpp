@@ -80,7 +80,10 @@ namespace Ceres
 
     void PhysicsService::stepComponent(PhysicsComponent* host, float seconds)
     {
-        if (seconds <= 0 || host->Velocity == Vector3::Zero()) { return; }
+        if (seconds <= 0.0f || host->Velocity == Vector3::Zero())
+        {
+            return;
+        }
         float semiMajorAxis = host->GetPrimitive()->SemiMajorAxis();
         float searchDistance = host->Velocity.LengthSquared() * seconds + semiMajorAxis * semiMajorAxis;
 
@@ -94,32 +97,49 @@ namespace Ceres
         Vector3 delta = v;
 
         bool impact = false;
+        float impactDistance = v.Length();
 
         PhysicsComponent* firstImpact = host;
         GJK::CollisionType status = GJK::CollisionType::None;
 
         std::vector<PhysicsComponent*> targets = _getComponentsWithinDistance(host, searchDistance);
+
+        // fmt::print("Beginning move... initial displacement is {}\n", v.ToString());
         for (PhysicsComponent* target : targets)
         {
-            if (host == target) { continue; }
+            // Make sure we aren't sweeping against ourself
+            if (host == target)
+            {
+                continue;
+            }
 
             VertexList debug = VertexList();
             SweepResult sweep = PhysicsUtilities::Sweep(*host->GetPrimitive(), *target->GetPrimitive(), v + vN * Vector3::Epsilon(), &debug);
             // Collision found with sweep algorithm
             if (sweep.Hit())
             {
-                Vector3 shortest;
-                // GJK shortestMove = GJK(host, target);
-                // status = shortestMove.Solve(&shortest, &dN);
-
+                impact = true;
                 _debugRenderer->ClearWireframe();
                 debug.Append(VertexList{host->GetPosition(), host->GetPosition() + sweep.GetNormal()});
                 _debugRenderer->LoadWireframeData(debug);
 
-                delta = sweep.GetDelta();
+                // prioritize the shortest collision distance
+                if (sweep.GetDistance() < impactDistance)
+                {
+                    delta = (vN * sweep.GetDistance()) - (sweep.GetNormal() * Vector3::Epsilon());
+                }
+                else
+                {
+                    delta -= (sweep.GetNormal() * Vector3::Epsilon());
+                }
             }
         }
-        if (delta.LengthSquared() < Vector3::Epsilon() * Vector3::Epsilon()) { return; }
+        // fmt::print("Final displacement is {}\n", delta.ToString());
+        // Don't make veryy small moves. This should prevent sliding
+        if (delta.LengthSquared() < Vector3::Epsilon())
+        {
+            return;
+        }
         host->SetPosition(host->GetPosition() + delta);
     }
 }

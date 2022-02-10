@@ -12,11 +12,15 @@ namespace Ceres
     VertexList SpherePrimitive::FurthestVertex(Vector3 directionUnit)
     {
         Vector3 position = GetTransform().GetPosition();
-        VertexList result = VertexList{position + directionUnit * _radius};
-        return result;
+        return VertexList{position};
     }
 
     float SpherePrimitive::SemiMajorAxis()
+    {
+        return _radius;
+    }
+
+    float SpherePrimitive::GetSphereRadius() const
     {
         return _radius;
     }

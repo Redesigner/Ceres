@@ -25,6 +25,7 @@ namespace Ceres
         return _result ? _distance : 0.0f;
     }
 
+    /// DON'T USE! MATH IS WRONG!!!
     Vector3 SweepResult::GetDelta() const
     {
         return _result ? -1.0f * _collisionNormal * _distance : Vector3::Zero();

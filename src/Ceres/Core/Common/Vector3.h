@@ -34,6 +34,7 @@ namespace Ceres
             Vector3 operator*(float scalar) const;
             Vector3 operator/(const Vector3& vector) const;
             Vector3 operator/(float scalar) const;
+            Vector3 operator-() const;
             
             std::string ToString() const;
 

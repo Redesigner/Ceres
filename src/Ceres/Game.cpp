@@ -71,10 +71,11 @@ namespace Ceres
         _entities.emplace_back(new Actor(ServiceContainer));
         _entities.emplace_back(new Block(ServiceContainer, 1.0f, 5.0f, 1.0f));
 
-        /* Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f);
+        Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f);
         b2->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, -3.0f, 0.0f)));
-        _entities.emplace_back(b2); */
-        // because the entity is in the master list, it will be deleted when the game is destroyed, so we don't have to worry about it
+        _entities.emplace_back(b2); 
+        // NOTE: because the entity is in the master list, it will be deleted when the game is destroyed, so we don't have to worry about it
+        // see the Game destructor...
     }
 
     void Game::Update(double seconds)

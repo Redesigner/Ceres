@@ -120,6 +120,11 @@ namespace Ceres
         return Vector3(X / scalar, Y / scalar, Z / scalar);
     }
 
+    Vector3 Vector3::operator-() const
+    {
+        return Vector3(-X, -Y, -Z);
+    }
+
     bool Vector3::operator==(const Vector3& vector)
     {
         return (X == vector.X) && (Y == vector.Y) && (Z == vector.Z);

@@ -361,13 +361,15 @@ namespace Ceres
 
     SweepResult PhysicsUtilities::Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta, VertexList* outVertices)
     {
-        bool printDebug = false;
+        // There are a lot of different debug values and stages to output, so switch it here
+        const bool printDebug = true;
+
         Vector3 direction = delta.Normalize();
-        delta += direction * Vector3::Epsilon();
+        float sharedRadius = shape.GetSphereRadius() + targetShape.GetSphereRadius();
 
         if (printDebug)
         {
-            // Generate a cross shape around the origin
+            // Generate a cross shape around the origin and on the XY plane
             outVertices->Insert(0, Vector3(0.1f, 0.1f, 0.f));
             outVertices->Insert(1, Vector3(-0.1f, -0.1f, 0.f));
             outVertices->Insert(2, Vector3(0.1f, -0.1f, 0.f));
@@ -375,61 +377,79 @@ namespace Ceres
         }
 
         Simplex simplex = Simplex();
+        // Our first search direction will be the direction between the origins of both shapes
         Vector3 searchDirection = (targetShape.GetTransform().GetPosition() - shape.GetTransform().GetPosition()).Normalize();
         
-        if (PhysicsUtilities::NearlyZero(searchDirection)) { searchDirection = Vector3::Up(); }
+        // If the search direction is nearly zero, it's invalid, so we'll just use a different vector. This shouldn't happen under normal conditions
+        if (PhysicsUtilities::NearlyZero(searchDirection))
+        {
+            searchDirection = Vector3::Up();
+        }
 
-        VertexList supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, /* delta */ Vector3::Zero() ));
+        VertexList supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, Vector3::Zero() ));
         simplex.SafeAdd(supports[0]);
 
-        if (printDebug) { fmt::print("\n\nBeginning sweep\n"); }
+        if (printDebug)
+        {
+            fmt::print("\n\nPhysics Utils: Beginning sweep\n");
+        }
 
+        // Limit the number of iterations, the algorithm can sometimes get stuck due to floating point errors
         for (int i = 0; i < 16; i++)
         {
-            if (printDebug) { fmt::print("{}\n", simplex.ToString()); }
-
+            if (printDebug)
+            {
+                fmt::print("Iter {}: {}\n", i, simplex.ToString());
+            }
             if (simplex.IsFull())
             {
                 if (simplex.ContainsPoint(Vector3::Zero()))
                 {
-                    if (printDebug) { outVertices->Append(simplex.GetEdges()); }
-                    return SweepResult(false);
+                    if (printDebug)
+                    {
+                        outVertices->Append(simplex.GetEdges());
+                        fmt::print("Shapes are already overlapping\n");
+                    }
+                    return SweepResult(true);
                 }
+                // Remove all vertices from the simplex that can't help encapsulate our origin
                 simplex.CullNoncontributingVertices(Vector3::Zero());
             }
             else
             {
                 searchDirection = simplex.GetNextNormal();
-                supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, Vector3::Zero() ));
+                supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, direction * 0.02f ));
 
+                // Can't add any more points, and removal of extra vertices has failed
                 if (!simplex.SafeAddList(supports) && !simplex.CollapseVornoiRegions(Vector3::Zero()))
                 {
-                    // simplex.GetShortestDistance(Vector3::Zero());
 
                     Vector3 collisionNormal = simplex.GetNextNormal();
-                    float distance = simplex.GetIntersection(direction);
-                    
-                    fmt::print("Shortest move along {} is {}\n", direction.ToString(), distance);
+                    float distance = simplex.GetIntersection(-direction);
+                    Vector3 separation = simplex.GetShortestDistance(Vector3::Zero());
 
-                    if (printDebug) { outVertices->Append(VertexList{Vector3::Zero(), simplex.GetIntersection(direction)}); }
-                    // if (distance == 0.0f) { return SweepResult(false); }
-                    
-                    if (distance < 0.0f)
-                    {
-                        distance += Vector3::Epsilon();
-                    }
-                    else
-                    {
-                        distance -= Vector3::Epsilon();
-                    }
-                    bool result = distance * distance < delta.LengthSquared() && collisionNormal.Dot(direction) > 0.0f;
+                    const bool moveTooLong = distance * distance < delta.LengthSquared();
+                    const bool validDirection = !PhysicsUtilities::NearlyZero(direction.Dot(collisionNormal));
+                    bool result = moveTooLong && validDirection && distance > -Vector3::Epsilon();
 
+                    if (printDebug)
+                    {
+                        fmt::print("Shortest move along {} is {}\n", direction.ToString(), distance);
+                        fmt::print("we are trying to move the shape by {}\n", delta.Length());
+                        fmt::print("Shapes are currently {} apart in the closest direction, {}\n", separation.Length(), collisionNormal.ToString());
+                        fmt::print("Hit found? {}\n", result);
+                        outVertices->Append(VertexList{Vector3::Zero(), direction * simplex.GetIntersection(direction)});
+                    }
                     return SweepResult(result, collisionNormal, distance);
                 }
             }
         }
 
-        if (printDebug) { outVertices->Append(simplex.GetEdges()); }
+        if (printDebug)
+        {
+            outVertices->Append(simplex.GetEdges());
+            fmt::print("!Warning! GJK overflow. Check the complexity of the shapes or allow for more iterations.\n");
+        }
         return SweepResult(false);
     }
 
