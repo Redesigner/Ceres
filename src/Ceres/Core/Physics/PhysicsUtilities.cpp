@@ -362,9 +362,10 @@ namespace Ceres
     SweepResult PhysicsUtilities::Sweep(IPrimitive& shape, IPrimitive& targetShape, Vector3 delta, VertexList* outVertices)
     {
         // There are a lot of different debug values and stages to output, so switch it here
-        const bool printDebug = true;
+        const bool printDebug = false;
 
         Vector3 direction = delta.Normalize();
+        delta += direction * Vector3::Epsilon();
         float sharedRadius = shape.GetSphereRadius() + targetShape.GetSphereRadius();
 
         if (printDebug)
@@ -418,7 +419,7 @@ namespace Ceres
             else
             {
                 searchDirection = simplex.GetNextNormal();
-                supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, direction * 0.02f ));
+                supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, Vector3::Zero() ));
 
                 // Can't add any more points, and removal of extra vertices has failed
                 if (!simplex.SafeAddList(supports) && !simplex.CollapseVornoiRegions(Vector3::Zero()))
@@ -428,19 +429,24 @@ namespace Ceres
                     float distance = simplex.GetIntersection(-direction);
                     Vector3 separation = simplex.GetShortestDistance(Vector3::Zero());
 
-                    const bool moveTooLong = distance * distance < delta.LengthSquared();
+                    if (sharedRadius != 0.0f)
+                    {
+                        sharedRadius /= std::abs(collisionNormal.Dot(direction));
+                    }
+
+                    const bool moveTooLong = distance < delta.Length() + sharedRadius;
                     const bool validDirection = !PhysicsUtilities::NearlyZero(direction.Dot(collisionNormal));
                     bool result = moveTooLong && validDirection && distance > -Vector3::Epsilon();
 
                     if (printDebug)
                     {
-                        fmt::print("Shortest move along {} is {}\n", direction.ToString(), distance);
+                        fmt::print("Shortest move along {} is {}\n", direction.ToString(), distance - sharedRadius);
                         fmt::print("we are trying to move the shape by {}\n", delta.Length());
                         fmt::print("Shapes are currently {} apart in the closest direction, {}\n", separation.Length(), collisionNormal.ToString());
                         fmt::print("Hit found? {}\n", result);
                         outVertices->Append(VertexList{Vector3::Zero(), direction * simplex.GetIntersection(direction)});
                     }
-                    return SweepResult(result, collisionNormal, distance);
+                    return SweepResult(result, collisionNormal, distance - sharedRadius);
                 }
             }
         }

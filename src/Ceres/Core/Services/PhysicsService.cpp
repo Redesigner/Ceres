@@ -89,22 +89,15 @@ namespace Ceres
 
         Vector3 v = host->Velocity * seconds;
         Vector3 vN = v.Normalize();
-        Vector3 vResult = v;
-
-        Vector3 d = Vector3::Zero();
-        Vector3 dN = Vector3::Zero();
-
         Vector3 delta = v;
-
         bool impact = false;
-        float impactDistance = v.Length();
 
-        PhysicsComponent* firstImpact = host;
         GJK::CollisionType status = GJK::CollisionType::None;
+        VertexList debug = VertexList();
+
 
         std::vector<PhysicsComponent*> targets = _getComponentsWithinDistance(host, searchDistance);
-
-        // fmt::print("Beginning move... initial displacement is {}\n", v.ToString());
+        std::vector<SweepResult> collisions = std::vector<SweepResult>();
         for (PhysicsComponent* target : targets)
         {
             // Make sure we aren't sweeping against ourself
@@ -113,28 +106,31 @@ namespace Ceres
                 continue;
             }
 
-            VertexList debug = VertexList();
             SweepResult sweep = PhysicsUtilities::Sweep(*host->GetPrimitive(), *target->GetPrimitive(), v + vN * Vector3::Epsilon(), &debug);
             // Collision found with sweep algorithm
             if (sweep.Hit())
             {
+                if (!impact)
+                {
+                    // _debugRenderer->ClearWireframe();
+                }
                 impact = true;
-                _debugRenderer->ClearWireframe();
-                debug.Append(VertexList{host->GetPosition(), host->GetPosition() + sweep.GetNormal()});
-                _debugRenderer->LoadWireframeData(debug);
-
-                // prioritize the shortest collision distance
-                if (sweep.GetDistance() < impactDistance)
-                {
-                    delta = (vN * sweep.GetDistance()) - (sweep.GetNormal() * Vector3::Epsilon());
-                }
-                else
-                {
-                    delta -= (sweep.GetNormal() * Vector3::Epsilon());
-                }
+                collisions.emplace_back(sweep);
             }
         }
-        // fmt::print("Final displacement is {}\n", delta.ToString());
+        if (impact)
+        {
+            float vMag = delta.Length();
+            for (SweepResult sweep : collisions)
+            {
+                if (sweep.Hit())
+                {
+                    delta -= (vMag - sweep.GetDistance() + Vector3::Epsilon()) * sweep.GetNormal() * sweep.GetNormal().Dot(vN);
+                }
+            }
+
+            // _debugRenderer->LoadWireframeData(debug);
+        }
         // Don't make veryy small moves. This should prevent sliding
         if (delta.LengthSquared() < Vector3::Epsilon())
         {
