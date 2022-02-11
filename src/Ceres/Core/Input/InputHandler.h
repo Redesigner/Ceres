@@ -15,7 +15,7 @@ extern "C"
     #include <SDL2/SDL.h>
 }
 
-typedef void (*voidFunctionType)(void);
+using voidFunctionType = std::function<void(void)>;
 using cursorFunctionType = std::function<void(int, int)>;
 
 namespace Ceres

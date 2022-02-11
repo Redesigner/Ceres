@@ -39,6 +39,11 @@ namespace Ceres
             Acceleration = message->GetData<Vector3>();
             return true;
         }
+        else if (message->Type == "Pause")
+        {
+            Paused = !Paused;
+            return true;
+        }
         return false;
     }
 

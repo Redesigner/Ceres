@@ -63,24 +63,32 @@ namespace Ceres
         Cube cube = Cube(1, 1, 1, Color::Blue());
         GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalColorLayout(), 24, cube.Indices, 36);
 
-        Sphere sphere = Sphere(.25f, 16, 16, Color(255, 255, 0));
+        Sphere sphere = Sphere(.25f, 16, 16, Color(255, 0, 0));
         GraphicsDevice.LoadMesh(sphere.Vertices, VertexPositionNormalColorLayout(), sphere.VertexCount, sphere.Indices, sphere.IndexCount);
 
-
-        _entities.emplace_back(new Actor(ServiceContainer));
+        Actor* actor = new Actor(ServiceContainer);
+        InputHandler.BindInput(Button::Key_pause, [actor](){
+            actor->SendMessage(Message::Write<void>("Pause", 0));
+        });
+        _entities.emplace_back(actor);
 
         Block* b1 = new Block(ServiceContainer, 1.0f, 5.0f, 1.0f);
         Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f);
         Block* b3 = new Block(ServiceContainer, 5.0f, 2.0f, 1.0f);
+        Block* b4 = new Block(ServiceContainer, 0.1f, 5.0f, 0.5f);
+
         b1->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, 0.0f, -2.0f)));
         b2->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, -3.0f, -2.0f)));
 
         b3->SendMessage(Message::Write<Vector3>("Rotate", &Vector3(0.0f, -0.5f, 0.0f)));
         b3->SendMessage(Message::Write<Vector3>("Position", &Vector3(3.0f, 0.0f, -0.7f)));
 
+        b4->SendMessage(Message::Write<Vector3>("Position", &Vector3(-0.5f, 0.0f, -1.25f)));
+
         _entities.emplace_back(b1);
         _entities.emplace_back(b2);
         _entities.emplace_back(b3);
+        _entities.emplace_back(b4);
         // NOTE: because the entity is in the master list, it will be deleted
         // when the game is destroyed, so we don't have to worry about it
         // see the Game destructor...

@@ -23,6 +23,8 @@ namespace Ceres
         ComponentRef movement = serviceContainer.GetService<ActorService>()->GenerateComponent("MovementComponent", *this, 0, nullptr);
         _components = {mesh, camera, controller, physics, movement};
 
+        SendMessage(Message::Write<void>("Pause", 0));
+
         SendMessage(Message::Write<Vector3>("Position", &Vector3::Zero() ));
     }
 

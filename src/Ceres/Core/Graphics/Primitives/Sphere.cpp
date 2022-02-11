@@ -80,9 +80,9 @@ namespace Ceres
         for (int j = 0; j < segments; j++)
         {
             generateTriangleFace(  
-                0,
+                1 + ((j + 1) % segments),
                 1 + j,
-                1 + ((j + 1) % segments));
+                0);
         }
     }
     void Sphere::generateRing(int segments, int ringNum)

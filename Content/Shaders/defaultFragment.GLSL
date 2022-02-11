@@ -1,6 +1,6 @@
 #version 400
 
-in vec3 wNormal;
+in vec4 wNormal;
 in vec4 wPosition;
 in vec3 wColor;
 in vec4 wLightPos;
@@ -12,16 +12,17 @@ uniform vec3 cameraPos;
 void main()
 {
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
+    vec3 wNormalF = normalize(wNormal).xyz;
 
     float diffStrength = 0.6;
     float specularStrength = 0.8;
-    float ambientStrength = 0.2;
+    float ambientStrength = 0.1;
 
     vec3 lightDir = normalize(wLightPos.xyz - wPosition.xyz);
     vec3 viewDir = normalize(wPosition.xyz - cameraPos);
-    vec3 reflectDir = reflect(lightDir, wNormal);
+    vec3 reflectDir = reflect(lightDir, wNormalF);
 
-    float diff = max( (dot(wNormal, lightDir) ), 0.0);
+    float diff = max( (dot(wNormalF, lightDir) ), 0.0);
     float spec = pow(
         clamp(dot(viewDir, reflectDir), 0.0, 1.0) * ceil(diff), 
         16);

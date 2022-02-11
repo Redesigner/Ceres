@@ -55,7 +55,7 @@ namespace Ceres
         for (IComponent* component : _components)
         {
             PhysicsComponent* physicsComponent = dynamic_cast<PhysicsComponent*>(component);
-            if (!physicsComponent)
+            if (!physicsComponent || physicsComponent->Paused)
             {
                 continue;
             }

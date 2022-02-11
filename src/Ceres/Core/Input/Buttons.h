@@ -78,6 +78,7 @@ namespace Ceres
         Key_F11 = 68,
         Key_F12 = 69,
         Key_printscreen = 70,
+        Key_pause = 72,
         Key_insert = 73,
         Key_home = 74,
         Key_pageup = 75,

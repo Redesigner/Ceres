@@ -21,6 +21,8 @@ namespace Ceres
             Vector3 Velocity;
             Vector3 Acceleration;
 
+            bool Paused = true;
+
         private:
             IPrimitive* _primitive;
     };

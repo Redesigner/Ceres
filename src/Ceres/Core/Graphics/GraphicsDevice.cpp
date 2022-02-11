@@ -29,6 +29,8 @@ namespace Ceres
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
 
+        glEnable(GL_CULL_FACE);
+
         _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
         _loadedMeshes = std::vector<MeshPtr>();
         
