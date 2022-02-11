@@ -61,11 +61,11 @@ namespace Ceres
 
     void Game::Load()
     {
-        Cube cube = Cube(1, 1, 1);
-        GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalLayout(), 24, cube.Indices, 36);
+        Cube cube = Cube(1, 1, 1, Color::Blue());
+        GraphicsDevice.LoadMesh(cube.Vertices, VertexPositionNormalColorLayout(), 24, cube.Indices, 36);
 
-        Sphere sphere = Sphere(.25f, 16, 16);
-        GraphicsDevice.LoadMesh(sphere.Vertices, VertexPositionNormalLayout(), sphere.VertexCount, sphere.Indices, sphere.IndexCount);
+        Sphere sphere = Sphere(.25f, 16, 16, Color(127, 127, 0));
+        GraphicsDevice.LoadMesh(sphere.Vertices, VertexPositionNormalColorLayout(), sphere.VertexCount, sphere.Indices, sphere.IndexCount);
 
 
         _entities.emplace_back(new Actor(ServiceContainer));

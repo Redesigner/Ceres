@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../VertexTypes/VertexPositionNormal.h"
-#include "../VertexTypes/VertexPositionNormalLayout.h"
+#include "../VertexTypes/VertexPositionNormalColor.h"
+#include "../VertexTypes/VertexPositionNormalColorLayout.h"
 #include "../VertexTypes/IVertexLayout.h"
 
 namespace Ceres
@@ -9,10 +9,10 @@ namespace Ceres
     struct Sphere
     {
         public:
-            Sphere(float radius, int segments, int rings);
+            Sphere(float radius, int segments, int rings, Color color);
             ~Sphere();
 
-            VertexPositionNormal* Vertices;
+            VertexPositionNormalColor* Vertices;
             int VertexCount;
             int* Indices;
             int IndexCount;

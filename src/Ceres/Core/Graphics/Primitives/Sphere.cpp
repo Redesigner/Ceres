@@ -7,14 +7,14 @@
 
 namespace Ceres
 {
-    Sphere::Sphere(float radius, int segments, int rings)
+    Sphere::Sphere(float radius, int segments, int rings, Color color)
     {
         VertexCount = segments * (rings - 1) + 2;
-        Vertices = new VertexPositionNormal[VertexCount];
+        Vertices = new VertexPositionNormalColor[VertexCount];
         IndexCount = segments * (rings - 1) * 6;
         Indices = new int[IndexCount];
 
-        Vertices[0] = VertexPositionNormal(Vector3(0.0f, 0.0f, -radius), Vector3(0.0f, 0.0f, -1.0f));
+        Vertices[0] = VertexPositionNormalColor(Vector3(0.0f, 0.0f, -radius), Vector3(0.0f, 0.0f, -1.0f), color);
 
         int currentIndex = 1;
 
@@ -31,10 +31,10 @@ namespace Ceres
                     std::cos(phi) * factor,
                     std::sin(phi) * factor,
                     z);
-                Vertices[currentIndex++] = VertexPositionNormal(point * radius, point);
+                Vertices[currentIndex++] = VertexPositionNormalColor(point * radius, point.Normalize(), color);
             }
         }
-        Vertices[VertexCount - 1] = VertexPositionNormal(Vector3(0.0f, 0.0f, radius), Vector3(0.0f, 0.0f, 1.0f));
+        Vertices[VertexCount - 1] = VertexPositionNormalColor(Vector3(0.0f, 0.0f, radius), Vector3(0.0f, 0.0f, 1.0f), color);
 
         generateRingBottom(segments);
         for (int i = 1; i < rings - 1; i++)

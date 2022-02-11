@@ -2,38 +2,38 @@
 
 namespace Ceres
 {
-    Cube::Cube(float x, float y, float z)
+    Cube::Cube(float x, float y, float z, Color color)
         :Vertices{
             // Front
-            VertexPositionNormal(Vector3(-x / 2, y / 2, -z / 2), Vector3(0, 0, -1)),
-            VertexPositionNormal(Vector3(x / 2, y / 2, -z / 2), Vector3(0, 0, -1)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, -z / 2), Vector3(0, 0, -1)),
-            VertexPositionNormal(Vector3(x / 2, -y / 2, -z / 2), Vector3(0, 0, -1)),
+            VertexPositionNormalColor(Vector3(-x / 2, y / 2, -z / 2), Vector3(0, 0, -1), color),
+            VertexPositionNormalColor(Vector3(x / 2, y / 2, -z / 2), Vector3(0, 0, -1), color),
+            VertexPositionNormalColor(Vector3(-x / 2, -y / 2, -z / 2), Vector3(0, 0, -1), color),
+            VertexPositionNormalColor(Vector3(x / 2, -y / 2, -z / 2), Vector3(0, 0, -1), color),
             // Back
-            VertexPositionNormal(Vector3(x / 2, y / 2, z / 2), Vector3(0, 0, 1)),
-            VertexPositionNormal(Vector3(-x / 2, y / 2, z / 2), Vector3(0, 0, 1)),
-            VertexPositionNormal(Vector3(x / 2, -y / 2, z / 2), Vector3(0, 0, 1)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, z / 2), Vector3(0, 0, 1)),
+            VertexPositionNormalColor(Vector3(x / 2, y / 2, z / 2), Vector3(0, 0, 1), color),
+            VertexPositionNormalColor(Vector3(-x / 2, y / 2, z / 2), Vector3(0, 0, 1), color),
+            VertexPositionNormalColor(Vector3(x / 2, -y / 2, z / 2), Vector3(0, 0, 1), color),
+            VertexPositionNormalColor(Vector3(-x / 2, -y / 2, z / 2), Vector3(0, 0, 1), color),
             // Right
-            VertexPositionNormal(Vector3(x / 2, y / 2, z / 2), Vector3(1, 0, 0)),
-            VertexPositionNormal(Vector3(x / 2, y / 2, -z / 2), Vector3(1, 0, 0)),
-            VertexPositionNormal(Vector3(x / 2, -y / 2, z / 2), Vector3(1, 0, 0)),
-            VertexPositionNormal(Vector3(x / 2, -y / 2, -z / 2), Vector3(1, 0, 0)),
+            VertexPositionNormalColor(Vector3(x / 2, y / 2, z / 2), Vector3(1, 0, 0), color),
+            VertexPositionNormalColor(Vector3(x / 2, y / 2, -z / 2), Vector3(1, 0, 0), color),
+            VertexPositionNormalColor(Vector3(x / 2, -y / 2, z / 2), Vector3(1, 0, 0), color),
+            VertexPositionNormalColor(Vector3(x / 2, -y / 2, -z / 2), Vector3(1, 0, 0), color),
             // Left
-            VertexPositionNormal(Vector3(-x / 2, y / 2, z / 2), Vector3(-1, 0, 0)),
-            VertexPositionNormal(Vector3(-x / 2, y / 2, -z / 2), Vector3(-1, 0, 0)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, z / 2), Vector3(-1, 0, 0)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, -z / 2), Vector3(-1, 0, 0)),
+            VertexPositionNormalColor(Vector3(-x / 2, y / 2, z / 2), Vector3(-1, 0, 0), color),
+            VertexPositionNormalColor(Vector3(-x / 2, y / 2, -z / 2), Vector3(-1, 0, 0), color),
+            VertexPositionNormalColor(Vector3(-x / 2, -y / 2, z / 2), Vector3(-1, 0, 0), color),
+            VertexPositionNormalColor(Vector3(-x / 2, -y / 2, -z / 2), Vector3(-1, 0, 0), color),
             // Top
-            VertexPositionNormal(Vector3(x / 2, y / 2, z / 2), Vector3(0, 1, 0)),
-            VertexPositionNormal(Vector3(x / 2, y / 2, -z / 2), Vector3(0, 1, 0)),
-            VertexPositionNormal(Vector3(-x / 2, y / 2, z / 2), Vector3(0, 1, 0)),
-            VertexPositionNormal(Vector3(-x / 2, y / 2, -z / 2), Vector3(0, 1, 0)),
+            VertexPositionNormalColor(Vector3(x / 2, y / 2, z / 2), Vector3(0, 1, 0), color),
+            VertexPositionNormalColor(Vector3(x / 2, y / 2, -z / 2), Vector3(0, 1, 0), color),
+            VertexPositionNormalColor(Vector3(-x / 2, y / 2, z / 2), Vector3(0, 1, 0), color),
+            VertexPositionNormalColor(Vector3(-x / 2, y / 2, -z / 2), Vector3(0, 1, 0), color),
             // Bottom
-            VertexPositionNormal(Vector3(x / 2, -y / 2, z / 2), Vector3(0, -1, 0)),
-            VertexPositionNormal(Vector3(x / 2, -y / 2, -z / 2), Vector3(0, -1, 0)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, z / 2), Vector3(0, -1, 0)),
-            VertexPositionNormal(Vector3(-x / 2, -y / 2, -z / 2), Vector3(0, -1, 0))
+            VertexPositionNormalColor(Vector3(x / 2, -y / 2, z / 2), Vector3(0, -1, 0), color),
+            VertexPositionNormalColor(Vector3(x / 2, -y / 2, -z / 2), Vector3(0, -1, 0), color),
+            VertexPositionNormalColor(Vector3(-x / 2, -y / 2, z / 2), Vector3(0, -1, 0), color),
+            VertexPositionNormalColor(Vector3(-x / 2, -y / 2, -z / 2), Vector3(0, -1, 0), color)
         },
         Indices
         {

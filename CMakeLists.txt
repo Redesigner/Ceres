@@ -53,11 +53,14 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/Primitives/Cube.cpp
 	src/Ceres/Core/Graphics/Primitives/Sphere.cpp
 
-	src/Ceres/Core/Graphics/VertexTypes/IVertexLayout.cpp
-	src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
+	# src/Ceres/Core/Graphics/VertexTypes/IVertexLayout.cpp
+	# src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
+	# src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
+
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionLayout.cpp
-	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalLayout.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalColorLayout.cpp
+
 
 
 	src/Ceres/Core/Input/Axis.cpp

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../VertexTypes/VertexPositionNormal.h"
-#include "../VertexTypes/VertexPositionNormalLayout.h"
+#include "../VertexTypes/VertexPositionNormalColor.h"
+#include "../VertexTypes/VertexPositionNormalColorLayout.h"
 #include "../VertexTypes/IVertexLayout.h"
 
 namespace Ceres
@@ -9,10 +9,10 @@ namespace Ceres
     struct Cube
     {
         public:
-            Cube(float x, float y, float z);
+            Cube(float x, float y, float z, Color color);
             ~Cube();
 
-            const VertexPositionNormal Vertices[24];
+            const VertexPositionNormalColor Vertices[24];
             const int Indices[36];
     };
 }

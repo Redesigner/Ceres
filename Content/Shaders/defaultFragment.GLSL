@@ -2,6 +2,7 @@
 
 in vec3 wNormal;
 in vec4 wPosition;
+in vec3 wColor;
 in vec4 wLightPos;
 
 out vec4 FragColor;
@@ -10,7 +11,6 @@ uniform vec3 cameraPos;
 
 void main()
 {
-    vec3 color = vec3(0.0, 0.0, 1.0);
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
     float diffStrength = 0.6;
@@ -30,5 +30,5 @@ void main()
     vec3 diffuse = diffStrength * diff * lightColor;
     vec3 specular = specularStrength * spec * lightColor;
 
-    FragColor = vec4(color * (ambient + diffuse + specular), 1.0);
+    FragColor = vec4(wColor * (ambient + diffuse + specular), 1.0);
 }
