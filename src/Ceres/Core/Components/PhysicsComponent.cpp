@@ -34,9 +34,9 @@ namespace Ceres
             newTransfrom.SetScale(message->GetData<Vector3>());
             _primitive->SetTransform(newTransfrom);
         }
-        else if (message->Type == "Velocity")
+        else if (message->Type == "Acceleration")
         {
-            Velocity = message->GetData<Vector3>();
+            Acceleration = message->GetData<Vector3>();
             return true;
         }
         return false;

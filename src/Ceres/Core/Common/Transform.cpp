@@ -82,8 +82,8 @@ namespace Ceres
     void Transform::calculateMatrix()
     {
         _matrix =
-        _rotationMatrix *
         _scaleMatrix * 
+        _rotationMatrix *
         _positionMatrix;
     }
 }

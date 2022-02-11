@@ -18,7 +18,7 @@ namespace Ceres
 
         private:
             void stepComponent(PhysicsComponent* host, float seconds);
-            std::vector<PhysicsComponent*> _getComponentsWithinDistance(PhysicsComponent* sourceComponent, const float distance);
+            std::vector<PhysicsComponent*> getComponentsWithinDistance(PhysicsComponent* sourceComponent, const float distance);
             RenderService* _debugRenderer;
     };
 }

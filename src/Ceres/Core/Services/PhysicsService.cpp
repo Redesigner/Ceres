@@ -12,6 +12,8 @@
 #include <stdexcept>
 #include <fmt/core.h>
 
+#define KILL_Z -3.0f
+
 namespace Ceres
 {
     PhysicsService::PhysicsService()
@@ -53,20 +55,29 @@ namespace Ceres
         for (IComponent* component : _components)
         {
             PhysicsComponent* physicsComponent = dynamic_cast<PhysicsComponent*>(component);
-            if (!physicsComponent) { continue; }
+            if (!physicsComponent)
+            {
+                continue;
+            }
             stepComponent(physicsComponent, deltaSeconds);
         }
     }
 
 
-    std::vector<PhysicsComponent*> PhysicsService::_getComponentsWithinDistance(PhysicsComponent* sourceComponent, const float distance)
+    std::vector<PhysicsComponent*> PhysicsService::getComponentsWithinDistance(PhysicsComponent* sourceComponent, const float distance)
     {
         std::vector<PhysicsComponent*> result = std::vector<PhysicsComponent*>();
         for (IComponent* target : _components)
         {
             PhysicsComponent* physicsComponent = dynamic_cast<PhysicsComponent*>(target);
-            if (!physicsComponent) { continue; }
-            if (physicsComponent == sourceComponent) { continue; }
+            if (!physicsComponent)
+            {
+                continue;
+            }
+            if (physicsComponent == sourceComponent)
+            {
+                continue;
+            }
 
             float separation = (physicsComponent->GetPosition() - sourceComponent->GetPosition()).Length();
             float combinedWidth = physicsComponent->SemiMajorAxis() + sourceComponent->SemiMajorAxis() + distance;
@@ -80,10 +91,11 @@ namespace Ceres
 
     void PhysicsService::stepComponent(PhysicsComponent* host, float seconds)
     {
-        if (seconds <= 0.0f || host->Velocity == Vector3::Zero())
+        if (seconds <= 0.0f || (PhysicsUtilities::NearlyZero(host->Acceleration) && PhysicsUtilities::NearlyZero(host->Velocity)))
         {
             return;
         }
+        host->Velocity += host->Acceleration * seconds;
         float semiMajorAxis = host->GetPrimitive()->SemiMajorAxis();
         float searchDistance = host->Velocity.LengthSquared() * seconds + semiMajorAxis * semiMajorAxis;
 
@@ -96,7 +108,7 @@ namespace Ceres
         VertexList debug = VertexList();
 
 
-        std::vector<PhysicsComponent*> targets = _getComponentsWithinDistance(host, searchDistance);
+        std::vector<PhysicsComponent*> targets = getComponentsWithinDistance(host, searchDistance);
         std::vector<SweepResult> collisions = std::vector<SweepResult>();
         for (PhysicsComponent* target : targets)
         {
@@ -126,16 +138,22 @@ namespace Ceres
                 if (sweep.Hit())
                 {
                     delta -= (vMag - sweep.GetDistance() + Vector3::Epsilon()) * sweep.GetNormal() * sweep.GetNormal().Dot(vN);
+                    host->Velocity -= host->Velocity.Dot(sweep.GetNormal()) * sweep.GetNormal();
                 }
             }
-
             // _debugRenderer->LoadWireframeData(debug);
         }
         // Don't make veryy small moves. This should prevent sliding
-        if (delta.LengthSquared() < Vector3::Epsilon())
+        /* if (delta.LengthSquared() < Vector3::Epsilon())
         {
             return;
+        } */
+        Vector3 newPosition = host->GetPosition() + delta;
+        if (newPosition.Z <= KILL_Z)
+        {
+            newPosition.Z = KILL_Z;
+            host->Velocity.Z = 0.0f;
         }
-        host->SetPosition(host->GetPosition() + delta);
+        host->SetPosition(newPosition);
     }
 }

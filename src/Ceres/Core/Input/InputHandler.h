@@ -38,8 +38,9 @@ namespace Ceres
             void BindAxis2D(std::string id, Button up, Button down, Button left, Button right);
             Vector2 GetAxis2DValue(std::string id) const;
 
+            bool ButtonPressed(Button button) const;
+
         private:
-            bool buttonPressed(Button button) const;
             std::unordered_map<Button, voidFunctionType> _inputMap;
             std::forward_list<cursorFunctionType> _cursorInputMap;
             std::unordered_map<std::string, Axis> _axisMap;

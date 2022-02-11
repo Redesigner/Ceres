@@ -3,6 +3,7 @@
 #include "../Services/RenderService.h"
 #include "../Services/InputService.h"
 #include "../Services/PhysicsService.h"
+#include "../Services/ActorService.h"
 
 #include "../Physics/Primitives/CubePrimitive.h"
 #include "../Physics/Primitives/SpherePrimitive.h"
@@ -19,7 +20,8 @@ namespace Ceres
         ComponentRef camera = serviceContainer.GetService<RenderService>()->GenerateComponent("CameraComponent", *this, 0, nullptr);
         ComponentRef controller = serviceContainer.GetService<InputService>()->GenerateComponent("ControllerComponent", *this, 0, nullptr);
         ComponentRef physics = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, 1, _primitive);
-        _components = {mesh, camera, controller, physics};
+        ComponentRef movement = serviceContainer.GetService<ActorService>()->GenerateComponent("MovementComponent", *this, 0, nullptr);
+        _components = {mesh, camera, controller, physics, movement};
 
         SendMessage(Message::Write<Vector3>("Position", &Vector3::Zero() ));
     }

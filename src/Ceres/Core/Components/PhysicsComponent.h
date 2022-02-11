@@ -18,8 +18,8 @@ namespace Ceres
             float SemiMajorAxis() const;
             IPrimitive*& GetPrimitive();
 
-
             Vector3 Velocity;
+            Vector3 Acceleration;
 
         private:
             IPrimitive* _primitive;

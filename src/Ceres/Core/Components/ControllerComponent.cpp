@@ -35,15 +35,17 @@ namespace Ceres
 
     void ControllerComponent::Update(double seconds)
     {
-        Vector2 inputAxis = _inputHandler.GetAxis2DValue("test");
-        float verticalInput = _inputHandler.GetAxisValue("Vertical");
+        Vector2 inputAxis = _inputHandler.GetAxis2DValue("Movement");
+        bool isJumping = _inputHandler.ButtonPressed(Button::Key_space);
         float rotationInput = _inputHandler.GetAxisValue("Rotation");
+
         // Using a RH coord system with z up, x and y are switched from the traditional 2D values...
-        Vector3 velocity = Vector3(
+        Vector3 inputForce = Vector3(
             ( (inputAxis.Y * std::cos(_rotation)) + (-inputAxis.X * std::sin(_rotation)) ) * 10,
             ( (-inputAxis.X * std::cos(_rotation)) - (inputAxis.Y * std::sin(_rotation)) ) * 10,
-            verticalInput * 2);
-        _parent.SendMessage(Message::Write<Vector3>("Velocity", &velocity));
+            isJumping * 20);
+
+        _parent.SendMessage(Message::Write<Vector3>("AddInput", &inputForce));
         _parent.SendMessage(Message::Write<Vector3>("Rotate", &Vector3(.1f * rotationInput, 0, 0)));
     }
 }

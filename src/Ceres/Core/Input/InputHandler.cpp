@@ -63,11 +63,11 @@ namespace Ceres
         Axis axis = get->second;
 
         float x = 0;
-        if(buttonPressed(axis.Positive))
+        if(ButtonPressed(axis.Positive))
         {
             x++;
         }
-        if(buttonPressed(axis.Negative))
+        if(ButtonPressed(axis.Negative))
         {
             x--;
         }
@@ -94,19 +94,19 @@ namespace Ceres
         float x = 0;
         float y = 0;
 
-        if(buttonPressed(axis.Up))
+        if(ButtonPressed(axis.Up))
         {
             y++;
         }
-        if(buttonPressed(axis.Down))
+        if(ButtonPressed(axis.Down))
         {
             y--;
         }
-        if(buttonPressed(axis.Left))
+        if(ButtonPressed(axis.Left))
         {
             x--;
         }
-        if(buttonPressed(axis.Right))
+        if(ButtonPressed(axis.Right))
         {
             x++;
         }
@@ -114,7 +114,7 @@ namespace Ceres
     }
 
 
-    bool InputHandler::buttonPressed(Button button) const
+    bool InputHandler::ButtonPressed(Button button) const
     {
         // Is a keyboard button
         if(button <= Button::Gamepad_invalid)

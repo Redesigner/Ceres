@@ -21,7 +21,7 @@ void main()
     vec3 viewDir = normalize(wPosition.xyz - cameraPos);
     vec3 reflectDir = reflect(lightDir, wNormal);
 
-    float diff = max( (dot(wNormal, lightDir) + 1.0) / 2.0, 0.0);
+    float diff = max( (dot(wNormal, lightDir) ), 0.0);
     float spec = pow(
         clamp(dot(viewDir, reflectDir), 0.0, 1.0) * ceil(diff), 
         16);

@@ -3,8 +3,8 @@
     "tasks": [
         {
             "label": "CMake Build",
-            "command": "${command:cmake.tasksBuildCommand}",
-            "type": "shell",
+            "command": "build",
+            "type": "cmake",
             "group": "build",
             "problemMatcher": []
         }
