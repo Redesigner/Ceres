@@ -7,6 +7,8 @@ extern "C"
     #include <SDL2/SDL_opengl.h>
 }
 
+using uint = unsigned int;
+
 namespace Ceres
 {    
     class IndexBuffer
@@ -15,8 +17,8 @@ namespace Ceres
             IndexBuffer(int size);
             ~IndexBuffer();
 
-            void SetData(const int indices[], const int count, const int offset);
-            void SetData(const int indices[], const int count);
+            void SetData(const uint indices[], const uint count, const uint offset);
+            void SetData(const uint indices[], const uint count);
             void Bind() const;
 
         private:

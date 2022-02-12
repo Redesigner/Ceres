@@ -94,11 +94,15 @@ namespace Ceres
         return effect;
     }
 
-    uint8_t GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], int indexCount)
+    uint8_t GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], uint indexCount)
     {
         MeshPtr mesh = MeshPtr(new Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, _currentEffect));
         _loadedMeshes.push_back(mesh);
-        return (uint8_t) (_loadedMeshes.size() - 1);
+        return static_cast<uint8_t>(_loadedMeshes.size() - 1);
+    }
+    uint8_t GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive)
+    {
+        return LoadMesh(meshPrimitive.GetVertices(), *meshPrimitive.GetVertexLayout(), meshPrimitive.GetVertexCount(), meshPrimitive.GetIndices(), meshPrimitive.GetIndexCount());
     }
 
     void GraphicsDevice::SetCamera(CameraComponent* camera)
@@ -111,7 +115,7 @@ namespace Ceres
        return new RenderComponent(parent, meshId);
     }
 
-    void GraphicsDevice::LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount)
+    void GraphicsDevice::LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount)
     {
         _wireframe->AddData(vertexData, indices, vertexCount);
     }

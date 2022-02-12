@@ -8,6 +8,8 @@
 
 #include <memory>
 
+using uint = unsigned int;
+
 namespace Ceres
 {
     class Effect;
@@ -21,7 +23,7 @@ namespace Ceres
             VertexStream(const IVertexLayout& vertexLayout, const int bufferSize, EffectPtr effect);
             ~VertexStream();
 
-            void AddData(const IVertexType vertexData[], const int indices[], const int vertexCount);
+            void AddData(const IVertexType vertexData[], const uint indices[], const uint vertexCount);
             void Clear();
 
             int Size();

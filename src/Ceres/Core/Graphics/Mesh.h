@@ -8,6 +8,7 @@
 
 #include <memory>
 
+using uint = unsigned int;
 namespace Ceres
 {
     class Effect;
@@ -18,7 +19,7 @@ namespace Ceres
     class Mesh
     {
         public:
-            Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], const int indexCount, EffectPtr effect);
+            Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, EffectPtr effect);
             ~Mesh();
 
             int Size();

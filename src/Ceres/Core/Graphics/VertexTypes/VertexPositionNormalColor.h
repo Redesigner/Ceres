@@ -4,6 +4,7 @@
 
 #include "../../Common/Vector3.h"
 #include "../../Common/Color.h"
+#include "VertexPositionNormalColorLayout.h"
 
 namespace Ceres
 {
@@ -17,5 +18,7 @@ namespace Ceres
             Vector3 Vertex;
             Vector3 Normal;
             Color Color;
+
+            using Layout = VertexPositionNormalColorLayout;
     };
 }

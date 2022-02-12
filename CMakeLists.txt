@@ -52,6 +52,8 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
 
+	# Predefined Mesh Primitives
+	src/Ceres/Core/Graphics/Primitives/MeshPrimitive.cpp
 	src/Ceres/Core/Graphics/Primitives/Cube.cpp
 	src/Ceres/Core/Graphics/Primitives/Sphere.cpp
 

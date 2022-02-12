@@ -8,13 +8,12 @@
 namespace Ceres
 {
     Sphere::Sphere(float radius, int segments, int rings, Color color)
+        : MeshPrimitive<VertexPositionNormalColor>(segments * (rings - 1) + 2, segments * (rings - 1) * 6)
     {
-        VertexCount = segments * (rings - 1) + 2;
-        Vertices = new VertexPositionNormalColor[VertexCount];
-        IndexCount = segments * (rings - 1) * 6;
-        Indices = new int[IndexCount];
+        VertexPositionNormalColor* vertices = new VertexPositionNormalColor[_vertexCount];
+        _indices = new uint[_indexCount];
 
-        Vertices[0] = VertexPositionNormalColor(Vector3(0.0f, 0.0f, -radius), Vector3(0.0f, 0.0f, -1.0f), color);
+        vertices[0] = VertexPositionNormalColor(Vector3(0.0f, 0.0f, -radius), Vector3(0.0f, 0.0f, -1.0f), color);
 
         int currentIndex = 1;
 
@@ -31,10 +30,10 @@ namespace Ceres
                     std::cos(phi) * factor,
                     std::sin(phi) * factor,
                     z);
-                Vertices[currentIndex++] = VertexPositionNormalColor(point * radius, point.Normalize(), color);
+                vertices[currentIndex++] = VertexPositionNormalColor(point * radius, point.Normalize(), color);
             }
         }
-        Vertices[VertexCount - 1] = VertexPositionNormalColor(Vector3(0.0f, 0.0f, radius), Vector3(0.0f, 0.0f, 1.0f), color);
+        vertices[_vertexCount - 1] = VertexPositionNormalColor(Vector3(0.0f, 0.0f, radius), Vector3(0.0f, 0.0f, 1.0f), color);
 
         generateRingBottom(segments);
         for (int i = 1; i < rings - 1; i++)
@@ -42,19 +41,20 @@ namespace Ceres
             generateRing(segments, i);
         }
         generateRingTop(segments, rings);
+
+        _vertices = vertices;
     }
 
     Sphere::~Sphere()
     {
-        delete[] Vertices;
-        delete[] Indices;
+        delete[] static_cast<VertexPositionNormalColor*>(_vertices);
     }
 
     void Sphere::generateTriangleFace(int a, int b, int c)
     {
-        Indices[_currentIndexCount    ] = a;
-        Indices[_currentIndexCount + 1] = b;
-        Indices[_currentIndexCount + 2] = c;
+        _indices[_currentIndexCount    ] = a;
+        _indices[_currentIndexCount + 1] = b;
+        _indices[_currentIndexCount + 2] = c;
 
         _currentIndexCount += 3;
     }
@@ -66,12 +66,12 @@ namespace Ceres
             |  /|
             c/__d
         */
-        Indices[_currentIndexCount    ] = a;
-        Indices[_currentIndexCount + 1] = b;
-        Indices[_currentIndexCount + 2] = c;
-        Indices[_currentIndexCount + 3] = b;
-        Indices[_currentIndexCount + 4] = d;
-        Indices[_currentIndexCount + 5] = c;
+        _indices[_currentIndexCount    ] = a;
+        _indices[_currentIndexCount + 1] = b;
+        _indices[_currentIndexCount + 2] = c;
+        _indices[_currentIndexCount + 3] = b;
+        _indices[_currentIndexCount + 4] = d;
+        _indices[_currentIndexCount + 5] = c;
         _currentIndexCount += 6;
     }
 

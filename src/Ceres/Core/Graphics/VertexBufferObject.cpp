@@ -4,7 +4,7 @@
 
 namespace Ceres
 {
-    VertexBufferObject::VertexBufferObject(int capacity, const IVertexLayout& vertexLayout)
+    VertexBufferObject::VertexBufferObject(uint capacity, const IVertexLayout& vertexLayout)
         :_capacity(capacity)
     {
         _currentIndex = 0;
@@ -21,7 +21,7 @@ namespace Ceres
         glDeleteBuffers(1, &_gVBO);
     }
 
-    void VertexBufferObject::SetData(const IVertexType data[], const int size, const int offset)
+    void VertexBufferObject::SetData(const IVertexType data[], const uint size, const uint offset)
     {
         // fmt::print("Loading {} vertices.\n", size);
         if(offset + size > _capacity)
@@ -33,7 +33,7 @@ namespace Ceres
         glBufferSubData(GL_ARRAY_BUFFER, offset, _size * size, data);
     }
 
-    void VertexBufferObject::SetData(const IVertexType data[], const int size)
+    void VertexBufferObject::SetData(const IVertexType data[], const uint size)
     {
         SetData(data, size, _currentIndex);
     }

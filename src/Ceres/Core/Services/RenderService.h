@@ -19,7 +19,7 @@ namespace Ceres
 
             void RenderComponents();
             
-            void LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount);
+            void LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount);
             void LoadWireframeData(VertexList& vertices);
             void ClearWireframe();
             

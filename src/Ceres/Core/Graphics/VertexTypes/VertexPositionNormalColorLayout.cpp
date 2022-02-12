@@ -26,4 +26,10 @@ namespace Ceres
     {
         return sizeof(Vector3) * 2 + sizeof(Color);
     }
+
+    VertexPositionNormalColorLayout& VertexPositionNormalColorLayout::Get()
+    {
+        static VertexPositionNormalColorLayout layout;
+        return layout;
+    }
 }

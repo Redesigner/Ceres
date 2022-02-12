@@ -15,23 +15,25 @@ extern "C"
     #include <SDL2/SDL_opengl.h>
 }
 
+using uint = unsigned int;
+
 namespace Ceres
 {
     class VertexBufferObject
     {
         public:
-            VertexBufferObject(int capacity, const IVertexLayout& vertexLayout);
+            VertexBufferObject(uint capacity, const IVertexLayout& vertexLayout);
             ~VertexBufferObject();
 
-            void SetData(const IVertexType data[], const int size, const int offset);
-            void SetData(const IVertexType data[], const int size);            
+            void SetData(const IVertexType data[], const uint size, const uint offset);
+            void SetData(const IVertexType data[], const uint size);            
 
             void Bind();
 
         private:
-            int _capacity;
-            int _currentIndex;
-            int _size;
+            uint _capacity;
+            uint _currentIndex;
+            uint _size;
             GLuint _gVBO;
     };
 }

@@ -22,10 +22,10 @@ void main()
     vec3 viewDir = normalize(wPosition.xyz - cameraPos);
     vec3 reflectDir = reflect(lightDir, wNormalF);
 
-    float diff = max( (dot(wNormalF, lightDir) ), 0.0);
+    float diff = clamp( dot(wNormalF, lightDir), 0.0, 1.0 );
     float spec = pow(
         clamp(dot(viewDir, reflectDir), 0.0, 1.0) * ceil(diff), 
-        16);
+        32);
 
     vec3 ambient = ambientStrength * lightColor;
     vec3 diffuse = diffStrength * diff * lightColor;

@@ -1,21 +1,17 @@
 #pragma once
 
+#include "MeshPrimitive.h"
+
 #include "../VertexTypes/VertexPositionNormalColor.h"
 #include "../VertexTypes/VertexPositionNormalColorLayout.h"
-#include "../VertexTypes/IVertexLayout.h"
 
 namespace Ceres
 {
-    struct Sphere
+    struct Sphere : public MeshPrimitive<VertexPositionNormalColor>
     {
         public:
             Sphere(float radius, int segments, int rings, Color color);
             ~Sphere();
-
-            VertexPositionNormalColor* Vertices;
-            int VertexCount;
-            int* Indices;
-            int IndexCount;
 
         private:
             void generateTriangleFace(int a, int b, int c);

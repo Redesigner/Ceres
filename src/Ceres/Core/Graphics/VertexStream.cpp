@@ -13,7 +13,7 @@ namespace Ceres
     {
     }
 
-    void VertexStream::AddData(const IVertexType vertexData[], const int indices[], const int vertexCount)
+    void VertexStream::AddData(const IVertexType vertexData[], const uint indices[], const uint vertexCount)
     {
         int offset = _vertexCount;
         

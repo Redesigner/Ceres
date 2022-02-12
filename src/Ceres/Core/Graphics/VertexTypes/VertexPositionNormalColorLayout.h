@@ -7,7 +7,9 @@ namespace Ceres
     class VertexPositionNormalColorLayout : public IVertexLayout
     {
         public:
-            void SetAttributes() const override;
-            int Size() const override;
+            virtual void SetAttributes() const override;
+            virtual int Size() const override;
+
+            static VertexPositionNormalColorLayout& Get();
     };
 }

@@ -64,15 +64,15 @@ namespace Ceres
         }
     }
 
-    void RenderService::LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount)
+    void RenderService::LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount)
     {
         _parentDevice.LoadWireframeData(vertexData, indices, vertexCount);
     }
     void RenderService::LoadWireframeData(VertexList& vertices)
     {
-        const int vertexCount = vertices.Size();
+        const uint vertexCount = vertices.Size();
         VertexPosition* vertexData = new VertexPosition[vertexCount];
-        int* indices = new int[vertexCount];
+        uint* indices = new uint[vertexCount];
         for (int i = 0; i < vertexCount; i++)
         {
             vertexData[i] = VertexPosition(vertices[i]);

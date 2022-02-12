@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Mesh.h"
+#include "Primitives/MeshPrimitive.h"
 #include "VertexTypes/IVertexType.h"
 #include "../Common/Matrix.h"
 #include "../Components/RenderComponent.h"
@@ -39,12 +40,13 @@ namespace Ceres
             void Render(RenderComponent* renderComponent) const;
 
             EffectPtr LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
-            uint8_t LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const int vertexCount, const int indices[], const int indexCount);
+            uint8_t LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount);
+            uint8_t LoadMesh(const MeshPrimitiveBase& meshPrimitive);
             void SetCamera(CameraComponent* camera);
 
             RenderComponent* CreateRenderComponent(const IEntity& parent, uint8_t meshId) const;
 
-            void LoadWireframeData(const IVertexType vertexData[], const int indices[], const int vertexCount);
+            void LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount);
             void ClearWireframe();
 
         private:
