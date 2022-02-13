@@ -12,9 +12,9 @@ namespace Ceres
 {
     Actor::Actor(ServiceContainer& serviceContainer)
     {
-        uint8_t meshId = 1;
-        _primitive = new SpherePrimitive(.25f);
-        // _primitive = new CubePrimitive(1.0f);
+        uint8_t meshId = 0;
+        // _primitive = new SpherePrimitive(.25f);
+        _primitive = new CubePrimitive(1.0f);
 
         ComponentRef mesh = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, 1, &meshId);
         ComponentRef camera = serviceContainer.GetService<RenderService>()->GenerateComponent("CameraComponent", *this, 0, nullptr);

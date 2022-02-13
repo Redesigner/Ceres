@@ -28,6 +28,7 @@ namespace Ceres
             Vector3 GetNormal(uint a, uint b, uint c);
             Vector3 GetNormal(uint a, uint b, Vector3 origin);
             Vector3 GetNextNormal();
+            Vector3 GetNextNormal(Vector3 point);
 
             Vector3 GetTriangleNormal(uint a, uint b, uint c);
             Vector3 NormalAwayFromPoint(uint a, uint b, uint c, Vector3 point);

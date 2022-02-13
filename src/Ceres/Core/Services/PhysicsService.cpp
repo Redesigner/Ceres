@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <fmt/core.h>
 
+#define MAX_SUBSTEPS 4
 #define KILL_Z -3.0f
 
 namespace Ceres
@@ -89,13 +90,22 @@ namespace Ceres
         return result;
     }
 
-    void PhysicsService::stepComponent(PhysicsComponent* host, float seconds)
+    void PhysicsService::stepComponent(PhysicsComponent* host, float seconds, int iteration)
     {
-        if (seconds <= 0.0f || (PhysicsUtilities::NearlyZero(host->Acceleration) && PhysicsUtilities::NearlyZero(host->Velocity)))
+        const bool printDebug = false;
+        if (printDebug)
+        {
+            fmt::print("Substep iteration #{}, current velocity: {}\n", iteration, host->Velocity.ToString());
+        }
+        if (iteration >= MAX_SUBSTEPS)
+        {
+            fmt::print("Physics component substep overflow\n");
+            return;
+        }
+        if (seconds <= 0.0f || (PhysicsUtilities::NearlyZero(host->Acceleration) && PhysicsUtilities::NearlyZero(host->Velocity)) || host->Paused)
         {
             return;
         }
-        host->Velocity += host->Acceleration * seconds;
         float semiMajorAxis = host->GetPrimitive()->SemiMajorAxis();
         float searchDistance = host->Velocity.LengthSquared() * seconds + semiMajorAxis * semiMajorAxis;
 
@@ -105,13 +115,18 @@ namespace Ceres
         bool impact = false;
 
         GJK::CollisionType status = GJK::CollisionType::None;
-        VertexList debug = VertexList();
+        VertexList debug = VertexList({host->GetPosition() + host->Velocity * 2, host->GetPosition()});
 
 
         std::vector<PhysicsComponent*> targets = getComponentsWithinDistance(host, searchDistance);
         std::vector<SweepResult> collisions = std::vector<SweepResult>();
-        for (PhysicsComponent* target : targets)
+        for (int i = 0; i < targets.size(); i++)
         {
+            if (printDebug)
+            {
+                fmt::print("Calculating distance between shape #{}\n", i);
+            }
+            PhysicsComponent* target = targets[i];
             // Make sure we aren't sweeping against ourself
             if (host == target)
             {
@@ -122,38 +137,80 @@ namespace Ceres
             // Collision found with sweep algorithm
             if (sweep.Hit())
             {
-                if (!impact)
-                {
-                    // _debugRenderer->ClearWireframe();
-                }
+                debug.Append(VertexList{Vector3::Zero(), sweep.GetNormal()});
                 impact = true;
-                collisions.emplace_back(sweep);
+                float distance = sweep.GetDistance();
+                for (int i = 0; i <= collisions.size(); i++)
+                {
+                    if (i == collisions.size())
+                    {
+                        collisions.emplace_back(sweep);
+                        break;
+                    }
+                    if (distance <= collisions[i].GetDistance())
+                    {
+                        collisions.emplace(collisions.begin() + i, sweep);
+                        break;
+                    }
+                }
             }
         }
         if (impact)
         {
-            float vMag = delta.Length();
-            for (SweepResult sweep : collisions)
+            float vMag = v.Length();
+            SweepResult sweep = collisions[0];
+            if (sweep.Penetrating())
             {
-                if (sweep.Hit())
-                {
-                    delta -= (vMag - sweep.GetDistance() + Vector3::Epsilon()) * sweep.GetNormal() * sweep.GetNormal().Dot(vN);
-                    host->Velocity -= host->Velocity.Dot(sweep.GetNormal()) * sweep.GetNormal();
-                }
+                // host->Paused = true;
+                // delta -= host->GetPosition();
             }
-            // _debugRenderer->LoadWireframeData(debug);
+            else if (sweep.Hit())
+            {
+                if (printDebug)
+                {
+                    fmt::print("Attempted move magnitude {}, final magnitude {}\n", vMag, sweep.GetDistance());
+                }
+                delta -= (vMag - sweep.GetDistance() + Vector3::Epsilon() / vN.Dot(sweep.GetNormal())) * vN;
+                host->Velocity -= (host->Velocity.Dot(sweep.GetNormal()) * sweep.GetNormal());
+
+                if (vMag != 0.0f)
+                {
+                    seconds -= sweep.GetDistance() / host->Velocity.Length();
+                }
+
+                // delta -= (sweep.GetNormal() * Vector3::Epsilon());
+
+            }
+            /* for (SweepResult sweep : collisions)
+            {
+                if (sweep.Hit() && !sweep.Penetrating())
+                {
+                    delta -= (sweep.GetNormal() * Vector3::Epsilon());
+                }
+            } 
+            _debugRenderer->ClearWireframe();
+            _debugRenderer->LoadWireframeData(debug); */
         }
         // Don't make veryy small moves. This should prevent sliding
-        /* if (delta.LengthSquared() < Vector3::Epsilon())
-        {
-            return;
-        } */
         Vector3 newPosition = host->GetPosition() + delta;
         if (newPosition.Z <= KILL_Z)
         {
             newPosition.Z = KILL_Z;
             host->Velocity.Z = 0.0f;
         }
-        host->SetPosition(newPosition);
+        if (delta.LengthSquared() > Vector3::Epsilon() * Vector3::Epsilon())
+        {
+            host->SetPosition(newPosition);
+        }
+        if (impact && ( seconds >= Vector3::Epsilon() ) && (!PhysicsUtilities::NearlyZero(host->Velocity) ) )
+        {
+            stepComponent(host, seconds, iteration + 1);
+        }
+    }
+    
+    void PhysicsService::stepComponent(PhysicsComponent* host, float seconds)
+    {
+        host->Velocity += host->Acceleration * seconds;
+        stepComponent(host, seconds, 0);
     }
 }

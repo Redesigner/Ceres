@@ -229,6 +229,11 @@ namespace Ceres
 
     Vector3 Simplex::GetNextNormal()
     {
+        return GetNextNormal(Vector3::Zero());
+    }
+
+    Vector3 Simplex::GetNextNormal(Vector3 point)
+    {
         if (!_regenNextNormalFlag)
         {
             return _cachedNextNormal;
@@ -243,19 +248,19 @@ namespace Ceres
                 }
             case 2:
                 {
-                    _cachedNextNormal = GetNormal(0, 1, Vector3::Zero());
+                    _cachedNextNormal = GetNormal(0, 1, point);
                     _regenNextNormalFlag = false;
                     return _cachedNextNormal;
                 }
             case 3:
                 {
-                    _cachedNextNormal = -1 * NormalAwayFromPoint(0, 1, 2, Vector3::Zero());
+                    _cachedNextNormal = -1 * NormalAwayFromPoint(0, 1, 2, point);
                     _regenNextNormalFlag = false;
                     return _cachedNextNormal;
                 }
             case 4:
                 {
-                    _cachedNextNormal = -1 * NormalAwayFromPoint(0, 1, 2, Vector3::Zero());
+                    _cachedNextNormal = -1 * NormalAwayFromPoint(0, 1, 2, point);
                     _regenNextNormalFlag = false;
                     return _cachedNextNormal;
                 }

@@ -2,8 +2,12 @@
 
 namespace Ceres
 {
+    SweepResult::SweepResult(bool result, Vector3 collisionNormal, float distance, bool penetrating)
+        :_result(result), _collisionNormal(collisionNormal), _distance(distance), _penetrating(penetrating)
+    {}
+
     SweepResult::SweepResult(bool result, Vector3 collisionNormal, float distance)
-        :_result(result), _collisionNormal(collisionNormal), _distance(distance)
+        :_result(result), _collisionNormal(collisionNormal), _distance(distance), _penetrating(false)
     {}
 
     SweepResult::SweepResult(bool result)
@@ -23,6 +27,11 @@ namespace Ceres
     float SweepResult::GetDistance() const
     {
         return _result ? _distance : 0.0f;
+    }
+
+    bool SweepResult::Penetrating() const
+    {
+        return _penetrating;
     }
 
     /// DON'T USE! MATH IS WRONG!!!

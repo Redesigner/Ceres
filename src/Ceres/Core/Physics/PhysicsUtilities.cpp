@@ -363,10 +363,11 @@ namespace Ceres
     {
         // There are a lot of different debug values and stages to output, so switch it here
         const bool printDebug = false;
+        const float shellradius = 0.01f;
 
         Vector3 direction = delta.Normalize();
         delta += direction * Vector3::Epsilon();
-        float sharedRadius = shape.GetSphereRadius() + targetShape.GetSphereRadius();
+        float sharedRadius = shape.GetSphereRadius() + targetShape.GetSphereRadius() + shellradius * 2;
 
         if (printDebug)
         {
@@ -392,16 +393,12 @@ namespace Ceres
 
         if (printDebug)
         {
-            fmt::print("\n\nPhysics Utils: Beginning sweep\n");
+            fmt::print("==== Physics Utils: Beginning sweep ====\n");
         }
 
         // Limit the number of iterations, the algorithm can sometimes get stuck due to floating point errors
         for (int i = 0; i < 16; i++)
         {
-            if (printDebug)
-            {
-                fmt::print("Iter {}: {}\n", i, simplex.ToString());
-            }
             if (simplex.IsFull())
             {
                 if (simplex.ContainsPoint(Vector3::Zero()))
@@ -409,16 +406,17 @@ namespace Ceres
                     if (printDebug)
                     {
                         outVertices->Append(simplex.GetEdges());
-                        fmt::print("Shapes are already overlapping\n");
+                        fmt::print("== Shapes are already overlapping\n");
                     }
-                    return SweepResult(true);
+                    return SweepResult(true, Vector3::Zero(), 0.0f, true);
                 }
                 // Remove all vertices from the simplex that can't help encapsulate our origin
                 simplex.CullNoncontributingVertices(Vector3::Zero());
             }
             else
             {
-                searchDirection = simplex.GetNextNormal();
+                Vector3 modifiedOrigin = Vector3::Zero();
+                searchDirection = simplex.GetNextNormal(modifiedOrigin);
                 supports = PhysicsUtilities::GiftWrap(supportPointsSweep(shape, targetShape, searchDirection, Vector3::Zero() ));
 
                 // Can't add any more points, and removal of extra vertices has failed
@@ -433,17 +431,18 @@ namespace Ceres
                     {
                         sharedRadius /= std::abs(collisionNormal.Dot(direction));
                     }
-
-                    const bool moveTooLong = distance < delta.Length() + sharedRadius;
-                    const bool validDirection = !PhysicsUtilities::NearlyZero(direction.Dot(collisionNormal));
-                    bool result = moveTooLong && validDirection && distance > -Vector3::Epsilon();
+                    bool result =
+                        (distance < delta.Length() + sharedRadius) &&
+                        (!PhysicsUtilities::NearlyZero(direction.Dot(collisionNormal))) &&
+                        (distance > -Vector3::Epsilon()) &&
+                        (simplex.FaceContainsPoint(0, 1, 2, Vector3::Zero()));
 
                     if (printDebug)
                     {
-                        fmt::print("Shortest move along {} is {}\n", direction.ToString(), distance - sharedRadius);
-                        fmt::print("we are trying to move the shape by {}\n", delta.Length());
-                        fmt::print("Shapes are currently {} apart in the closest direction, {}\n", separation.Length(), collisionNormal.ToString());
-                        fmt::print("Hit found? {}\n", result);
+                        fmt::print("== Shortest move along {} is {}\n", direction.ToString(), distance - sharedRadius);
+                        fmt::print("== Trying to move the shape by {}\n", delta.Length());
+                        fmt::print("== Shapes are currently {} apart in the closest direction, {}\n", separation.Length(), collisionNormal.ToString());
+                        fmt::print("== Hitresult: {}\n", result);
                         outVertices->Append(VertexList{Vector3::Zero(), direction * simplex.GetIntersection(direction)});
                     }
                     return SweepResult(result, collisionNormal, distance - sharedRadius);
@@ -454,7 +453,7 @@ namespace Ceres
         if (printDebug)
         {
             outVertices->Append(simplex.GetEdges());
-            fmt::print("!Warning! GJK overflow. Check the complexity of the shapes or allow for more iterations.\n");
+            fmt::print("!!!!Warning!!!! GJK overflow. Check the complexity of the shapes or allow for more iterations.\n");
         }
         return SweepResult(false);
     }

@@ -72,9 +72,9 @@ namespace Ceres
         });
         _entities.emplace_back(actor);
 
-        Block* b1 = new Block(ServiceContainer, 1.0f, 5.0f, 1.0f);
+        Block* b1 = new Block(ServiceContainer, 2.0f, 5.0f, 1.0f);
         Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f);
-        Block* b3 = new Block(ServiceContainer, 5.0f, 2.0f, 1.0f);
+        Block* b3 = new Block(ServiceContainer, 10.0f, 2.0f, 1.0f);
         Block* b4 = new Block(ServiceContainer, 0.1f, 5.0f, 0.5f);
 
         b1->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, 0.0f, -2.0f)));
@@ -83,7 +83,7 @@ namespace Ceres
         b3->SendMessage(Message::Write<Vector3>("Rotate", &Vector3(0.0f, -0.5f, 0.0f)));
         b3->SendMessage(Message::Write<Vector3>("Position", &Vector3(3.0f, 0.0f, -0.7f)));
 
-        b4->SendMessage(Message::Write<Vector3>("Position", &Vector3(-0.5f, 0.0f, -1.25f)));
+        b4->SendMessage(Message::Write<Vector3>("Position", &Vector3(-1.0f, 0.0f, -1.25f)));
 
         _entities.emplace_back(b1);
         _entities.emplace_back(b2);
