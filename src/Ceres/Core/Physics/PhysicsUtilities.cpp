@@ -408,7 +408,8 @@ namespace Ceres
                         outVertices->Append(simplex.GetEdges());
                         fmt::print("== Shapes are already overlapping\n");
                     }
-                    return SweepResult(true, Vector3::Zero(), 0.0f, true);
+                    Vector3 depenetration = supportPointsSweep(shape, targetShape, -direction, Vector3::Zero() )[0];
+                    return SweepResult(true, depenetration.Normalize(), depenetration.Length(), true);
                 }
                 // Remove all vertices from the simplex that can't help encapsulate our origin
                 simplex.CullNoncontributingVertices(Vector3::Zero());
@@ -435,7 +436,8 @@ namespace Ceres
                         (distance < delta.Length() + sharedRadius) &&
                         (!PhysicsUtilities::NearlyZero(direction.Dot(collisionNormal))) &&
                         (distance > -Vector3::Epsilon()) &&
-                        (simplex.FaceContainsPoint(0, 1, 2, Vector3::Zero()));
+                        (simplex.GetVertexCount() < 2 || simplex.FaceContainsPoint(0, 1, 2, Vector3::Zero()));
+                        // If we only have one point on the simplex, the intersection cannot exist, we treat it as though some collision occurred for safety
 
                     if (printDebug)
                     {

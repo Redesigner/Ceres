@@ -162,7 +162,7 @@ namespace Ceres
             if (sweep.Penetrating())
             {
                 // host->Paused = true;
-                // delta -= host->GetPosition();
+                delta = sweep.GetNormal() * 0.1f;
             }
             else if (sweep.Hit())
             {
@@ -205,6 +205,10 @@ namespace Ceres
         if (impact && ( seconds >= Vector3::Epsilon() ) && (!PhysicsUtilities::NearlyZero(host->Velocity) ) )
         {
             stepComponent(host, seconds, iteration + 1);
+        }
+        else if(host->Velocity.LengthSquared() <= Vector3::Epsilon())
+        {
+            host->Velocity = Vector3::Zero();
         }
     }
     
