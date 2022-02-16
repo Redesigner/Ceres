@@ -39,6 +39,9 @@ namespace Ceres
             void Render();
             void Render(RenderComponent* renderComponent) const;
 
+            void ReceiveEvent(SDL_WindowEvent& windowEvent);
+            void ToggleFullscreen();
+
             EffectPtr LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
             uint8_t LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount);
             uint8_t LoadMesh(const MeshPrimitiveBase& meshPrimitive);
@@ -59,6 +62,9 @@ namespace Ceres
             void renderWireframe();
 
             SDL_Window* createWindow();
+            void resizeWindow(int w, int h);
+            int _width = 1280;
+            int _height = 720;
             
             SDL_Window* _window;
             SDL_Surface* _screenSurface;

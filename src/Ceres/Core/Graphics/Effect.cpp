@@ -83,6 +83,11 @@ namespace Ceres
         SetMatrix("viewProjection", _viewPosition * _frustrum);
     }
 
+    void Effect::SetFrustrum(const Matrix& matrix)
+    {
+        _frustrum = matrix;
+    }
+
 
     // Private methods
     bool Effect::compileShader(GLuint shader, const char* filename, std::string source)

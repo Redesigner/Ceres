@@ -24,6 +24,7 @@ namespace Ceres
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
             void SetViewMatrix(const Matrix& matrix);
+            void SetFrustrum(const Matrix& matrix);
 
         private:
             bool compileShader(GLuint shader, const char* filename, std::string source);

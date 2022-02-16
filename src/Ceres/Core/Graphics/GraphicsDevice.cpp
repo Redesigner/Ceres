@@ -15,9 +15,6 @@ extern "C"
     #include <SDL2/SDL_opengl.h>
 }
 
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
-
 namespace Ceres
 {
     GraphicsDevice::GraphicsDevice()
@@ -29,6 +26,7 @@ namespace Ceres
         _currentContext = new Context(_window);
         _screenSurface = nullptr;
 
+        // glEnable(GL_MULTISAMPLE);
         glEnable(GL_CULL_FACE);
 
         _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
@@ -84,6 +82,49 @@ namespace Ceres
         _currentEffect->SetVector3("cameraPos", _currentCamera->GetPosition());
         _currentEffect->SetMatrix("model", renderComponent->Transform.GetMatrix());
         glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
+    }
+
+    void GraphicsDevice::ReceiveEvent(SDL_WindowEvent& windowEvent)
+    {
+        switch(windowEvent.event)
+        {
+            default:
+            {
+                return;
+            }
+            case SDL_WINDOWEVENT_RESIZED:
+            {
+                resizeWindow(windowEvent.data1, windowEvent.data2);
+                return;
+            }
+            case SDL_WINDOWEVENT_MAXIMIZED:
+            {
+                SDL_MaximizeWindow(_window);
+                int w, h;
+                SDL_GetWindowSize(_window, &w, &h);
+                resizeWindow(w, h);
+            }
+        }
+    }
+
+    void GraphicsDevice::ToggleFullscreen()
+    {
+        bool fullscreen = SDL_GetWindowFlags(_window) & SDL_WINDOW_FULLSCREEN;
+        if (!fullscreen)
+        {
+            int displayIndex = SDL_GetWindowDisplayIndex(_window);
+            SDL_DisplayMode displayMode;
+            SDL_GetDesktopDisplayMode(displayIndex, &displayMode);
+            SDL_SetWindowSize(_window, displayMode.w, displayMode.h);
+            resizeWindow(displayMode.w, displayMode.h);
+            SDL_SetWindowFullscreen(_window, true);
+        }
+        else
+        {
+            SDL_SetWindowFullscreen(_window, false);
+            SDL_SetWindowSize(_window, _width, _height);
+            resizeWindow(_width, _height);
+        }
     }
     
 
@@ -161,7 +202,16 @@ namespace Ceres
     SDL_Window* GraphicsDevice::createWindow()
     {
         if(SDL_Init(SDL_INIT_VIDEO) < 0) { return false; }
-        return SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+        return SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     }
 
+    void GraphicsDevice::resizeWindow(int w, int h)
+    {
+        glViewport(0, 0, w, h);
+        for (EffectPtr effect : _loadedEffects)
+        {
+            effect->SetFrustrum(Matrix::Perspective(w, h, 90, .1f, 100.f));
+        }
+        return;
+    }
 }

@@ -58,6 +58,11 @@ namespace Ceres
                         _exit = true;
                         break;
                     }
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_F11)
+                    {
+                        _game->GraphicsDevice.ToggleFullscreen();
+                        break;
+                    }
                     _game->InputHandler.HandleInput(Buttons::GetButton(event.key.keysym.scancode));
                     break;
                 }
@@ -69,6 +74,11 @@ namespace Ceres
             case SDL_MOUSEMOTION:
                 {
                     _game->InputHandler.HandleCursorInput(event.motion.xrel, event.motion.yrel);
+                    break;
+                }
+            case SDL_WINDOWEVENT:
+                {
+                    _game->GraphicsDevice.ReceiveEvent(event.window);
                     break;
                 }
             }
