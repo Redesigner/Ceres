@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Mesh.h"
+#include "Texture.h"
 #include "Primitives/MeshPrimitive.h"
 #include "VertexTypes/IVertexType.h"
 #include "../Common/Matrix.h"
@@ -42,12 +43,15 @@ namespace Ceres
             void ReceiveEvent(SDL_WindowEvent& windowEvent);
             void ToggleFullscreen();
 
-            EffectPtr LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
-            uint8_t LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount);
-            uint8_t LoadMesh(const MeshPrimitiveBase& meshPrimitive);
+            uint8_t LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
+            uint8_t LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, uint8_t effectID = 0);
+            uint8_t LoadMesh(const MeshPrimitiveBase& meshPrimitive, uint8_t effectID = 0);
+            uint8_t LoadTexture(std::string textureName);
+
             void SetCamera(CameraComponent* camera);
 
             RenderComponent* CreateRenderComponent(const IEntity& parent, uint8_t meshId) const;
+            RenderComponent* CreateRenderComponent(const IEntity& parent, uint8_t meshId, uint8_t texId) const;
 
             void LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount);
             void ClearWireframe();
@@ -58,6 +62,7 @@ namespace Ceres
 
             void unloadEffects();
             void unloadMeshes();
+            void unloadTextures();
 
             void renderWireframe();
 
@@ -70,14 +75,15 @@ namespace Ceres
             SDL_Surface* _screenSurface;
 
             Context* _currentContext;
-            EffectPtr _currentEffect;
+            uint8_t _currentEffect;
             CameraComponent* _currentCamera;
 
             std::vector<EffectPtr> _loadedEffects;
             std::vector<MeshPtr> _loadedMeshes;
+            std::vector<TexturePtr> _loadedTextures;
 
             // Wireframe temp variables
-            EffectPtr _wireframeEffect;
+            uint8_t _wireframeEffect;
             VertexStream* _wireframe;
             VertexPositionLayout* _wireframeLayout;
 

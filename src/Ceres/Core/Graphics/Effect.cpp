@@ -77,6 +77,21 @@ namespace Ceres
         }
     }
 
+    void Effect::SetSampler(std::string name, const Texture& texture)
+    {
+        GLint location = glGetUniformLocation(_glProgram, name.c_str());
+        if (location != -1)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture.GetID());
+            glUniform1i(location, 0);
+        }
+        else
+        {
+            fmt::print("Unable to find GL_Uniform {}.\n", name);
+        }
+    }
+
     void Effect::SetViewMatrix(const Matrix& matrix)
     {
         _viewPosition = matrix;
@@ -117,4 +132,5 @@ namespace Ceres
         glGetShaderInfoLog(shader, maxLength, &msgLength, msg);
         fmt::print(msg);
     }
+    
 }

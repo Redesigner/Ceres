@@ -3,14 +3,30 @@
 #include "MeshPrimitive.h"
 
 #include "../VertexTypes/VertexPositionNormalColor.h"
+#include "../VertexTypes/VertexPositionNormalTexture.h"
+
 #include "../VertexTypes/VertexPositionNormalColorLayout.h"
 
 namespace Ceres
 {
-    struct Cube : public MeshPrimitive<VertexPositionNormalColor>
+    template <typename T>
+    struct Cube : public MeshPrimitive<T>
+    {
+        public:
+            Cube(float x, float y, float z);
+            ~Cube();
+    };
+    template <>
+    struct Cube<VertexPositionNormalColor> : public MeshPrimitive<VertexPositionNormalColor>
     {
         public:
             Cube(float x, float y, float z, Color color);
-            ~Cube();
+    };
+
+    template <>
+    struct Cube<VertexPositionNormalTexture> : public MeshPrimitive<VertexPositionNormalTexture>
+    {
+        public:
+            Cube(float x, float y, float z);
     };
 }

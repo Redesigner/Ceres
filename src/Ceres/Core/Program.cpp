@@ -20,6 +20,9 @@ namespace Ceres
         SDL_SetRelativeMouseMode(SDL_TRUE);
     }
 
+    Program::~Program()
+    {}
+
     void Program::Loop()
     {
         uint64_t last = 0;

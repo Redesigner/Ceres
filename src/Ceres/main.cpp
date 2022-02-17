@@ -3,9 +3,9 @@
 
 int main(int, char**)
 {
-	Ceres::Game* game = new Ceres::Game();
-	Ceres::Program* program = new Ceres::Program(game);
-	program->Loop();
+	Ceres::Game game;
+	Ceres::Program program(&game);
+	program.Loop();
 
 	return 0;
 }

@@ -20,16 +20,26 @@ namespace Ceres
     {
         if(typeName == "RenderComponent")
         {
-            if(argCount == 1)
+            switch(argCount)
             {
-                uint8_t meshId = *(uint8_t*) args;
-                RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, meshId);
-                _components.Insert(renderComponent);
-                return ComponentRef(&_components, _components.Size() - 1);
-            }
-            else
-            {
-                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", typeName));
+                case 1:
+                {
+                    uint8_t meshId = *(uint8_t*) args;
+                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, meshId);
+                    _components.Insert(renderComponent);
+                    return ComponentRef(&_components, _components.Size() - 1);
+                }
+                case 2:
+                {
+                    uint8_t meshId = *(uint8_t*) args;
+                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, meshId, 0);
+                    _components.Insert(renderComponent);
+                    return ComponentRef(&_components, _components.Size() - 1);
+                }
+                default:
+                {
+                    throw std::invalid_argument(fmt::format("Invalid argument count: {}.", typeName));
+                }
             }
         }
         else if(typeName == "CameraComponent")

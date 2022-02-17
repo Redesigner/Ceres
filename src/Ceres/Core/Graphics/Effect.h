@@ -2,6 +2,7 @@
 
 #include "../Common/Matrix.h"
 #include "../Common/Vector3.h"
+#include "../Graphics/Texture.h"
 
 #include <string>
 
@@ -23,6 +24,7 @@ namespace Ceres
             void Begin();
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
+            void SetSampler(std::string name, const Texture& texture);
             void SetViewMatrix(const Matrix& matrix);
             void SetFrustrum(const Matrix& matrix);
 

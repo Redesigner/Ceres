@@ -10,7 +10,7 @@ namespace Ceres
 {
     Mesh::Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount,  EffectPtr effect)
         :_vertexCount(vertexCount), _indexCount(indexCount),
-        _vAO(vertexLayout), _vBO(_vertexCount, vertexLayout), _iBO(indexCount)
+        _vAO(vertexLayout), _vBO(_vertexCount, vertexLayout), _iBO(indexCount), _effect(effect)
     {
         _vBO.SetData(vertexData, vertexCount);
         _vAO.SetAttributes();

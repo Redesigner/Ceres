@@ -42,12 +42,13 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Entities/Actor.cpp
 	src/Ceres/Core/Entities/Block.cpp
 
-
+	# Graphics
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/Effect.cpp
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
 	src/Ceres/Core/Graphics/IndexBuffer.cpp
 	src/Ceres/Core/Graphics/Mesh.cpp
+	src/Ceres/Core/Graphics/Texture.cpp
 	src/Ceres/Core/Graphics/VertexStream.cpp
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
 	src/Ceres/Core/Graphics/VertexBufferObject.cpp
@@ -57,13 +58,10 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/Primitives/Cube.cpp
 	src/Ceres/Core/Graphics/Primitives/Sphere.cpp
 
-	# src/Ceres/Core/Graphics/VertexTypes/IVertexLayout.cpp
-	# src/Ceres/Core/Graphics/VertexTypes/VertexPosition.cpp
-	# src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormal.cpp
-
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalColorLayout.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalTextureLayout.cpp
 
 
 	# I/O
@@ -108,11 +106,13 @@ set_target_properties(ceres PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO $
 
 # Required packages
 find_package(SDL2 REQUIRED)
+find_package(SDL2-image REQUIRED)
 find_package(fmt REQUIRED)
 find_package(GLEW REQUIRED)
 
 # Link packages
 target_link_libraries(ceres PRIVATE SDL2::SDL2)
+target_link_libraries(ceres PRIVATE SDL2::SDL2_image)
 target_link_libraries(ceres PRIVATE fmt::fmt)
 target_link_libraries(ceres PRIVATE GLEW::GLEW)
 

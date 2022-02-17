@@ -19,6 +19,7 @@ namespace Ceres
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
         _glContext = SDL_GL_CreateContext(window);
+        glewExperimental = true;
         GLenum glewError = glewInit();
 
         fmt::print("Initializing GLEW... {}\n", glewGetErrorString(glewError));
