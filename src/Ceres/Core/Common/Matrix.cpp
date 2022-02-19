@@ -156,6 +156,21 @@ namespace Ceres
         );
     }
 
+    Matrix Matrix::Basis()
+    {
+        return ChangeOfBasis(Vector3(0, -1, 0), Vector3(0, 0, 1), Vector3(-1, 0, 0));
+    }
+
+    Matrix Matrix::ChangeOfBasis(Vector3& x, Vector3& y, Vector3& z)
+    {
+        return Matrix(
+            x.X, x.Y, x.Z, 0,
+            y.X, y.Y, y.Z, 0,
+            z.X, z.Y, z.Z, 0,  
+            0, 0, 0, 1
+        );
+    }
+
     Matrix Matrix::Transpose() const
     {
         return Matrix(

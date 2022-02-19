@@ -33,7 +33,7 @@ namespace Ceres
 
     Texture::~Texture()
     {
-        glDeleteTextures(0, &_textureID);
+        glDeleteTextures(1, &_textureID);
     }
 
     GLuint Texture::GetID() const

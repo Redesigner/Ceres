@@ -44,10 +44,12 @@ target_sources(ceres PRIVATE
 
 	# Graphics
 	src/Ceres/Core/Graphics/Context.cpp
+	src/Ceres/Core/Graphics/CubeMap.cpp
 	src/Ceres/Core/Graphics/Effect.cpp
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
 	src/Ceres/Core/Graphics/IndexBuffer.cpp
 	src/Ceres/Core/Graphics/Mesh.cpp
+	src/Ceres/Core/Graphics/Skybox.cpp
 	src/Ceres/Core/Graphics/Texture.cpp
 	src/Ceres/Core/Graphics/VertexStream.cpp
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp

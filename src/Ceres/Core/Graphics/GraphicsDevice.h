@@ -3,8 +3,10 @@
 #include <memory>
 #include <vector>
 
+#include "CubeMap.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "Skybox.h"
 #include "Primitives/MeshPrimitive.h"
 #include "VertexTypes/IVertexType.h"
 #include "../Common/Matrix.h"
@@ -65,6 +67,7 @@ namespace Ceres
             void unloadTextures();
 
             void renderWireframe();
+            void renderSkybox();
 
             SDL_Window* createWindow();
             void resizeWindow(int w, int h);
@@ -87,5 +90,8 @@ namespace Ceres
             VertexStream* _wireframe;
             VertexPositionLayout* _wireframeLayout;
 
+            Skybox* _skybox;
+            CubeMap* _skyboxCubeMap;
+            uint8_t _skyboxEffect;
     };
 }

@@ -26,14 +26,14 @@ namespace Ceres
         }
         else if (message->Type == "CameraRotation")
         {
-            float angleY = message->GetData<Vector3>().Y / 480.0f;
-            float angleX = message->GetData<Vector3>().X / 640.0f;
-            Vector3 deltaRotation = Vector3(-angleX, angleY, 0);
+            float pitch = message->GetData<Vector3>().Y / 480.0f;
+            float yaw = message->GetData<Vector3>().Z / 640.0f;
+            Vector3 deltaRotation = Vector3(0, pitch, -yaw);
             if (Rotation.Y + deltaRotation.Y < 1.57f && Rotation.Y + deltaRotation.Y > -1.57f)
             {
                 Rotation.Y += deltaRotation.Y;
             }
-            Rotation.X += deltaRotation.X;
+            Rotation.X += deltaRotation.Z;
             _updateTransform();
             return true;
         }
@@ -79,7 +79,7 @@ namespace Ceres
     void CameraComponent::_updateTransform()
     {
         _viewRotation = Matrix::RotationFromEuler(Rotation.X, Rotation.Y, Rotation.Z);
-        _viewRotation = Matrix::LookAt((_viewRotation * Offset) + Position, Position, Vector3::Up());
-        _matrix = _viewRotation;
+        _matrix = Matrix::LookAt((_viewRotation * Offset) + Position, Position, Vector3::Up());
+        _viewRotation = Matrix::LookAt(Vector3::Zero(), (_viewRotation * Vector3(1, 0, 0)), Vector3::Up());
     }
 }

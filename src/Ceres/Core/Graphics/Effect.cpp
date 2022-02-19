@@ -35,7 +35,7 @@ namespace Ceres
             }
             glUseProgram(_glProgram);
             SetMatrix("viewProjection", _viewPosition * _frustrum);
-            SetVector3("lightPos", Vector3(0, 0, 1));
+            SetVector3("lightPos", Vector3(-1000, 0, 100));
         }
     }
     

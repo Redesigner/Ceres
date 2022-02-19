@@ -30,12 +30,16 @@ namespace Ceres
     {
         // TODO: properly initalize cameracomponent?
 
-
         _window = createWindow();
         _currentContext = new Context(_window);
 
-        // glEnable(GL_MULTISAMPLE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_MULTISAMPLE);
         glEnable(GL_CULL_FACE);
+
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(MessageCallback, 0);
 
@@ -43,7 +47,11 @@ namespace Ceres
 
         _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
         _wireframeEffect = LoadEffect("Shaders\\wireframeVertex.GLSL", "Shaders\\wireframeFragment.GLSL");
-        
+        _skyboxEffect = LoadEffect("Shaders\\skyboxVertex.GLSL", "Shaders\\skyboxFragment.GLSL");
+
+        _skybox = new Skybox();
+        std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
+        _skyboxCubeMap = new CubeMap(cubeMapLocation.c_str());
         _wireframeLayout = new VertexPositionLayout();
         _wireframe = new VertexStream(*_wireframeLayout, 64, _loadedEffects[_wireframeEffect]);
     }
@@ -55,6 +63,9 @@ namespace Ceres
         delete _currentContext;
         delete _wireframe;
         delete _wireframeLayout;
+        delete _skybox;
+        delete _skyboxCubeMap;
+
         if(_window != nullptr)
         {
             SDL_DestroyWindow(_window);
@@ -65,9 +76,11 @@ namespace Ceres
     // our Game object. It will always/only be called on the start of a frame.
     void GraphicsDevice::BeginRender()
     {
-        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
+
+        renderSkybox();
     }
 
     // This method is called by the Program object, which abstracts it away from
@@ -76,7 +89,6 @@ namespace Ceres
     void GraphicsDevice::EndRender()
     {
         renderWireframe();
-
         SDL_GL_SwapWindow(_window);
         printError();
     }
@@ -240,6 +252,21 @@ namespace Ceres
         glDrawElements(GL_LINES, _wireframe->Size(), GL_UNSIGNED_INT, NULL);
     }
 
+    void GraphicsDevice::renderSkybox()
+    {
+        // glCullFace(GL_FRONT);
+        glDepthMask(GL_FALSE);
+        EffectPtr effect = _loadedEffects[_skyboxEffect];
+        _skybox->GetVertexArray().Bind();
+        _skybox->GetIndexBuffer().Bind();
+
+        effect->Begin();
+        effect->SetViewMatrix(_currentCamera->GetRotationMatrix());
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
+        glDepthMask(GL_TRUE);
+        // glCullFace(GL_BACK);
+    }
+
     SDL_Window* GraphicsDevice::createWindow()
     {
         if(SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -252,6 +279,10 @@ namespace Ceres
             fmt::print("Failed to initialize SDL_image.\n");
             return false;
         }
+        const int multisampleBufferCount = 1;
+        const int multisampleSampleCount = 4;
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, multisampleBufferCount);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisampleSampleCount);
         return SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     }
 

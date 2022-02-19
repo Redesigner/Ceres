@@ -14,13 +14,12 @@ uniform vec3 cameraPos;
 void main()
 {
     vec3 color = texture(texSampler, wTexCoord).xyz;
-    // vec3 color = vec3(1.0, 1.0, 1.0);
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
     vec3 wNormalF = normalize(wNormal).xyz;
 
     float diffStrength = 0.6;
     float specularStrength = 0.8;
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.01;
 
     vec3 lightDir = normalize(wLightPos.xyz - wPosition.xyz);
     vec3 viewDir = normalize(wPosition.xyz - cameraPos);

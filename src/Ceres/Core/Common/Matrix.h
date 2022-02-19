@@ -33,6 +33,9 @@ namespace Ceres
 
             static Matrix Perspective(float width, float height, float fOV, float near, float far);
             static Matrix LookAt(const Vector3& eyePos, const Vector3& target, const Vector3& up);
+
+            static Matrix Basis();
+            static Matrix ChangeOfBasis(Vector3& x, Vector3& y, Vector3& z);
             
             Matrix Transpose() const;
 
