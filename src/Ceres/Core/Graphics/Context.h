@@ -7,13 +7,14 @@ extern "C"
     #include <SDL2/SDL_opengl.h>
 }
 
-struct SDL_Window;
+#include "Window.h"
+
 namespace Ceres
 {
     class Context
     {
         public:
-            Context(SDL_Window* window);
+            Context(const Window& window);
             ~Context();
 
         private:

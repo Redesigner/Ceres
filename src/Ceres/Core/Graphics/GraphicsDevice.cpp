@@ -24,24 +24,21 @@ MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei 
 {
     fmt::print("GL CALLBACK: {} type = {}, severity = {}, message = {}\n", ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), type, severity, message );
 }
+
 namespace Ceres
 {
     GraphicsDevice::GraphicsDevice()
     {
-        // TODO: properly initalize cameracomponent?
-
-        _window = createWindow();
         _currentContext = new Context(_window);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_MULTISAMPLE);
-        glEnable(GL_CULL_FACE);
-
-        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(MessageCallback, 0);
+
+        glEnable(GL_MULTISAMPLE);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         _loadedMeshes = std::vector<MeshPtr>();
 
@@ -65,11 +62,6 @@ namespace Ceres
         delete _wireframeLayout;
         delete _skybox;
         delete _skyboxCubeMap;
-
-        if(_window != nullptr)
-        {
-            SDL_DestroyWindow(_window);
-        }
     }
 
     // This method is called by the Program object, which abstracts it away from
@@ -89,8 +81,7 @@ namespace Ceres
     void GraphicsDevice::EndRender()
     {
         renderWireframe();
-        SDL_GL_SwapWindow(_window);
-        printError();
+        _window.SwapBuffer();
     }
 
     void GraphicsDevice::Render(RenderComponent* renderComponent) const
@@ -124,37 +115,19 @@ namespace Ceres
             }
             case SDL_WINDOWEVENT_RESIZED:
             {
-                resizeWindow(windowEvent.data1, windowEvent.data2);
+                _window.Resize(windowEvent.data1, windowEvent.data2);
                 return;
             }
             case SDL_WINDOWEVENT_MAXIMIZED:
             {
-                SDL_MaximizeWindow(_window);
-                int w, h;
-                SDL_GetWindowSize(_window, &w, &h);
-                resizeWindow(w, h);
+                _window.Maximize();
             }
         }
     }
 
     void GraphicsDevice::ToggleFullscreen()
     {
-        bool fullscreen = SDL_GetWindowFlags(_window) & SDL_WINDOW_FULLSCREEN;
-        if (!fullscreen)
-        {
-            int displayIndex = SDL_GetWindowDisplayIndex(_window);
-            SDL_DisplayMode displayMode;
-            SDL_GetDesktopDisplayMode(displayIndex, &displayMode);
-            SDL_SetWindowSize(_window, displayMode.w, displayMode.h);
-            resizeWindow(displayMode.w, displayMode.h);
-            SDL_SetWindowFullscreen(_window, true);
-        }
-        else
-        {
-            SDL_SetWindowFullscreen(_window, false);
-            SDL_SetWindowSize(_window, _width, _height);
-            resizeWindow(_width, _height);
-        }
+        _window.ToggleFullscreen();
     }
     
 
@@ -265,34 +238,5 @@ namespace Ceres
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
         glDepthMask(GL_TRUE);
         // glCullFace(GL_BACK);
-    }
-
-    SDL_Window* GraphicsDevice::createWindow()
-    {
-        if(SDL_Init(SDL_INIT_VIDEO) < 0)
-        {
-            fmt::print("Failed to initialize SDL.\n");
-            return false;
-        }
-        if(IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-        {
-            fmt::print("Failed to initialize SDL_image.\n");
-            return false;
-        }
-        const int multisampleBufferCount = 1;
-        const int multisampleSampleCount = 4;
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, multisampleBufferCount);
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisampleSampleCount);
-        return SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    }
-
-    void GraphicsDevice::resizeWindow(int w, int h)
-    {
-        glViewport(0, 0, w, h);
-        for (EffectPtr effect : _loadedEffects)
-        {
-            effect->SetFrustrum(Matrix::Perspective(w, h, 90, .1f, 100.f));
-        }
-        return;
     }
 }

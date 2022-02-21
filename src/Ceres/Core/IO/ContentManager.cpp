@@ -1,13 +1,15 @@
 #include "ContentManager.h"
 
-#include <filesystem>
-#include <fstream>
-#include <string>
+extern "C"
+{
+    #include <SDL2/SDL.h>
+}
 
 #include <fmt/core.h>
 
-namespace fs = std::filesystem;
-const char* CONTENTPATH = "Content";
+const std::string CWD = SDL_GetBasePath();
+const std::string CONTENT_DIR = CWD + "..\\..\\content\\";
+
 const std::string DEBUG_PREFIX = "[content]";
 
 // TODO: Make this whole class not suck :)
@@ -16,20 +18,24 @@ namespace Ceres
 {
     const std::string ContentManager::LoadString(const char* filename)
     {
-        fs::path currentPath = fs::current_path();
-        currentPath.append(CONTENTPATH);
+        std::string currentPath = CONTENT_DIR;
         currentPath.append(filename);
-        fmt::print("{} Loading file: '{}'...\n", DEBUG_PREFIX, currentPath.string());
-        
-        std::ifstream ifs (currentPath, std::ifstream::in);
-        std::string file_content;
-        ifs.seekg(0, std::ios::end);
-        file_content.resize(ifs.tellg());
-        ifs.seekg(0, std::ios::beg);
-        ifs.read(&file_content[0], file_content.size());
-        ifs.close();
+        SDL_RWops* sdlRW = SDL_RWFromFile(currentPath.c_str(), "r");
+        if (!sdlRW)
+        {
+            return std::string("");
+        }
+        sdlRW = SDL_RWFromFile(currentPath.c_str(), "r");
+        std::string result = std::string();
 
-        fmt::print("{} File loaded successfully, length: {}\n", DEBUG_PREFIX, file_content.length());
-        return file_content;
+        char out = 0;
+        while (SDL_RWread(sdlRW, &out, 1, 1) != 0)
+        {
+            result.insert(result.end(), out);
+        }
+        SDL_RWclose(sdlRW);
+
+        fmt::print("{} loaded file '{}' successfully | {}B\n", DEBUG_PREFIX, filename, result.length());
+        return result;
     }
 }

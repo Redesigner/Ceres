@@ -5,8 +5,10 @@
 
 #include "CubeMap.h"
 #include "Mesh.h"
-#include "Texture.h"
 #include "Skybox.h"
+#include "Texture.h"
+#include "Window.h"
+
 #include "Primitives/MeshPrimitive.h"
 #include "VertexTypes/IVertexType.h"
 #include "../Common/Matrix.h"
@@ -70,11 +72,8 @@ namespace Ceres
             void renderSkybox();
 
             SDL_Window* createWindow();
-            void resizeWindow(int w, int h);
-            int _width = 1280;
-            int _height = 720;
             
-            SDL_Window* _window;
+            Window _window;
             SDL_Surface* _screenSurface;
 
             Context* _currentContext;

@@ -4,15 +4,12 @@
 
 extern "C"
 {
-	#include <SDL2/SDL.h>
-    #include <gl/glew.h>
-    #include <SDL2/SDL_opengl.h>
     #include <gl/GLU.h>
 }
 
 namespace Ceres
 {
-    Context::Context(SDL_Window* window)
+    Context::Context(const Window& window)
     {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -21,7 +18,7 @@ namespace Ceres
         const int multisampleBufferCount = 1;
         const int multisampleSampleCount = 4;
         
-        _glContext = SDL_GL_CreateContext(window);
+        _glContext = SDL_GL_CreateContext(window.Get());
         glewExperimental = true;
         GLenum glewError = glewInit();
 
