@@ -3,6 +3,7 @@
 #include "../Graphics/GraphicsDevice.h"
 #include "IService.h"
 #include "../Common/VertexList.h"
+#include "../Common/AssetPointer.h"
 
 namespace Ceres
 {
@@ -18,10 +19,6 @@ namespace Ceres
             virtual ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
 
             void RenderComponents();
-            
-            void LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount);
-            void LoadWireframeData(VertexList& vertices);
-            void ClearWireframe();
             
         private:
             GraphicsDevice& _parentDevice;

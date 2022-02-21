@@ -17,9 +17,21 @@ namespace Ceres
         glBufferData(GL_ARRAY_BUFFER, _capacity * vertexLayout.Size(), NULL, GL_DYNAMIC_DRAW);
         fmt::print("{} Vertex size: {} bytes each.\n", DEBUG_PREFIX, vertexLayout.Size());
     }
+    VertexBufferObject::VertexBufferObject(VertexBufferObject&& vertexBufferObject)
+        :_capacity(vertexBufferObject._capacity)
+    {
+        _currentIndex = vertexBufferObject._currentIndex;
+        _gVBO = vertexBufferObject._gVBO;
+        _size = vertexBufferObject._size;
+
+        vertexBufferObject._initialized = false;
+    }
     VertexBufferObject::~VertexBufferObject()
     {
-        glDeleteBuffers(1, &_gVBO);
+        if(_initialized)
+        {
+            glDeleteBuffers(1, &_gVBO);
+        }
     }
 
     void VertexBufferObject::SetData(const IVertexType data[], const uint size, const uint offset)

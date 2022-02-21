@@ -10,18 +10,17 @@
 
 namespace Ceres
 {
-    Actor::Actor(ServiceContainer& serviceContainer)
+    Actor::Actor(ServiceContainer& serviceContainer, AssetPtr<Ceres::Mesh> mesh, AssetPtr<Ceres::Texture> texture)
     {
-        uint8_t meshID = 1;
         // _primitive = new SpherePrimitive(.25f);
         _primitive = new CubePrimitive(1.0f);
 
-        ComponentRef mesh = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, 2, &meshID);
+        ComponentRef meshCpt = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, 1, &mesh);
         ComponentRef camera = serviceContainer.GetService<RenderService>()->GenerateComponent("CameraComponent", *this, 0, nullptr);
         ComponentRef controller = serviceContainer.GetService<InputService>()->GenerateComponent("ControllerComponent", *this, 0, nullptr);
         ComponentRef physics = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, 1, _primitive);
         ComponentRef movement = serviceContainer.GetService<ActorService>()->GenerateComponent("MovementComponent", *this, 0, nullptr);
-        _components = {mesh, camera, controller, physics, movement};
+        _components = {meshCpt, camera, controller, physics, movement};
 
         SendMessage(Message::Write<void>("Pause", 0));
 

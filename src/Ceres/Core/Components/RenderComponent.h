@@ -2,6 +2,7 @@
 
 #include "Base/IComponent.h"
 
+#include "../Common/AssetPointer.h"
 #include "../Common/Transform.h"
 #include "../Graphics/Mesh.h"
 #include "../Graphics/Texture.h"
@@ -11,15 +12,15 @@ namespace Ceres
     class RenderComponent : public IComponent
     {
         public:
-            RenderComponent(const IEntity& parent, uint8_t meshId);
-            RenderComponent(const IEntity& parent, uint8_t meshId, uint8_t textureId);
+            RenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh);
+            RenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
 
             ~RenderComponent();
 
             virtual bool RecieveMessage(Message* message) override;
 
-            uint8_t MeshId;
-            int TextureId;
+            AssetPtr<Mesh> Mesh;
+            AssetPtr<Texture> Texture;
             Transform Transform;
 
         private:

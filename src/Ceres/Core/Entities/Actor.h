@@ -2,6 +2,11 @@
 
 #include "Base/IEntity.h"
 
+#include "../Common/AssetPointer.h"
+
+#include "../Graphics/Mesh.h"
+#include "../Graphics/Texture.h"
+
 #include "../Services/ServiceContainer.h"
 
 namespace Ceres
@@ -11,7 +16,7 @@ namespace Ceres
     class Actor : public IEntity
     {
         public:
-            Actor(ServiceContainer& serviceContainer);
+            Actor(ServiceContainer& serviceContainer, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
             ~Actor();
 
         private:

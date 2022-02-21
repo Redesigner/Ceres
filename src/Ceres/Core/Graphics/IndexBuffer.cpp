@@ -17,9 +17,21 @@ namespace Ceres
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, INDEXSIZE * _capacity, NULL, GL_DYNAMIC_DRAW);
     }
 
+    IndexBuffer::IndexBuffer(IndexBuffer&& indexBuffer)
+        :_capacity(indexBuffer._capacity)
+    {
+        _iBO = indexBuffer._iBO;
+        _currentCount = indexBuffer._currentCount;
+
+        indexBuffer._initialized = false;
+    }
+
     IndexBuffer::~IndexBuffer()
     {
-        glDeleteBuffers(1, &_iBO);
+        if (_initialized)
+        {
+            glDeleteBuffers(1, &_iBO);
+        }
     }
 
     void IndexBuffer::SetData(const uint indices[], const uint count, const uint offset)

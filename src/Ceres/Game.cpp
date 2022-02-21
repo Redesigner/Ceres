@@ -64,22 +64,22 @@ namespace Ceres
         Cube<VertexPositionNormalTexture> texturedCube = Cube<VertexPositionNormalTexture>(1, 1, 1);
         Sphere sphere = Sphere(.25f, 16, 16, Color(255, 0, 0));
 
-        uint8_t texturedEffect = GraphicsDevice.LoadEffect("Shaders\\texturedVertex.GLSL", "Shaders\\texturedFragment.GLSL");
-        GraphicsDevice.LoadMesh(cube);
+        AssetPtr<Effect> texturedEffect = GraphicsDevice.LoadEffect("Shaders\\texturedVertex.GLSL", "Shaders\\texturedFragment.GLSL");
+        AssetPtr<Mesh> cubeMesh = GraphicsDevice.LoadMesh(cube);
         GraphicsDevice.LoadMesh(texturedCube, texturedEffect);
         GraphicsDevice.LoadMesh(sphere);
-        GraphicsDevice.LoadTexture("test.png");
+        AssetPtr<Texture> testTexture = GraphicsDevice.LoadTexture("test.png");
 
-        Actor* actor = new Actor(ServiceContainer);
+        Actor* actor = new Actor(ServiceContainer, cubeMesh, testTexture);
         InputHandler.BindInput(Button::Key_pause, [actor](){
             actor->SendMessage(Message::Write<void>("Pause", 0));
         });
         _entities.emplace_back(actor);
  
-        Block* b1 = new Block(ServiceContainer, 2.0f, 5.0f, 1.0f);
-        Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f);
-        Block* b3 = new Block(ServiceContainer, 10.0f, 2.0f, 1.0f);
-        Block* b4 = new Block(ServiceContainer, 0.1f, 5.0f, 0.5f);
+        Block* b1 = new Block(ServiceContainer, 2.0f, 5.0f, 1.0f, cubeMesh);
+        Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f, cubeMesh);
+        Block* b3 = new Block(ServiceContainer, 10.0f, 2.0f, 1.0f, cubeMesh);
+        Block* b4 = new Block(ServiceContainer, 0.1f, 5.0f, 0.5f, cubeMesh);
 
         b1->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, 0.0f, -2.0f)));
         b2->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, -3.0f, -2.0f)));

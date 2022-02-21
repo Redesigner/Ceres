@@ -2,6 +2,7 @@
 
 #include "../Common/Matrix.h"
 #include "../Common/Vector3.h"
+#include "../Common/AssetPointer.h"
 #include "../Graphics/Texture.h"
 
 #include <string>
@@ -19,12 +20,16 @@ namespace Ceres
     {
         public:
             Effect(const char* vertFile, const char* fragFile);
+            Effect(Effect&) = delete;
+            Effect(Effect&& effect);
             ~Effect();
+
+            Effect& operator=(Effect&) = delete;
 
             void Begin();
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
-            void SetSampler(std::string name, const Texture& texture);
+            void SetSampler(std::string name, AssetPtr<Texture> texture);
             void SetViewMatrix(const Matrix& matrix);
             void SetFrustrum(const Matrix& matrix);
 
@@ -41,5 +46,7 @@ namespace Ceres
 
             Matrix _frustrum;
             Matrix _viewPosition;
+
+            bool _initialized = true;
     };
 }

@@ -39,18 +39,12 @@ namespace Ceres
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        _loadedMeshes = std::vector<MeshPtr>();
-
-        _currentEffect = LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
-        _wireframeEffect = LoadEffect("Shaders\\wireframeVertex.GLSL", "Shaders\\wireframeFragment.GLSL");
+        LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
         _skyboxEffect = LoadEffect("Shaders\\skyboxVertex.GLSL", "Shaders\\skyboxFragment.GLSL");
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
         _skyboxCubeMap = new CubeMap(cubeMapLocation.c_str());
-        _wireframeLayout = new VertexPositionLayout();
-        _wireframe = new VertexStream(*_wireframeLayout, 64, _loadedEffects[_wireframeEffect]);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -58,8 +52,6 @@ namespace Ceres
         unloadEffects();
         unloadMeshes();
         delete _currentContext;
-        delete _wireframe;
-        delete _wireframeLayout;
         delete _skybox;
         delete _skyboxCubeMap;
     }
@@ -80,29 +72,27 @@ namespace Ceres
     // after any logic in Game.Render() has been executed.
     void GraphicsDevice::EndRender()
     {
-        renderWireframe();
         _window.SwapBuffer();
     }
 
     void GraphicsDevice::Render(RenderComponent* renderComponent) const
     {
-        MeshPtr componentMesh = _loadedMeshes[renderComponent->MeshId];
-        EffectPtr componentEffect = componentMesh->GetEffect();
-        componentMesh->GetVertexArray().Bind();
-        componentMesh->GetIndexBuffer().Bind();
+        Mesh& componentMesh = *renderComponent->Mesh;
+        Effect& componentEffect = *componentMesh.GetEffect();
+        componentMesh.GetVertexArray().Bind();
+        componentMesh.GetIndexBuffer().Bind();
 
-        componentEffect->Begin();
-        componentEffect->SetViewMatrix(_currentCamera->GetMatrix());
-        componentEffect->SetVector3("cameraPos", _currentCamera->GetPosition());
-        componentEffect->SetMatrix("model", renderComponent->Transform.GetMatrix());
+        componentEffect.Begin();
+        componentEffect.SetViewMatrix(_currentCamera->GetMatrix());
+        componentEffect.SetVector3("cameraPos", _currentCamera->GetPosition());
+        componentEffect.SetMatrix("model", renderComponent->Transform.GetMatrix());
         
-        if (renderComponent->TextureId >= 0)
+        /* if (renderComponent->Texture)
         {
-            TexturePtr componentTexture = _loadedTextures[renderComponent->TextureId];
-            componentEffect->SetSampler("texSampler", *componentTexture);
-        }
+            componentEffect->SetSampler("texSampler", renderComponent->Texture);
+        } */
 
-        glDrawElements(GL_TRIANGLES, componentMesh->Size(), GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
     }
 
     void GraphicsDevice::ReceiveEvent(SDL_WindowEvent& windowEvent)
@@ -131,32 +121,31 @@ namespace Ceres
     }
     
 
-    uint8_t GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName)
+    AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName)
     {
-        EffectPtr effect = std::make_shared<Effect>(vertexShaderName, fragmentShaderName);
-        _loadedEffects.push_back(std::move(effect));
-        return static_cast<uint8_t>(_loadedEffects.size() - 1);
+        _loadedEffects.push_back(std::move(Effect(vertexShaderName, fragmentShaderName)));
+        return AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1);
     }
 
-    uint8_t GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], uint indexCount, uint8_t effectID)
+    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], uint indexCount, AssetPtr<Effect> effect)
     {
-        EffectPtr effect = _loadedEffects[effectID];
-        MeshPtr mesh = std::make_shared<Mesh>(vertexData, vertexLayout, vertexCount, indices, indexCount, effect);
-        _loadedMeshes.push_back(std::move(mesh));
-        return static_cast<uint8_t>(_loadedMeshes.size() - 1);
+        _loadedMeshes.push_back(std::move(Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, effect)));
+        return AssetPtr<Mesh>(_loadedMeshes, _loadedMeshes.size() - 1);
+    }
+    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive, AssetPtr<Effect> effect)
+    {
+        return LoadMesh(meshPrimitive.GetVertices(), *meshPrimitive.GetVertexLayout(), meshPrimitive.GetVertexCount(), meshPrimitive.GetIndices(), meshPrimitive.GetIndexCount(), effect);
+    }
+    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive)
+    {
+        return LoadMesh(meshPrimitive, AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1));
     }
 
-    uint8_t GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive, uint8_t effectID)
-    {
-        return LoadMesh(meshPrimitive.GetVertices(), *meshPrimitive.GetVertexLayout(), meshPrimitive.GetVertexCount(), meshPrimitive.GetIndices(), meshPrimitive.GetIndexCount(), effectID);
-    }
-
-    uint8_t GraphicsDevice::LoadTexture(std::string textureName)
+    AssetPtr<Texture> GraphicsDevice::LoadTexture(std::string textureName)
     {
         std::string texturePath = CONTENT_DIR + "Textures\\" + textureName;
-        TexturePtr texture = std::make_shared<Texture>(texturePath.c_str());
-        _loadedTextures.push_back(std::move(texture));
-        return static_cast<uint8_t>(_loadedTextures.size() - 1);
+        _loadedTextures.push_back(std::move(Texture(texturePath)));
+        return AssetPtr<Texture>(_loadedTextures, _loadedTextures.size() - 1);
     }
 
     void GraphicsDevice::SetCamera(CameraComponent* camera)
@@ -164,24 +153,14 @@ namespace Ceres
         _currentCamera = camera;
     }
 
-    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, uint8_t meshId) const
+    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh) const
     {
-       return new RenderComponent(parent, meshId);
+       return new RenderComponent(parent, mesh);
     }
 
-    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, uint8_t meshId, uint8_t texId) const
+    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture) const
     {
-       return new RenderComponent(parent, meshId, texId);
-    }
-
-    void GraphicsDevice::LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount)
-    {
-        _wireframe->AddData(vertexData, indices, vertexCount);
-    }
-
-    void GraphicsDevice::ClearWireframe()
-    {
-        _wireframe->Clear();
+       return new RenderComponent(parent, mesh, texture);
     }
 
 
@@ -211,30 +190,15 @@ namespace Ceres
         _loadedTextures.clear();
     }
 
-    void GraphicsDevice::renderWireframe()
-    {
-        if (_wireframe->Size() == 0)
-        {
-            return;
-        }
-        EffectPtr effect = _loadedEffects[_wireframeEffect];
-        glDisable(GL_DEPTH_TEST);
-        _wireframe->GetVertexArray().Bind();
-        effect->Begin();
-        effect->SetViewMatrix(_currentCamera->GetMatrix());
-        glDrawElements(GL_LINES, _wireframe->Size(), GL_UNSIGNED_INT, NULL);
-    }
-
     void GraphicsDevice::renderSkybox()
     {
         // glCullFace(GL_FRONT);
         glDepthMask(GL_FALSE);
-        EffectPtr effect = _loadedEffects[_skyboxEffect];
         _skybox->GetVertexArray().Bind();
         _skybox->GetIndexBuffer().Bind();
 
-        effect->Begin();
-        effect->SetViewMatrix(_currentCamera->GetRotationMatrix());
+        _skyboxEffect->Begin();
+        _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
         glDepthMask(GL_TRUE);
         // glCullFace(GL_BACK);

@@ -15,7 +15,11 @@ namespace Ceres
     {
         public:
             IndexBuffer(int size);
+            IndexBuffer(IndexBuffer&) = delete;
+            IndexBuffer(IndexBuffer&& indexBuffer);
             ~IndexBuffer();
+
+            IndexBuffer& operator=(IndexBuffer&) = delete;
 
             void SetData(const uint indices[], const uint count, const uint offset);
             void SetData(const uint indices[], const uint count);
@@ -25,5 +29,7 @@ namespace Ceres
             GLuint _iBO;
             int _currentCount;
             int _capacity;
+
+            bool _initialized = true;
     };
 }

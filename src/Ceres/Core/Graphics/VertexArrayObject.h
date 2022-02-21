@@ -15,13 +15,18 @@ namespace Ceres
     {
         public:
             VertexArrayObject(const IVertexLayout& vertexLayout);
-            ~VertexArrayObject();            
+            VertexArrayObject(VertexArrayObject&& vertexArrayObject);
+            ~VertexArrayObject();
 
+            VertexArrayObject& operator=(VertexArrayObject&& vertexArrayObject) noexcept;
+            
             void Bind() const;
             void SetAttributes();
 
         private:
             GLuint _gVAO;
             const IVertexLayout& _vertexLayout;
+
+            bool _initialized = true;
     };
 }

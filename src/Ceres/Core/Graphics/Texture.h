@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 extern "C"
 {
@@ -14,10 +15,13 @@ namespace Ceres
     class Texture
     {
         public:
-            Texture(const char* textureName);
+            Texture(std::string textureName);
             Texture(const Texture&) = delete;
-            Texture& operator =(const Texture&) = delete;
+            Texture(Texture&& texture);
             ~Texture();
+
+            Texture& operator =(const Texture&) = delete;
+            Texture& operator =(Texture&& texture);
 
             GLuint GetID() const;
 
@@ -27,6 +31,6 @@ namespace Ceres
             void flipSurface(SDL_Surface* surface);
 
             GLuint _textureID;
+            bool _initialized = true;
     };
-    using TexturePtr = std::shared_ptr<Texture>;
 }

@@ -24,15 +24,15 @@ namespace Ceres
             {
                 case 1:
                 {
-                    uint8_t meshId = *(uint8_t*) args;
-                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, meshId);
+                    AssetPtr<Mesh> mesh = *(AssetPtr<Mesh>*) args;
+                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh);
                     _components.Insert(renderComponent);
                     return ComponentRef(&_components, _components.Size() - 1);
                 }
                 case 2:
                 {
-                    uint8_t meshId = *(uint8_t*) args;
-                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, meshId, 0);
+                    AssetPtr<Mesh> mesh = *(AssetPtr<Mesh>*) args;
+                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh, AssetPtr<Texture>(std::vector<Texture>(), 0));
                     _components.Insert(renderComponent);
                     return ComponentRef(&_components, _components.Size() - 1);
                 }
@@ -72,29 +72,5 @@ namespace Ceres
                 _parentDevice.Render((RenderComponent*) _components[i]);
             }
         }
-    }
-
-    void RenderService::LoadWireframeData(const IVertexType vertexData[], const uint indices[], const uint vertexCount)
-    {
-        _parentDevice.LoadWireframeData(vertexData, indices, vertexCount);
-    }
-    void RenderService::LoadWireframeData(VertexList& vertices)
-    {
-        const uint vertexCount = vertices.Size();
-        VertexPosition* vertexData = new VertexPosition[vertexCount];
-        uint* indices = new uint[vertexCount];
-        for (int i = 0; i < vertexCount; i++)
-        {
-            vertexData[i] = VertexPosition(vertices[i]);
-            indices[i] = i;
-        }
-        LoadWireframeData(vertexData, indices, vertexCount);
-        delete[] vertexData;
-        delete[] indices;
-    }
-
-    void RenderService::ClearWireframe()
-    {
-        _parentDevice.ClearWireframe();
     }
 }

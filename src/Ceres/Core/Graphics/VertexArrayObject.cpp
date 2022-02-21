@@ -11,9 +11,20 @@ namespace Ceres
         glGenVertexArrays(1, &_gVAO);
         glBindVertexArray(_gVAO);
     }
+
+    VertexArrayObject::VertexArrayObject(VertexArrayObject&& vertexArrayObject)
+        :_vertexLayout(vertexArrayObject._vertexLayout)
+    {
+        _gVAO = vertexArrayObject._gVAO;
+        vertexArrayObject._initialized = false;
+    }
+
     VertexArrayObject::~VertexArrayObject()
     {
-        glDeleteVertexArrays(1, &_gVAO);
+        if (_initialized)
+        {
+            glDeleteVertexArrays(1, &_gVAO);
+        }
     }
 
     void VertexArrayObject::Bind() const

@@ -23,6 +23,7 @@ namespace Ceres
     {
         public:
             VertexBufferObject(uint capacity, const IVertexLayout& vertexLayout);
+            VertexBufferObject(VertexBufferObject&& vertexBufferObject);
             ~VertexBufferObject();
 
             void SetData(const IVertexType data[], const uint size, const uint offset);
@@ -35,5 +36,7 @@ namespace Ceres
             uint _currentIndex;
             uint _size;
             GLuint _gVBO;
+
+            bool _initialized = true;
     };
 }

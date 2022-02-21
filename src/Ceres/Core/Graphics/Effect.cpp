@@ -38,12 +38,26 @@ namespace Ceres
             SetVector3("lightPos", Vector3(-1000, 0, 100));
         }
     }
+
+    Effect::Effect(Effect&& effect)
+        : _frustrum(effect._frustrum)
+    {
+        _glProgram = effect._glProgram;
+        _vertexShader = effect._vertexShader;
+        _fragmentShader = effect._fragmentShader;
+        _viewPosition = effect._viewPosition;
+
+        effect._initialized = false;
+    }
     
     Effect::~Effect()
     {
-        glDeleteShader(_fragmentShader);
-        glDeleteShader(_vertexShader);
-        glDeleteProgram(_glProgram);
+        if(_initialized)
+        {
+            glDeleteShader(_fragmentShader);
+            glDeleteShader(_vertexShader);
+            glDeleteProgram(_glProgram);
+        }
     }
 
     void Effect::Begin()
@@ -73,22 +87,22 @@ namespace Ceres
         }
         else
         {
-            fmt::print("Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
         }
     }
 
-    void Effect::SetSampler(std::string name, const Texture& texture)
+    void Effect::SetSampler(std::string name, AssetPtr<Texture> texture)
     {
         GLint location = glGetUniformLocation(_glProgram, name.c_str());
         if (location != -1)
         {
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture.GetID());
+            glBindTexture(GL_TEXTURE_2D, texture->GetID());
             glUniform1i(location, 0);
         }
         else
         {
-            fmt::print("Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
         }
     }
 

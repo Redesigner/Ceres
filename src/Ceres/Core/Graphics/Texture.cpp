@@ -10,9 +10,9 @@ const std::string DEBUG_PREFIX = "[texture]";
 
 namespace Ceres
 {
-    Texture::Texture(const char* textureName)
+    Texture::Texture(std::string textureName)
     {
-        SDL_Surface* surface = IMG_Load(textureName);
+        SDL_Surface* surface = IMG_Load(textureName.c_str());
         if (surface == nullptr)
         {
             fmt::print("{} Failed to load texture: '{}'\n", DEBUG_PREFIX, IMG_GetError());
@@ -31,9 +31,24 @@ namespace Ceres
         fmt::print("{} Loaded texture file successfully: '{}'.\n", DEBUG_PREFIX, textureName);
     }
 
+    Texture::Texture(Texture&& texture)
+    {
+        _textureID = texture._textureID;
+        texture._initialized = false;
+    }
+
     Texture::~Texture()
     {
-        glDeleteTextures(1, &_textureID);
+        if(_initialized)
+        {
+            glDeleteTextures(1, &_textureID);
+        }
+    }
+
+    Texture& Texture::operator=(Texture&& texture)
+    {
+        this->_textureID = texture._textureID;
+        return *this;
     }
 
     GLuint Texture::GetID() const
