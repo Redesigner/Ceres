@@ -18,6 +18,7 @@ extern "C"
 
 const std::string CWD = SDL_GetBasePath();
 const std::string CONTENT_DIR = CWD + "..\\..\\content\\";
+const std::string SHADER_PATH = "\\Shaders\\";
 
 void GLAPIENTRY
 MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -39,8 +40,8 @@ namespace Ceres
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        LoadEffect("Shaders\\defaultVertex.GLSL", "Shaders\\defaultFragment.GLSL");
-        _skyboxEffect = LoadEffect("Shaders\\skyboxVertex.GLSL", "Shaders\\skyboxFragment.GLSL");
+        LoadEffect("default");
+        _skyboxEffect = LoadEffect("skybox");
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
@@ -126,6 +127,12 @@ namespace Ceres
         _loadedEffects.push_back(std::move(Effect(vertexShaderName, fragmentShaderName)));
         return AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1);
     }
+    AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* shaderName)
+    {
+        std::string vertexName = SHADER_PATH + shaderName + "Vertex.GLSL";
+        std::string fragmentName = SHADER_PATH + shaderName + "Fragment.GLSL";
+        return LoadEffect(vertexName.c_str(), fragmentName.c_str());
+    }
 
     AssetPtr<Mesh> GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], uint indexCount, AssetPtr<Effect> effect)
     {
@@ -138,7 +145,7 @@ namespace Ceres
     }
     AssetPtr<Mesh> GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive)
     {
-        return LoadMesh(meshPrimitive, AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1));
+        return LoadMesh(meshPrimitive, AssetPtr<Effect>(_loadedEffects, 0));
     }
 
     AssetPtr<Texture> GraphicsDevice::LoadTexture(std::string textureName)

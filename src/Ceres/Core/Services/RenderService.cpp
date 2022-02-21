@@ -16,51 +16,60 @@ namespace Ceres
     {
     }
 
-    ComponentRef RenderService::GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args)
+    ComponentRef RenderService::GenerateComponent(std::string type, const IEntity& parent, ComponentParams* params)
     {
-        if(typeName == "RenderComponent")
+        if(type == "RenderComponent")
         {
-            switch(argCount)
+            switch(params->Count())
             {
                 case 1:
                 {
-                    AssetPtr<Mesh> mesh = *(AssetPtr<Mesh>*) args;
+                    AssetPtr<Mesh> mesh = params->Get<AssetPtr<Mesh>>(0);
                     RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh);
                     _components.Insert(renderComponent);
+                    delete params;
                     return ComponentRef(&_components, _components.Size() - 1);
                 }
                 case 2:
                 {
-                    AssetPtr<Mesh> mesh = *(AssetPtr<Mesh>*) args;
-                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh, AssetPtr<Texture>(std::vector<Texture>(), 0));
+                    AssetPtr<Mesh> mesh = params->Get<AssetPtr<Mesh>>(0);
+                    AssetPtr<Texture> texture = params->Get<AssetPtr<Texture>>(1);
+                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh, texture);
                     _components.Insert(renderComponent);
+                    delete params;
                     return ComponentRef(&_components, _components.Size() - 1);
                 }
                 default:
                 {
-                    throw std::invalid_argument(fmt::format("Invalid argument count: {}.", typeName));
+                    throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type));
                 }
             }
         }
-        else if(typeName == "CameraComponent")
+        else if(type == "CameraComponent")
         {
-            if(argCount == 0)
+            if(params->Count() == 0)
             {
                 CameraComponent* camera = new CameraComponent(parent);
                 _components.Insert(camera);
                 // TODO: Set camera properly, rather than setting it each time we create one.
                 _parentDevice.SetCamera(camera);
+                delete params;
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else
             {
-                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", typeName));
+                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type));
             }
         }
         else
         {
-            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", typeName));
+            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type));
         }
+    }
+
+    void RenderService::CreatePacked(ComponentParams& params)
+    {
+
     }
 
     void RenderService::RenderComponents()

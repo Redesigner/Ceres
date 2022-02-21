@@ -72,7 +72,8 @@
 			"typeindex": "cpp",
 			"stack": "cpp",
 			"deque": "cpp",
-			"forward_list": "cpp"
+			"forward_list": "cpp",
+			"numeric": "cpp"
 		}
 	}
 }

@@ -62,15 +62,13 @@ namespace Ceres
     {
         Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color::Blue());
         Cube<VertexPositionNormalTexture> texturedCube = Cube<VertexPositionNormalTexture>(1, 1, 1);
-        Sphere sphere = Sphere(.25f, 16, 16, Color(255, 0, 0));
 
-        AssetPtr<Effect> texturedEffect = GraphicsDevice.LoadEffect("Shaders\\texturedVertex.GLSL", "Shaders\\texturedFragment.GLSL");
         AssetPtr<Mesh> cubeMesh = GraphicsDevice.LoadMesh(cube);
-        GraphicsDevice.LoadMesh(texturedCube, texturedEffect);
-        GraphicsDevice.LoadMesh(sphere);
-        AssetPtr<Texture> testTexture = GraphicsDevice.LoadTexture("test.png");
 
-        Actor* actor = new Actor(ServiceContainer, cubeMesh, testTexture);
+        AssetPtr<Effect> texturedEffect = GraphicsDevice.LoadEffect("textured");
+        AssetPtr<Mesh> texturedCubeMesh = GraphicsDevice.LoadMesh(texturedCube, texturedEffect);
+        AssetPtr<Texture> testTexture = GraphicsDevice.LoadTexture("test.png");
+        Actor* actor = new Actor(ServiceContainer, texturedCubeMesh, testTexture);
         InputHandler.BindInput(Button::Key_pause, [actor](){
             actor->SendMessage(Message::Write<void>("Pause", 0));
         });

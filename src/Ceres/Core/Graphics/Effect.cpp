@@ -31,6 +31,7 @@ namespace Ceres
                 char* msg = new char[maxLength];
                 glGetProgramInfoLog(_glProgram, maxLength, &msgLength, msg);
                 fmt::print(msg);
+                delete[] msg;
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
             glUseProgram(_glProgram);
@@ -74,7 +75,7 @@ namespace Ceres
         }
         else
         {
-            fmt::print("Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
         }
     }
 
@@ -144,7 +145,8 @@ namespace Ceres
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
         char* msg = new char[maxLength];
         glGetShaderInfoLog(shader, maxLength, &msgLength, msg);
-        fmt::print(msg);
+        fmt::print("[glshader] [compile] {}\n", msg);
+        delete[] msg;
     }
     
 }

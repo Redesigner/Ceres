@@ -14,23 +14,24 @@ namespace Ceres
     InputService::~InputService()
     {}
 
-    ComponentRef InputService::GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args)
+    ComponentRef InputService::GenerateComponent(std::string type, const IEntity& parent, ComponentParams* params)
     {
-        if(typeName == "ControllerComponent")
+        if(type == "ControllerComponent")
         {
-            if(argCount == 0)
+            if(params->Count() == 0)
             {
                 _components.Insert(new ControllerComponent(parent, _inputHandler));
+                delete params;
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else
             {
-                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", typeName));
+                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type));
             }
         }
         else
         {
-            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", typeName));
+            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type));
         }
     }
 

@@ -15,11 +15,11 @@ namespace Ceres
         // _primitive = new SpherePrimitive(.25f);
         _primitive = new CubePrimitive(1.0f);
 
-        ComponentRef meshCpt = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, 1, &mesh);
-        ComponentRef camera = serviceContainer.GetService<RenderService>()->GenerateComponent("CameraComponent", *this, 0, nullptr);
-        ComponentRef controller = serviceContainer.GetService<InputService>()->GenerateComponent("ControllerComponent", *this, 0, nullptr);
-        ComponentRef physics = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, 1, _primitive);
-        ComponentRef movement = serviceContainer.GetService<ActorService>()->GenerateComponent("MovementComponent", *this, 0, nullptr);
+        ComponentRef meshCpt = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, ComponentParams::WriteParams(mesh, texture));
+        ComponentRef camera = serviceContainer.GetService<RenderService>()->GenerateComponent("CameraComponent", *this, new ComponentParams(0));
+        ComponentRef controller = serviceContainer.GetService<InputService>()->GenerateComponent("ControllerComponent", *this, new ComponentParams(0));
+        ComponentRef physics = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, ComponentParams::WriteParams(_primitive));
+        ComponentRef movement = serviceContainer.GetService<ActorService>()->GenerateComponent("MovementComponent", *this, new ComponentParams(0));
         _components = {meshCpt, camera, controller, physics, movement};
 
         SendMessage(Message::Write<void>("Pause", 0));

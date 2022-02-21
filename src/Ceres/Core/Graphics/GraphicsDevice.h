@@ -48,6 +48,7 @@ namespace Ceres
             void ToggleFullscreen();
 
             AssetPtr<Effect> LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
+            AssetPtr<Effect> LoadEffect(const char* shaderName);
             AssetPtr<Mesh> LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect);
             AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive, AssetPtr<Effect> effect);
             AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive);

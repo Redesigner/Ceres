@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Components/Base/IComponent.h"
+#include "../../Components/Base/ComponentParameters.h"
 #include "../../Components/Base/ComponentRef.h"
 #include "../../Components/Base/Message.h"
 

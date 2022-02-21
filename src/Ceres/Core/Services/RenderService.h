@@ -5,6 +5,8 @@
 #include "../Common/VertexList.h"
 #include "../Common/AssetPointer.h"
 
+#include "../Components/Base/ComponentParameters.h"
+
 namespace Ceres
 {
     using EffectPtr = std::shared_ptr<Effect>;
@@ -16,7 +18,8 @@ namespace Ceres
             RenderService(GraphicsDevice& graphicsDevice);
             ~RenderService();
 
-            virtual ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
+            virtual ComponentRef GenerateComponent(std::string type, const IEntity& parent, ComponentParams* params) override;
+            void CreatePacked(ComponentParams& params);
 
             void RenderComponents();
             

@@ -13,7 +13,7 @@ namespace Ceres
             ActorService();
             ~ActorService();
 
-            virtual ComponentRef GenerateComponent(std::string typeName, const IEntity& parent, int argCount, void* args) override;
+            virtual ComponentRef GenerateComponent(std::string type, const IEntity& parent, ComponentParams* params) override;
             void Update(double seconds);
 
         private:
