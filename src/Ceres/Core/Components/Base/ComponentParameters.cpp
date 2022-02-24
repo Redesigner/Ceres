@@ -4,9 +4,12 @@
 
 namespace Ceres
 {
+	ComponentParams::ComponentParams()
+	{
+		_size = 0;
+	}
 	ComponentParams::ComponentParams(size_t size)
 	{
-		// fmt::print("Component Params created with size {}\n", size);
 		_rawData = new char[size];
 		memset(_rawData, 'x', size);
 		_size = size;
@@ -14,13 +17,20 @@ namespace Ceres
 
 	ComponentParams::~ComponentParams()
 	{
-		// fmt::print("Component Params deleted with size {}\n", _size);
-		delete[] _rawData;
+		if (_rawData)
+		{
+			delete[] _rawData;
+		}
 	}
 
 	int ComponentParams::Count() const
 	{
 		return _paramLocations.size();
+	}
+
+	std::unique_ptr<ComponentParams> ComponentParams::Empty()
+	{
+		return std::unique_ptr<ComponentParams>(new ComponentParams());
 	}
 
 	std::string ComponentParams::ToString() const

@@ -11,14 +11,13 @@ namespace Ceres
     ActorService::~ActorService()
     {}
 
-    ComponentRef ActorService::GenerateComponent(std::string type, const IEntity& parent, ComponentParams* params)
+    ComponentRef ActorService::GenerateComponent(std::string type, const IEntity& parent, ComponentPR& params)
     {
         if (type == "MovementComponent")
         {
             if (params->Count() == 0)
             {
                 _components.Insert(new MovementComponent(parent));
-                delete params;
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else

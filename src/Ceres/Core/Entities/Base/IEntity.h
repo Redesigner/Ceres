@@ -7,6 +7,12 @@
 
 #include <vector>
 
+#define GENERATE_COMPONENT(ServiceName, ComponentTypeName, Params) \
+    _components.push_back(serviceContainer.GetService<ServiceName>()->GenerateComponent(ComponentTypeName, *this, ComponentParams::WriteParams Params ))
+#define GENERATE_COMPONENT_NOPARAMS(ServiceName, ComponentTypeName) \
+    _components.push_back(serviceContainer.GetService<ServiceName>()->GenerateComponent(ComponentTypeName, *this, ComponentParams::Empty()))
+
+    
 namespace Ceres
 {
     class IEntity

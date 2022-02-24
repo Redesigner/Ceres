@@ -16,7 +16,7 @@ namespace Ceres
     {
     }
 
-    ComponentRef RenderService::GenerateComponent(std::string type, const IEntity& parent, ComponentParams* params)
+    ComponentRef RenderService::GenerateComponent(std::string type, const IEntity& parent, ComponentPR& params)
     {
         if(type == "RenderComponent")
         {
@@ -27,7 +27,6 @@ namespace Ceres
                     AssetPtr<Mesh> mesh = params->Get<AssetPtr<Mesh>>(0);
                     RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh);
                     _components.Insert(renderComponent);
-                    delete params;
                     return ComponentRef(&_components, _components.Size() - 1);
                 }
                 case 2:
@@ -36,7 +35,6 @@ namespace Ceres
                     AssetPtr<Texture> texture = params->Get<AssetPtr<Texture>>(1);
                     RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh, texture);
                     _components.Insert(renderComponent);
-                    delete params;
                     return ComponentRef(&_components, _components.Size() - 1);
                 }
                 default:
@@ -53,7 +51,6 @@ namespace Ceres
                 _components.Insert(camera);
                 // TODO: Set camera properly, rather than setting it each time we create one.
                 _parentDevice.SetCamera(camera);
-                delete params;
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else

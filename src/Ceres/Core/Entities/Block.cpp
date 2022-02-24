@@ -9,10 +9,8 @@ namespace Ceres
     Block::Block(ServiceContainer& serviceContainer, float x, float y, float z, AssetPtr<Mesh> mesh)
     {
         _primitive = new CubePrimitive(1);
-        ComponentRef meshCpt = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, ComponentParams::WriteParams(mesh));
-        ComponentRef physicsComponent = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, ComponentParams::WriteParams(_primitive));
-
-        _components = {meshCpt, physicsComponent};
+        GENERATE_COMPONENT(RenderService, "RenderComponent", (mesh));
+        GENERATE_COMPONENT(PhysicsService, "PhysicsComponent", (_primitive));
 
         SendMessage(Message::Write<Vector3>("Scale", &Vector3(x, y, z)));
         SendMessage(Message::Write<Vector3>("Position", &Vector3(-2.0f, 0, 0)));

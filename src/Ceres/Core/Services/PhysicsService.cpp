@@ -29,7 +29,7 @@ namespace Ceres
     {}
 
 
-    ComponentRef PhysicsService::GenerateComponent(std::string type, const IEntity& parent, ComponentParams* params)
+    ComponentRef PhysicsService::GenerateComponent(std::string type, const IEntity& parent, ComponentPR& params)
     {
         if (type == "PhysicsComponent")
         {
@@ -37,7 +37,6 @@ namespace Ceres
             {
                 IPrimitive* primitive = params->Get<IPrimitive*>(0);
                 _components.Insert(new PhysicsComponent(parent, primitive));
-                delete params;
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else

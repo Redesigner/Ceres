@@ -14,13 +14,11 @@ namespace Ceres
     {
         // _primitive = new SpherePrimitive(.25f);
         _primitive = new CubePrimitive(1.0f);
-
-        ComponentRef meshCpt = serviceContainer.GetService<RenderService>()->GenerateComponent("RenderComponent", *this, ComponentParams::WriteParams(mesh, texture));
-        ComponentRef camera = serviceContainer.GetService<RenderService>()->GenerateComponent("CameraComponent", *this, new ComponentParams(0));
-        ComponentRef controller = serviceContainer.GetService<InputService>()->GenerateComponent("ControllerComponent", *this, new ComponentParams(0));
-        ComponentRef physics = serviceContainer.GetService<PhysicsService>()->GenerateComponent("PhysicsComponent", *this, ComponentParams::WriteParams(_primitive));
-        ComponentRef movement = serviceContainer.GetService<ActorService>()->GenerateComponent("MovementComponent", *this, new ComponentParams(0));
-        _components = {meshCpt, camera, controller, physics, movement};
+        GENERATE_COMPONENT(RenderService, "RenderComponent", (mesh, texture));
+        GENERATE_COMPONENT_NOPARAMS(RenderService, "CameraComponent");
+        GENERATE_COMPONENT_NOPARAMS(InputService, "ControllerComponent");
+        GENERATE_COMPONENT(PhysicsService, "PhysicsComponent", (_primitive));
+        GENERATE_COMPONENT_NOPARAMS(ActorService, "MovementComponent");
 
         SendMessage(Message::Write<void>("Pause", 0));
 

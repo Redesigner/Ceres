@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <numeric>
 #include <vector>
 #include <string>
@@ -12,18 +13,21 @@ namespace Ceres
     struct ComponentParams
     {
         public:
+			ComponentParams();
             ComponentParams(size_t count);
             ~ComponentParams();
 
             template <typename... Ts>
-            static ComponentParams* WriteParams(Ts... args)
+            static std::unique_ptr<ComponentParams> WriteParams(Ts... args)
 			{
 				size_t data[] = {sizeof(Ts)...};
         		size_t size = std::accumulate(std::begin(data), std::end(data), size_t(0));
-				ComponentParams* params = new ComponentParams(size);
+				std::unique_ptr<ComponentParams> params = std::unique_ptr<ComponentParams>(new ComponentParams(size));
 				params->WriteParam(0, args...);
 				return params;
 			}
+
+			static std::unique_ptr<ComponentParams> Empty();
 
 			template <typename T, typename... Ts>
 			void WriteParam(int offset, T first, Ts&... args)
@@ -54,7 +58,7 @@ namespace Ceres
 
         private:
 			unsigned int _size;
-            char* _rawData;
+            char* _rawData = nullptr;
             std::vector<std::type_index> _paramTypes;
             std::vector<int> _paramLocations;
     };
