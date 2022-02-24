@@ -22,6 +22,9 @@ extern "C"
         private:
             SDL_Surface* genSurface(const char* textureName);
             void flipSurface(SDL_Surface* surface);
+            void rotateSurfaceCW(SDL_Surface* surface);
+            void rotateSurfaceCCW(SDL_Surface* surface);
+            void rotateSurface180(SDL_Surface* surface);
 
             GLuint _textureID;
     };

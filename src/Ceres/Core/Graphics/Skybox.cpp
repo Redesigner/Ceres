@@ -35,14 +35,14 @@ namespace Ceres
         using Vertex = SkyboxVertex;
 
         // Bottom
-        _vertices[0] = Vertex(Vector3( x,  x, -x),  Vector3( -1, -1, -1));
+        _vertices[0] = Vertex(Vector3( x,  x, -x),  Vector3(  1,  1, -1));
         _vertices[1] = Vertex(Vector3( x, -x, -x),  Vector3(  1, -1, -1));
-        _vertices[2] = Vertex(Vector3(-x, -x, -x),  Vector3(  1, -1,  1));
-        _vertices[3] = Vertex(Vector3(-x,  x, -x),  Vector3( -1, -1,  1));
+        _vertices[2] = Vertex(Vector3(-x, -x, -x),  Vector3( -1, -1, -1));
+        _vertices[3] = Vertex(Vector3(-x,  x, -x),  Vector3( -1,  1, -1));
         // Top
-        _vertices[4] = Vertex(Vector3( x,  x,  x),  Vector3( -1,  1, -1));
-        _vertices[5] = Vertex(Vector3( x, -x,  x),  Vector3(  1,  1, -1));
-        _vertices[6] = Vertex(Vector3(-x, -x,  x),  Vector3(  1,  1,  1));
+        _vertices[4] = Vertex(Vector3( x,  x,  x),  Vector3(  1,  1,  1));
+        _vertices[5] = Vertex(Vector3( x, -x,  x),  Vector3(  1, -1,  1));
+        _vertices[6] = Vertex(Vector3(-x, -x,  x),  Vector3( -1, -1,  1));
         _vertices[7] = Vertex(Vector3(-x,  x,  x),  Vector3( -1,  1,  1));
 
         // Top inverted
