@@ -7,6 +7,7 @@ in vec4 wLightPos;
 
 out vec4 FragColor;
 
+uniform samplerCube lightmap;
 uniform vec3 cameraPos;
 
 void main()
@@ -28,7 +29,7 @@ void main()
         32);
 
     vec3 ambient = ambientStrength * lightColor;
-    vec3 diffuse = diffStrength * diff * lightColor;
+    vec3 diffuse = diffStrength * diff * lightColor + texture(lightmap, wNormalF).xyz;
     vec3 specular = specularStrength * spec * lightColor;
 
     FragColor = vec4(wColor * (ambient + diffuse + specular), 1.0);

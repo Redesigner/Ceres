@@ -3,7 +3,9 @@
 #include "../Common/Matrix.h"
 #include "../Common/Vector3.h"
 #include "../Common/AssetPointer.h"
-#include "../Graphics/Texture.h"
+
+#include "CubeMap.h"
+#include "Texture.h"
 
 #include <string>
 
@@ -30,6 +32,7 @@ namespace Ceres
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
             void SetSampler(std::string name, AssetPtr<Texture> texture);
+            void SetCubeSampler(std::string name, CubeMap* cubeMap);
             void SetViewMatrix(const Matrix& matrix);
             void SetFrustrum(const Matrix& matrix);
 

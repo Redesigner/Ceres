@@ -58,6 +58,11 @@ namespace Ceres
         glDeleteTextures(1, &_textureID);
     }
 
+    GLuint CubeMap::GetID() const
+    {
+        return _textureID;
+    }
+
     void CubeMap::Bind()
     {
         glBindTexture(GL_TEXTURE_CUBE_MAP, _textureID);

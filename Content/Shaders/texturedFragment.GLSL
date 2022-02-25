@@ -8,13 +8,13 @@ in vec2 wTexCoord;
 
 out vec4 FragColor;
 
-uniform samplerCube skyboxSampler;
-uniform sampler2D texSampler;
+uniform samplerCube lightmap;
+uniform sampler2D textureS;
 uniform vec3 cameraPos;
 
 void main()
 {
-    vec3 color = texture(texSampler, wTexCoord).xyz;
+    vec3 color = texture(textureS, wTexCoord).xyz;
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
     vec3 wNormalF = normalize(wNormal).xyz;
 
@@ -32,7 +32,7 @@ void main()
         32);
 
     vec3 ambient = ambientStrength * lightColor;
-    vec3 diffuse = diffStrength * diff * lightColor + texture(skyboxSampler, wNormalF).xyz;
+    vec3 diffuse = diffStrength * diff * lightColor + texture(lightmap, wNormalF).xyz;
     vec3 specular = specularStrength * spec * lightColor;
 
     FragColor = vec4(color * (ambient + diffuse + specular), 1.0);

@@ -107,6 +107,21 @@ namespace Ceres
         }
     }
 
+    void Effect::SetCubeSampler(std::string name, CubeMap* cubeMap)
+    {
+        GLint location = glGetUniformLocation(_glProgram, name.c_str());
+        if (location != -1)
+        {
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetID());
+            glUniform1i(location, 1);
+        }
+        else
+        {
+            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+        }
+    }
+
     void Effect::SetViewMatrix(const Matrix& matrix)
     {
         _viewPosition = matrix;

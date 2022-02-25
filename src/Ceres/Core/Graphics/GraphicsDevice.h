@@ -81,5 +81,7 @@ namespace Ceres
             Skybox* _skybox;
             CubeMap* _skyboxCubeMap;
             AssetPtr<Effect> _skyboxEffect;
+
+            CubeMap* _lightMap;
     };
 }

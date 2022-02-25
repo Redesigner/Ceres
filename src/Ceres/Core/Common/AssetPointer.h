@@ -27,7 +27,7 @@ namespace Ceres
             };
 
         private:
-            std::vector<T>* _container;
+            std::vector<T>* _container = nullptr;
             int _id = 0;
     };
 }

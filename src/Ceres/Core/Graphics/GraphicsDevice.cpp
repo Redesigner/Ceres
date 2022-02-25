@@ -40,12 +40,18 @@ namespace Ceres
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        LoadEffect("default");
+        AssetPtr<Effect> defaultEffect = LoadEffect("default");
         _skyboxEffect = LoadEffect("skybox");
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
-        _skyboxCubeMap = new CubeMap(cubeMapLocation.c_str());
+        _skyboxCubeMap = new CubeMap(cubeMapLocation.c_str()); 
+        _skyboxEffect->SetCubeSampler("skybox", _skyboxCubeMap);
+
+        std::string lightMapLocation = CONTENT_DIR + "Textures\\lightmap\\";
+        _lightMap = new CubeMap(lightMapLocation.c_str());
+
+        // defaultEffect->SetCubeSampler("lightmap", _lightMap);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -54,7 +60,9 @@ namespace Ceres
         unloadMeshes();
         delete _currentContext;
         delete _skybox;
+
         delete _skyboxCubeMap;
+        delete _lightMap;
     }
 
     // This method is called by the Program object, which abstracts it away from
@@ -74,6 +82,7 @@ namespace Ceres
     void GraphicsDevice::EndRender()
     {
         _window.SwapBuffer();
+        printError();
     }
 
     void GraphicsDevice::Render(RenderComponent* renderComponent) const
@@ -87,11 +96,12 @@ namespace Ceres
         componentEffect.SetViewMatrix(_currentCamera->GetMatrix());
         componentEffect.SetVector3("cameraPos", _currentCamera->GetPosition());
         componentEffect.SetMatrix("model", renderComponent->Transform.GetMatrix());
+        componentEffect.SetCubeSampler("lightmap", _lightMap);
         
-        /* if (renderComponent->Texture)
+        if (renderComponent->Texture)
         {
-            componentEffect->SetSampler("texSampler", renderComponent->Texture);
-        } */
+            componentEffect.SetSampler("textureS", renderComponent->Texture);
+        }
 
         glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
     }
@@ -206,6 +216,7 @@ namespace Ceres
 
         _skyboxEffect->Begin();
         _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
+        _skyboxEffect->SetCubeSampler("skybox", _skyboxCubeMap);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
         glDepthMask(GL_TRUE);
         // glCullFace(GL_BACK);
