@@ -1,4 +1,4 @@
-#include "CubeMap.h"
+#include "Cubemap.h"
 
 extern "C"
 {
@@ -20,7 +20,7 @@ const std::string DEBUG_PREFIX = "[texture]";
 
 namespace Ceres
 {
-    CubeMap::CubeMap(const char* textureName)
+    Cubemap::Cubemap(const char* textureName)
     {
         GLuint texture = 0;
         glGenTextures(1, &texture);
@@ -53,22 +53,22 @@ namespace Ceres
         fmt::print("{} Loaded cubemap file successfully: '{}'.\n", DEBUG_PREFIX, textureName);
     }
 
-    CubeMap::~CubeMap()
+    Cubemap::~Cubemap()
     {
         glDeleteTextures(1, &_textureID);
     }
 
-    GLuint CubeMap::GetID() const
+    GLuint Cubemap::GetID() const
     {
         return _textureID;
     }
 
-    void CubeMap::Bind()
+    void Cubemap::Bind()
     {
         glBindTexture(GL_TEXTURE_CUBE_MAP, _textureID);
     }
 
-    SDL_Surface* CubeMap::genSurface(const char* textureName)
+    SDL_Surface* Cubemap::genSurface(const char* textureName)
     {
         SDL_Surface* surface = IMG_Load(textureName);
         if (surface == nullptr)
@@ -79,7 +79,7 @@ namespace Ceres
         return surface;
     }
 
-    void CubeMap::flipSurface(SDL_Surface* surface)
+    void Cubemap::flipSurface(SDL_Surface* surface)
     {
         SDL_LockSurface(surface);
         char* swap = new char[surface->pitch];
@@ -100,7 +100,7 @@ namespace Ceres
         SDL_UnlockSurface(surface);
     }
 
-    void CubeMap::rotateSurfaceCW(SDL_Surface* surface)
+    void Cubemap::rotateSurfaceCW(SDL_Surface* surface)
     {
         SDL_LockSurface(surface);
         int pixelSize = surface->format->BytesPerPixel;
@@ -137,7 +137,7 @@ namespace Ceres
         SDL_UnlockSurface(surface);
     }
 
-    void CubeMap::rotateSurfaceCCW(SDL_Surface* surface)
+    void Cubemap::rotateSurfaceCCW(SDL_Surface* surface)
     {
         SDL_LockSurface(surface);
         int pixelSize = surface->format->BytesPerPixel;
@@ -174,7 +174,7 @@ namespace Ceres
         SDL_UnlockSurface(surface);
     }
 
-    void CubeMap::rotateSurface180(SDL_Surface* surface)
+    void Cubemap::rotateSurface180(SDL_Surface* surface)
     {
         SDL_LockSurface(surface);
         int pixelSize = surface->format->BytesPerPixel;

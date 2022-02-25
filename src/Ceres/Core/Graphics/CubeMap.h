@@ -8,12 +8,12 @@ extern "C"
     #include <SDL2/SDL_opengl.h>
 }namespace Ceres
 {
-    class CubeMap
+    class Cubemap
     {
         public:
-            CubeMap(const char* textureName);
-            CubeMap(const CubeMap&) = delete;
-            ~CubeMap();
+            Cubemap(const char* textureName);
+            Cubemap(const Cubemap&) = delete;
+            ~Cubemap();
 
             GLuint GetID() const;
 

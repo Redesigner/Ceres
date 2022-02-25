@@ -68,58 +68,50 @@ namespace Ceres
 
     void Effect::SetMatrix(std::string name, Matrix matrix)
     {
-        GLint location = glGetUniformLocation(_glProgram, name.c_str());
-        if(location != -1)
-        {
-            glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
-        }
-        else
+        GLint location = getUniformLocation(name);
+        if (location == -1)
         {
             fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            return;
         }
+        glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
     }
 
     void Effect::SetVector3(std::string name, Vector3 vector)
     {
-        GLint location = glGetUniformLocation(_glProgram, name.c_str());
-        if(location != -1)
-        {
-            glUniform3f(location, vector.X, vector.Y, vector.Z);
-        }
-        else
+        GLint location = getUniformLocation(name);
+        if (location == -1)
         {
             fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            return;
         }
+        glUniform3f(location, vector.X, vector.Y, vector.Z);
     }
 
-    void Effect::SetSampler(std::string name, AssetPtr<Texture> texture)
+    void Effect::SetTexture(std::string name, AssetPtr<Texture> texture)
     {
-        GLint location = glGetUniformLocation(_glProgram, name.c_str());
-        if (location != -1)
-        {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture->GetID());
-            glUniform1i(location, 0);
-        }
-        else
+        GLint location = getUniformLocation(name);
+        if (location == -1)
         {
             fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            return;
         }
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->GetID());
+        glUniform1i(location, 0);
     }
 
-    void Effect::SetCubeSampler(std::string name, CubeMap* cubeMap)
+    void Effect::SetCubemap(std::string name, Cubemap* cubeMap)
     {
-        GLint location = glGetUniformLocation(_glProgram, name.c_str());
-        if (location != -1)
-        {
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetID());
-            glUniform1i(location, 1);
-        }
-        else
+        GLint location = getUniformLocation(name);
+        if (location == -1)
         {
             fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            return;
         }
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetID());
+        glUniform1i(location, 1);
     }
 
     void Effect::SetViewMatrix(const Matrix& matrix)
@@ -164,4 +156,20 @@ namespace Ceres
         delete[] msg;
     }
     
+    GLint Effect::getUniformLocation(std::string& name)
+    {
+        GLint location = 0;
+        auto locationIterator = _uniformLocationMap.find(name);
+        if (locationIterator != _uniformLocationMap.end())
+        {
+            location = locationIterator->second;
+        }
+        else
+        {
+            location = glGetUniformLocation(_glProgram, name.c_str());
+            // store the value for later, even if it's -1
+            _uniformLocationMap.insert({name, location});
+        }
+        return location;
+    }
 }

@@ -40,18 +40,18 @@ namespace Ceres
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Load our ambient lightmap before we setup our shaders, so we can bind it on creation
+        std::string lightMapLocation = CONTENT_DIR + "Textures\\lightmap\\ambient_";
+        _lightMap = new Cubemap(lightMapLocation.c_str());
+        
         AssetPtr<Effect> defaultEffect = LoadEffect("default");
         _skyboxEffect = LoadEffect("skybox");
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
-        _skyboxCubeMap = new CubeMap(cubeMapLocation.c_str()); 
-        _skyboxEffect->SetCubeSampler("skybox", _skyboxCubeMap);
-
-        std::string lightMapLocation = CONTENT_DIR + "Textures\\lightmap\\";
-        _lightMap = new CubeMap(lightMapLocation.c_str());
-
-        // defaultEffect->SetCubeSampler("lightmap", _lightMap);
+        _skyboxCubeMap = new Cubemap(cubeMapLocation.c_str()); 
+        _skyboxEffect->SetCubemap("skybox", _skyboxCubeMap);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -96,11 +96,10 @@ namespace Ceres
         componentEffect.SetViewMatrix(_currentCamera->GetMatrix());
         componentEffect.SetVector3("cameraPos", _currentCamera->GetPosition());
         componentEffect.SetMatrix("model", renderComponent->Transform.GetMatrix());
-        componentEffect.SetCubeSampler("lightmap", _lightMap);
         
         if (renderComponent->Texture)
         {
-            componentEffect.SetSampler("textureS", renderComponent->Texture);
+            componentEffect.SetTexture("surfaceTexture", renderComponent->Texture);
         }
 
         glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
@@ -135,6 +134,8 @@ namespace Ceres
     AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName)
     {
         _loadedEffects.push_back(std::move(Effect(vertexShaderName, fragmentShaderName)));
+        // set the ambient lightmap here, since it shouldn't change once we load the effect
+        _loadedEffects.at(_loadedEffects.size() - 1).SetCubemap("lightmap", _lightMap);
         return AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1);
     }
     AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* shaderName)
@@ -216,7 +217,7 @@ namespace Ceres
 
         _skyboxEffect->Begin();
         _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
-        _skyboxEffect->SetCubeSampler("skybox", _skyboxCubeMap);
+        _skyboxEffect->SetCubemap("skybox", _skyboxCubeMap);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
         glDepthMask(GL_TRUE);
         // glCullFace(GL_BACK);

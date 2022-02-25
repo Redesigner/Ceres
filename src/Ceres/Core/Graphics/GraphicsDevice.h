@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "CubeMap.h"
+#include "Cubemap.h"
 #include "Mesh.h"
 #include "Skybox.h"
 #include "Texture.h"
@@ -79,9 +79,9 @@ namespace Ceres
             std::vector<Texture>    _loadedTextures;
 
             Skybox* _skybox;
-            CubeMap* _skyboxCubeMap;
+            Cubemap* _skyboxCubeMap;
             AssetPtr<Effect> _skyboxEffect;
 
-            CubeMap* _lightMap;
+            Cubemap* _lightMap;
     };
 }

@@ -62,6 +62,7 @@ namespace Ceres
     {
         Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color::Blue());
         Cube<VertexPositionNormalTexture> texturedCube = Cube<VertexPositionNormalTexture>(1, 1, 1);
+        Sphere sphere(1, 20, 32, Color::Blue());
 
         AssetPtr<Mesh> cubeMesh = GraphicsDevice.LoadMesh(cube);
 

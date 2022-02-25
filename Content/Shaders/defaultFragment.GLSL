@@ -17,7 +17,7 @@ void main()
 
     float diffStrength = 0.6;
     float specularStrength = 0.8;
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.3;
 
     vec3 lightDir = normalize(wLightPos.xyz - wPosition.xyz);
     vec3 viewDir = normalize(wPosition.xyz - cameraPos);
@@ -28,8 +28,8 @@ void main()
         clamp(dot(viewDir, reflectDir), 0.0, 1.0) * ceil(diff), 
         32);
 
-    vec3 ambient = ambientStrength * lightColor;
-    vec3 diffuse = diffStrength * diff * lightColor + texture(lightmap, wNormalF).xyz;
+    vec3 ambient = ambientStrength * texture(lightmap, wNormalF).xyz;
+    vec3 diffuse = diffStrength * diff * lightColor;
     vec3 specular = specularStrength * spec * lightColor;
 
     FragColor = vec4(wColor * (ambient + diffuse + specular), 1.0);
