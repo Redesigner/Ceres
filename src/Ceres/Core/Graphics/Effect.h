@@ -19,6 +19,7 @@ extern "C"
 
 namespace Ceres
 {
+    class Shadowmap;
     class Effect
     {
         public:
@@ -33,7 +34,8 @@ namespace Ceres
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
             void SetTexture(std::string name, AssetPtr<Texture> texture);
-            void SetCubemap(std::string name, Cubemap* cubeMap);
+            void SetCubemap(std::string name, Cubemap* cubemap);
+            void SetShadowmap(Shadowmap* shadowmap);
             void SetViewMatrix(const Matrix& matrix);
             void SetFrustrum(const Matrix& matrix);
 

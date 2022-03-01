@@ -5,20 +5,24 @@ layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 texCoord;
 
 out vec4 wNormal;
-out vec4 wPosition;
+out vec3 wPosition;
 out vec2 wTexCoord;
 out vec4 wLightPos;
+out vec4 lFragPos;
+
 
 uniform mat4 model;
 uniform mat4 viewProjection;
+uniform mat4 lightSpace;
 uniform vec3 lightPos;
 
 
 void main()
 {
-    wPosition = model * vec4(position, 1.0);
-    gl_Position = viewProjection * wPosition;
+    wPosition = (model * vec4(position, 1.0)).xyz;
+    gl_Position = viewProjection * vec4(wPosition, 1.0);
     wTexCoord = texCoord;
     wNormal = (model * vec4(normal, 0.0));
     wLightPos = vec4(lightPos, 1.0);
+    lFragPos = lightSpace * vec4(wPosition, 1.0);
 }

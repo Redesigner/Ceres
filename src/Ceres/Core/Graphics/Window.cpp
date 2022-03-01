@@ -28,6 +28,7 @@ namespace Ceres
         const int multisampleSampleCount = 4;
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, multisampleBufferCount);
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisampleSampleCount);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
         _sdlWindow = SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     }
 
@@ -85,5 +86,13 @@ namespace Ceres
     void Window::Maximize()
     {
 
+    }
+
+    void Window::ResizeViewport()
+    {
+        int width = 0;
+        int height = 0;
+        SDL_GetWindowSize(_sdlWindow, &width, &height);
+        glViewport(0, 0, width, height);
     }
 }

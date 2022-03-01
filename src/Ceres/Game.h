@@ -24,9 +24,9 @@ namespace Ceres
             void Update(double seconds);
             void Draw();
 
-            InputHandler InputHandler;
-            GraphicsDevice GraphicsDevice;
-            ServiceContainer ServiceContainer;
+            InputHandler inputHandler;
+            GraphicsDevice graphicsDevice;
+            ServiceContainer serviceContainer;
             
         private:
             int _status;

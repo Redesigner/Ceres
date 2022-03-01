@@ -1,6 +1,7 @@
 #include "Effect.h"
 
 #include "Core/IO/ContentManager.h"
+#include "Shadowmap.h"
 
 #include <fmt/core.h>
 #include <stdexcept>
@@ -101,7 +102,7 @@ namespace Ceres
         glUniform1i(location, 0);
     }
 
-    void Effect::SetCubemap(std::string name, Cubemap* cubeMap)
+    void Effect::SetCubemap(std::string name, Cubemap* cubemap)
     {
         GLint location = getUniformLocation(name);
         if (location == -1)
@@ -110,8 +111,21 @@ namespace Ceres
             return;
         }
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetID());
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->GetID());
         glUniform1i(location, 1);
+    }
+
+    void Effect::SetShadowmap(Shadowmap* shadowmap)
+    {
+        GLint location = getUniformLocation(std::string("shadowmap"));
+        if (location == -1)
+        {
+            fmt::print("[glShader] Unable to find GL_Uniform shadowmap.\n");
+            return;
+        }
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, shadowmap->GetID());
+        glUniform1i(location, 2);
     }
 
     void Effect::SetViewMatrix(const Matrix& matrix)

@@ -25,17 +25,13 @@ namespace Ceres
                 case 1:
                 {
                     AssetPtr<Mesh> mesh = params->Get<AssetPtr<Mesh>>(0);
-                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh);
-                    _components.Insert(renderComponent);
-                    return ComponentRef(&_components, _components.Size() - 1);
+                    return _parentDevice.CreateRenderComponent(parent, mesh);
                 }
                 case 2:
                 {
                     AssetPtr<Mesh> mesh = params->Get<AssetPtr<Mesh>>(0);
                     AssetPtr<Texture> texture = params->Get<AssetPtr<Texture>>(1);
-                    RenderComponent* renderComponent = _parentDevice.CreateRenderComponent(parent, mesh, texture);
-                    _components.Insert(renderComponent);
-                    return ComponentRef(&_components, _components.Size() - 1);
+                    return _parentDevice.CreateRenderComponent(parent, mesh, texture);
                 }
                 default:
                 {
@@ -61,22 +57,6 @@ namespace Ceres
         else
         {
             throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type));
-        }
-    }
-
-    void RenderService::CreatePacked(ComponentParams& params)
-    {
-
-    }
-
-    void RenderService::RenderComponents()
-    {
-        for(int i = 0; i < _components.Size(); i++)
-        {
-            if(_components[i]->TypeOf<RenderComponent>())
-            {
-                _parentDevice.Render((RenderComponent*) _components[i]);
-            }
         }
     }
 }

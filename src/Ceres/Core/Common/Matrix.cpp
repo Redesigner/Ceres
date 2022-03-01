@@ -142,6 +142,22 @@ namespace Ceres
         );
     }
 
+    Matrix Matrix::Orthographic(float width, float height, float near, float far)
+    {
+        float ratio = width / height;
+        float t = height / 2;
+        float b = -t;
+        float r = width / 2;
+        float l = -r;
+
+        return Matrix(
+            2 / (r - l),        0,                  0,                  0,
+            0,                  2 / (t - b),        0,                  0,
+            0,                  0,                  -2 / (far - near),  0,
+            -(r + l) / (r - l), -(t + b) / (t - b), -(far + near) / (far - near), 1
+        ).Transpose();
+    }
+
     Matrix Matrix::LookAt(const Vector3& eyePos, const Vector3& targetPos, const Vector3& up)
     {
         Vector3 zAxis = (eyePos - targetPos).Normalize();

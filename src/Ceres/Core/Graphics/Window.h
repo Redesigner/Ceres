@@ -16,6 +16,7 @@ namespace Ceres
             void SwapBuffer() const;
             void ToggleFullscreen();
             void Maximize();
+            void ResizeViewport();
 
         private:
             SDL_Window* _sdlWindow;

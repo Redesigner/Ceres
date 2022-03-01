@@ -45,14 +45,14 @@ namespace Ceres
 
     bool Game::Initialize()
     {
-        ServiceContainer.AddService<RenderService>(new RenderService(GraphicsDevice));
-        ServiceContainer.AddService<InputService>(new InputService(InputHandler));
-        ServiceContainer.AddService<PhysicsService>(new PhysicsService(ServiceContainer.GetService<RenderService>()));
-        ServiceContainer.AddService<ActorService>(new ActorService());
+        serviceContainer.AddService<RenderService>(new RenderService(graphicsDevice));
+        serviceContainer.AddService<InputService>(new InputService(inputHandler));
+        serviceContainer.AddService<PhysicsService>(new PhysicsService(serviceContainer.GetService<RenderService>()));
+        serviceContainer.AddService<ActorService>(new ActorService());
 
-        InputHandler.BindAxis2D("Movement", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
-        InputHandler.BindAxis("Vertical", Button::Key_q, Button::Key_e);
-        InputHandler.BindAxis("Rotation", Button::Key_o, Button::Key_p);
+        inputHandler.BindAxis2D("Movement", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
+        inputHandler.BindAxis("Vertical", Button::Key_q, Button::Key_e);
+        inputHandler.BindAxis("Rotation", Button::Key_o, Button::Key_p);
 
         _entities = std::vector<IEntity*>();
         return true;
@@ -64,21 +64,21 @@ namespace Ceres
         Cube<VertexPositionNormalTexture> texturedCube = Cube<VertexPositionNormalTexture>(1, 1, 1);
         Sphere sphere(1, 20, 32, Color::Blue());
 
-        AssetPtr<Mesh> cubeMesh = GraphicsDevice.LoadMesh(cube);
+        AssetPtr<Mesh> cubeMesh = graphicsDevice.LoadMesh(cube);
 
-        AssetPtr<Effect> texturedEffect = GraphicsDevice.LoadEffect("textured");
-        AssetPtr<Mesh> texturedCubeMesh = GraphicsDevice.LoadMesh(texturedCube, texturedEffect);
-        AssetPtr<Texture> testTexture = GraphicsDevice.LoadTexture("test.png");
-        Actor* actor = new Actor(ServiceContainer, texturedCubeMesh, testTexture);
-        InputHandler.BindInput(Button::Key_pause, [actor](){
+        AssetPtr<Effect> texturedEffect = graphicsDevice.LoadEffect("textured");
+        AssetPtr<Mesh> texturedCubeMesh = graphicsDevice.LoadMesh(texturedCube, texturedEffect);
+        AssetPtr<Texture> testTexture = graphicsDevice.LoadTexture("test.png");
+        Actor* actor = new Actor(serviceContainer, texturedCubeMesh, testTexture);
+        inputHandler.BindInput(Button::Key_pause, [actor](){
             actor->SendMessage(Message::Write<void>("Pause", 0));
         });
         _entities.emplace_back(actor);
  
-        Block* b1 = new Block(ServiceContainer, 2.0f, 5.0f, 1.0f, cubeMesh);
-        Block* b2 = new Block(ServiceContainer, 5.0f, 1.0f, 1.0f, cubeMesh);
-        Block* b3 = new Block(ServiceContainer, 10.0f, 2.0f, 1.0f, cubeMesh);
-        Block* b4 = new Block(ServiceContainer, 0.1f, 5.0f, 0.5f, cubeMesh);
+        Block* b1 = new Block(serviceContainer, 2.0f, 5.0f, 1.0f, cubeMesh);
+        Block* b2 = new Block(serviceContainer, 5.0f, 1.0f, 1.0f, cubeMesh);
+        Block* b3 = new Block(serviceContainer, 10.0f, 2.0f, 1.0f, cubeMesh);
+        Block* b4 = new Block(serviceContainer, 0.1f, 5.0f, 0.5f, cubeMesh);
 
         b1->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, 0.0f, -2.0f)));
         b2->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, -3.0f, -2.0f)));
@@ -97,12 +97,12 @@ namespace Ceres
 
     void Game::Update(double seconds)
     {
-        ServiceContainer.GetService<InputService>()->Update(seconds);
-        ServiceContainer.GetService<PhysicsService>()->Update(seconds);
+        serviceContainer.GetService<InputService>()->Update(seconds);
+        serviceContainer.GetService<PhysicsService>()->Update(seconds);
     }
 
     void Game::Draw()
     {
-        ServiceContainer.GetService<RenderService>()->RenderComponents();
+        graphicsDevice.Render();
     }
 }

@@ -5,6 +5,7 @@
 
 #include "Cubemap.h"
 #include "Mesh.h"
+#include "Shadowmap.h"
 #include "Skybox.h"
 #include "Texture.h"
 #include "Window.h"
@@ -15,6 +16,7 @@
 #include "../Common/AssetPointer.h"
 #include "../Common/Matrix.h"
 
+#include "../Components/Base/ComponentRef.h"
 #include "../Components/RenderComponent.h"
 #include "../Components/CameraComponent.h"
 
@@ -42,7 +44,6 @@ namespace Ceres
             void EndRender();
 
             void Render();
-            void Render(RenderComponent* renderComponent) const;
 
             void ReceiveEvent(SDL_WindowEvent& windowEvent);
             void ToggleFullscreen();
@@ -56,11 +57,12 @@ namespace Ceres
 
             void SetCamera(CameraComponent* camera);
 
-            // TODO: Add parameter pack type?
-            RenderComponent* CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh) const;
-            RenderComponent* CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture) const;
+            ComponentRef CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh);
+            ComponentRef CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
 
         private:
+            void render(RenderComponent* renderComponent) const;
+            void prerender(RenderComponent* renderComponent) const;
 
             void printError();
 
@@ -69,6 +71,8 @@ namespace Ceres
             void unloadTextures();
 
             void renderSkybox();
+
+            ComponentList _renderComponents;
 
             Window _window;
             Context* _currentContext;
@@ -79,7 +83,9 @@ namespace Ceres
             std::vector<Texture>    _loadedTextures;
 
             Skybox* _skybox;
-            Cubemap* _skyboxCubeMap;
+            Cubemap* _skyboxCubemap;
+            Shadowmap* _shadowmap;
+
             AssetPtr<Effect> _skyboxEffect;
 
             Cubemap* _lightMap;

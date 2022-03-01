@@ -19,9 +19,6 @@ namespace Ceres
             ~RenderService();
 
             virtual ComponentRef GenerateComponent(std::string type, const IEntity& parent, ComponentPR& params) override;
-            void CreatePacked(ComponentParams& params);
-
-            void RenderComponents();
             
         private:
             GraphicsDevice& _parentDevice;

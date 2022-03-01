@@ -32,6 +32,7 @@ namespace Ceres
             static Matrix Zero();
 
             static Matrix Perspective(float width, float height, float fOV, float near, float far);
+            static Matrix Orthographic(float width, float height, float near, float far);
             static Matrix LookAt(const Vector3& eyePos, const Vector3& target, const Vector3& up);
 
             static Matrix Basis();

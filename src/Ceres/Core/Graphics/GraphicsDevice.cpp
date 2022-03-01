@@ -19,11 +19,13 @@ extern "C"
 const std::string CWD = SDL_GetBasePath();
 const std::string CONTENT_DIR = CWD + "..\\..\\content\\";
 const std::string SHADER_PATH = "\\Shaders\\";
+const std::string VERT_EXTENSION = ".vert.glsl";
+const std::string FRAG_EXTENSTION = ".frag.glsl";
 
 void GLAPIENTRY
 MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    fmt::print("GL CALLBACK: {} type = {}, severity = {}, message = {}\n", ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), type, severity, message );
+    fmt::print("GL CALLBACK: {} type = {}, severity = {}, message = {}\n", ( type == GL_DEBUG_TYPE_ERROR ? "[GL ERROR]" : "" ), type, severity, message );
 }
 
 namespace Ceres
@@ -50,8 +52,10 @@ namespace Ceres
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
-        _skyboxCubeMap = new Cubemap(cubeMapLocation.c_str()); 
-        _skyboxEffect->SetCubemap("skybox", _skyboxCubeMap);
+        _skyboxCubemap = new Cubemap(cubeMapLocation.c_str()); 
+        _skyboxEffect->SetCubemap("skybox", _skyboxCubemap);
+
+        _shadowmap = new Shadowmap(1024, LoadEffect("shadowmap"));
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -61,8 +65,9 @@ namespace Ceres
         delete _currentContext;
         delete _skybox;
 
-        delete _skyboxCubeMap;
+        delete _skyboxCubemap;
         delete _lightMap;
+        delete _shadowmap;
     }
 
     // This method is called by the Program object, which abstracts it away from
@@ -72,8 +77,6 @@ namespace Ceres
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
-
-        renderSkybox();
     }
 
     // This method is called by the Program object, which abstracts it away from
@@ -82,27 +85,27 @@ namespace Ceres
     void GraphicsDevice::EndRender()
     {
         _window.SwapBuffer();
-        printError();
     }
 
-    void GraphicsDevice::Render(RenderComponent* renderComponent) const
+    void GraphicsDevice::Render()
     {
-        Mesh& componentMesh = *renderComponent->Mesh;
-        Effect& componentEffect = *componentMesh.GetEffect();
-        componentMesh.GetVertexArray().Bind();
-        componentMesh.GetIndexBuffer().Bind();
+        renderSkybox();
 
-        componentEffect.Begin();
-        componentEffect.SetViewMatrix(_currentCamera->GetMatrix());
-        componentEffect.SetVector3("cameraPos", _currentCamera->GetPosition());
-        componentEffect.SetMatrix("model", renderComponent->Transform.GetMatrix());
-        
-        if (renderComponent->Texture)
+        glCullFace(GL_FRONT);
+        _shadowmap->Bind();
+        for (IComponent* component : _renderComponents)
         {
-            componentEffect.SetTexture("surfaceTexture", renderComponent->Texture);
+            RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component);
+            prerender(renderComponent);
         }
-
-        glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
+        glCullFace(GL_BACK);
+        _shadowmap->Unbind();
+        _window.ResizeViewport();
+        for (IComponent* component : _renderComponents)
+        {
+            RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component);
+            render(renderComponent);
+        }
     }
 
     void GraphicsDevice::ReceiveEvent(SDL_WindowEvent& windowEvent)
@@ -140,8 +143,8 @@ namespace Ceres
     }
     AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* shaderName)
     {
-        std::string vertexName = SHADER_PATH + shaderName + "Vertex.GLSL";
-        std::string fragmentName = SHADER_PATH + shaderName + "Fragment.GLSL";
+        std::string vertexName = SHADER_PATH + shaderName + VERT_EXTENSION;
+        std::string fragmentName = SHADER_PATH + shaderName + FRAG_EXTENSTION;
         return LoadEffect(vertexName.c_str(), fragmentName.c_str());
     }
 
@@ -171,18 +174,52 @@ namespace Ceres
         _currentCamera = camera;
     }
 
-    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh) const
+    ComponentRef GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh)
     {
-       return new RenderComponent(parent, mesh);
+       _renderComponents.Insert(new RenderComponent(parent, mesh));
+       return ComponentRef(&_renderComponents, _renderComponents.Size() - 1);
     }
 
-    RenderComponent* GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture) const
+    ComponentRef GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
     {
-       return new RenderComponent(parent, mesh, texture);
+        _renderComponents.Insert(new RenderComponent(parent, mesh, texture));
+        return ComponentRef(&_renderComponents, _renderComponents.Size() - 1);
     }
 
 
     // Private methods
+    void GraphicsDevice::render(RenderComponent* renderComponent) const
+    {
+        Mesh& componentMesh = *renderComponent->Mesh;
+        Effect& componentEffect = *componentMesh.GetEffect();
+        componentMesh.GetVertexArray().Bind();
+        componentMesh.GetIndexBuffer().Bind();
+
+        componentEffect.Begin();
+        componentEffect.SetViewMatrix(_currentCamera->GetMatrix());
+        componentEffect.SetVector3("cameraPos", _currentCamera->GetPosition());
+        componentEffect.SetMatrix("model", renderComponent->Transform.GetMatrix());
+
+        componentEffect.SetMatrix("lightSpace", _shadowmap->GetMatrix());
+        
+        if (renderComponent->Texture)
+        {
+            componentEffect.SetTexture("surfaceTexture", renderComponent->Texture);
+        }
+        componentEffect.SetShadowmap(_shadowmap);
+
+        glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
+    }
+
+    void GraphicsDevice::prerender(RenderComponent* renderComponent) const
+    {
+        Mesh& componentMesh = *renderComponent->Mesh;
+        componentMesh.GetVertexArray().Bind();
+        componentMesh.GetIndexBuffer().Bind();
+        _shadowmap->SetModelMatrix(renderComponent->Transform.GetMatrix());
+        glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
+
+    }
 
     void GraphicsDevice::printError()
     {
@@ -217,7 +254,7 @@ namespace Ceres
 
         _skyboxEffect->Begin();
         _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
-        _skyboxEffect->SetCubemap("skybox", _skyboxCubeMap);
+        _skyboxEffect->SetCubemap("skybox", _skyboxCubemap);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
         glDepthMask(GL_TRUE);
         // glCullFace(GL_BACK);

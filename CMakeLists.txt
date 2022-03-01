@@ -50,6 +50,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
 	src/Ceres/Core/Graphics/IndexBuffer.cpp
 	src/Ceres/Core/Graphics/Mesh.cpp
+	src/Ceres/Core/Graphics/Shadowmap.cpp
 	src/Ceres/Core/Graphics/Skybox.cpp
 	src/Ceres/Core/Graphics/Texture.cpp
 	src/Ceres/Core/Graphics/VertexStream.cpp

@@ -36,9 +36,9 @@ namespace Ceres
 
             _game->Update((double) (ticks - last) / freq);
 
-            _game->GraphicsDevice.BeginRender();
+            _game->graphicsDevice.BeginRender();
             _game->Draw();
-            _game->GraphicsDevice.EndRender();
+            _game->graphicsDevice.EndRender();
         }
     }
 
@@ -63,10 +63,10 @@ namespace Ceres
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_F11)
                     {
-                        _game->GraphicsDevice.ToggleFullscreen();
+                        _game->graphicsDevice.ToggleFullscreen();
                         break;
                     }
-                    _game->InputHandler.HandleInput(Buttons::GetButton(event.key.keysym.scancode));
+                    _game->inputHandler.HandleInput(Buttons::GetButton(event.key.keysym.scancode));
                     break;
                 }
             case SDL_CONTROLLERBUTTONDOWN:
@@ -76,12 +76,12 @@ namespace Ceres
                 }
             case SDL_MOUSEMOTION:
                 {
-                    _game->InputHandler.HandleCursorInput(event.motion.xrel, event.motion.yrel);
+                    _game->inputHandler.HandleCursorInput(event.motion.xrel, event.motion.yrel);
                     break;
                 }
             case SDL_WINDOWEVENT:
                 {
-                    _game->GraphicsDevice.ReceiveEvent(event.window);
+                    _game->graphicsDevice.ReceiveEvent(event.window);
                     break;
                 }
             }
