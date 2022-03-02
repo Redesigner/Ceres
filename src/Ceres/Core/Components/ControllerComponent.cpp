@@ -27,8 +27,8 @@ namespace Ceres
     {
         if (message->Type == "CameraRotation")
         {
-            float angleX = message->GetData<Vector3>().Z / 640.0f;
-            _rotation += angleX;
+            float angleX = message->GetData<Vector3>().X / 640.0f;
+            _rotation -= angleX;
         }
         return false;
     }

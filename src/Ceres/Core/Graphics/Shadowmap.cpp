@@ -22,8 +22,8 @@ namespace Ceres
 		// Unbind the framebuffer we created for the shadow map
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		_lightPosition = Vector3(0, -10, 2);
-		_projection = Matrix::LookAt(_lightPosition, Vector3::Zero(), Vector3::Up()) * Matrix::Orthographic(10.0f, 10.0f, 5.0f, 15.0f);
+		_lightPosition = Vector3(0, -20.0f, 10.0f);
+		_projection = Matrix::LookAt(_lightPosition, Vector3::Zero(), Vector3::Up()) * Matrix::Orthographic(20.0f, 20.0f, 5.0f, 35.0f);
 
 		// _projection = Matrix::Scale(0.1f, 0.1f, 0.1f) * Matrix::LookAt(Vector3::Zero(), _lightPosition, Vector3::Up());
 	}

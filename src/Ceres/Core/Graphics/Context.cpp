@@ -16,7 +16,7 @@ namespace Ceres
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
         const int multisampleBufferCount = 1;
-        const int multisampleSampleCount = 4;
+        const int multisampleSampleCount = 16;
         
         _glContext = SDL_GL_CreateContext(window.Get());
         glewExperimental = true;
