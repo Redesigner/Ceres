@@ -5,8 +5,9 @@ namespace Ceres
     CameraComponent::CameraComponent(const IEntity& parent)
         :IComponent(parent, std::type_index(typeid(CameraComponent)))
     {
-        Rotation = Vector3(0, 0.785f, 0);
-        Offset = Vector3(-7, 0, 0);
+        const float pitch = -0.785f;
+        Rotation = Vector3(pitch, 0.0f, 0.0f);
+        Offset = Vector3(0.0f, -7.0f, 0.0f);
     }
 
     CameraComponent::~CameraComponent()
@@ -26,14 +27,15 @@ namespace Ceres
         }
         else if (message->Type == "CameraRotation")
         {
-            float pitch = message->GetData<Vector3>().Y / 480.0f;
-            float yaw = message->GetData<Vector3>().Z / 640.0f;
-            Vector3 deltaRotation = Vector3(0, pitch, -yaw);
-            if (Rotation.Y + deltaRotation.Y < 1.57f && Rotation.Y + deltaRotation.Y > -1.57f)
+            float roll = 0.0f;
+            float pitch = -message->GetData<Vector3>().Y / 480.0f;
+            float yaw = message->GetData<Vector3>().X / 640.0f;
+            Vector3 deltaRotation = Vector3(pitch, roll, -yaw);
+            if (Rotation.X + deltaRotation.X < 1.57f && Rotation.X + deltaRotation.X > -1.57f)
             {
-                Rotation.Y += deltaRotation.Y;
+                Rotation.X += deltaRotation.X;
             }
-            Rotation.X += deltaRotation.Z;
+            Rotation.Z += deltaRotation.Z;
             _updateTransform();
             return true;
         }
@@ -78,8 +80,8 @@ namespace Ceres
 
     void CameraComponent::_updateTransform()
     {
-        _viewRotation = Matrix::RotationFromEuler(Rotation.X, Rotation.Y, Rotation.Z);
-        _matrix = Matrix::LookAt((_viewRotation * Offset) + Position, Position, Vector3::Up());
-        _viewRotation = Matrix::LookAt(Vector3::Zero(), (_viewRotation * Vector3(1, 0, 0)), Vector3::Up());
+        Matrix rotation = Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X);
+        _matrix = Matrix::LookAt((rotation * Offset) + Position, Position, Vector3::Up());
+        _viewRotation = Matrix::LookAt(Vector3::Zero(), (rotation * Vector3(0, 1, 0)), Vector3::Up());
     }
 }

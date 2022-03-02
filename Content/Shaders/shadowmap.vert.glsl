@@ -7,6 +7,5 @@ uniform mat4 lightspace;
 
 void main()
 {
-    vec3 wPosition = (model * vec4(position, 1.0)).xyz;
-    gl_Position = lightspace * vec4(wPosition, 1.0);
+    gl_Position = lightspace * model * vec4(position, 1.0);
 }

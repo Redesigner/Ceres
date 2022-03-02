@@ -15,7 +15,7 @@ namespace Ceres
         const IEntity* target = &parent;
         std::function<void(int, int)> l = [target](int x, int y)
         {
-            target->SendMessage(Message::Write<Vector3>("CameraRotation", &Vector3(0, y, x)) );
+            target->SendMessage(Message::Write<Vector3>("CameraRotation", &Vector3(x, y, 0)) );
         };
         inputHandler.BindCursorInput(l);
     }
@@ -41,8 +41,8 @@ namespace Ceres
 
         // Using a RH coord system with z up, x and y are switched from the traditional 2D values...
         Vector3 inputForce = Vector3(
-            ( (inputAxis.Y * std::cos(_rotation)) + (-inputAxis.X * std::sin(_rotation)) ) * 10,
-            ( (-inputAxis.X * std::cos(_rotation)) - (inputAxis.Y * std::sin(_rotation)) ) * 10,
+            ( (inputAxis.X * std::cos(_rotation)) + (-inputAxis.Y * std::sin(_rotation)) ) * 10,
+            ( (inputAxis.Y * std::cos(_rotation)) + (inputAxis.X * std::sin(_rotation)) ) * 10,
             isJumping * 20);
 
         _parent.SendMessage(Message::Write<Vector3>("AddInput", &inputForce));

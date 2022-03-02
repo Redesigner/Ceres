@@ -9,10 +9,10 @@ extern "C"
 #include <vector>
 
 const std::vector<std::string> CUBE_FACE_NAME = {
+    "left.png",
+    "right.png",
     "back.png",
     "front.png",
-    "right.png",
-    "left.png",
     "top.png",
     "bottom.png"
 };
@@ -28,7 +28,7 @@ namespace Ceres
         for (int i = 0; i < 6; i++)
         {
             SDL_Surface* surface = genSurface(fmt::format("{}{}", textureName, CUBE_FACE_NAME[i]).c_str());
-            if (i == 1 || i == 4 || i == 5)
+            if (i == 1)
             {
                 rotateSurfaceCW(surface);
             }
@@ -36,7 +36,7 @@ namespace Ceres
             {
                 rotateSurfaceCCW(surface);
             }
-            if(i == 2)
+            if(i == 2 || i == 5)
             {
                 rotateSurface180(surface);
             }

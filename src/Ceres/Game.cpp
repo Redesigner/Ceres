@@ -60,11 +60,20 @@ namespace Ceres
 
     void Game::Load()
     {
-        Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color::Blue());
+        Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color(181, 206, 245));
+
+        Cube<VertexPositionNormalColor> cubeRed = Cube<VertexPositionNormalColor>(1, 1, 1, Color(255, 0, 0));
+        Cube<VertexPositionNormalColor> cubeGreen = Cube<VertexPositionNormalColor>(1, 1, 1, Color(0, 255, 0));
+        Cube<VertexPositionNormalColor> cubeBlue = Cube<VertexPositionNormalColor>(1, 1, 1, Color(0, 0, 255));
+
         Cube<VertexPositionNormalTexture> texturedCube = Cube<VertexPositionNormalTexture>(1, 1, 1);
         Sphere sphere(1, 20, 32, Color::Blue());
 
         AssetPtr<Mesh> cubeMesh = graphicsDevice.LoadMesh(cube);
+
+        AssetPtr<Mesh> cubeMeshRed = graphicsDevice.LoadMesh(cubeRed);
+        AssetPtr<Mesh> cubeMeshGreen = graphicsDevice.LoadMesh(cubeGreen);
+        AssetPtr<Mesh> cubeMeshBlue = graphicsDevice.LoadMesh(cubeBlue);
 
         AssetPtr<Effect> texturedEffect = graphicsDevice.LoadEffect("textured");
         AssetPtr<Mesh> texturedCubeMesh = graphicsDevice.LoadMesh(texturedCube, texturedEffect);
@@ -80,16 +89,29 @@ namespace Ceres
         Block* b3 = new Block(serviceContainer, 10.0f, 2.0f, 1.0f, cubeMesh);
         Block* b4 = new Block(serviceContainer, 0.1f, 5.0f, 0.5f, cubeMesh);
 
+        Block* bX = new Block(serviceContainer, 1.0f, 0.1f, 0.1f, cubeMeshRed);
+        Block* bY = new Block(serviceContainer, 0.1f, 1.0f, 0.1f, cubeMeshGreen);
+        Block* bZ = new Block(serviceContainer, 0.1f, 0.1f, 1.0f, cubeMeshBlue);
+
+
         b1->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, 0.0f, -2.0f)));
         b2->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, -3.0f, -2.0f)));
-        b3->SendMessage(Message::Write<Vector3>("Rotate", &Vector3(0.0f, -0.5f, 0.0f)));
+        b3->SendMessage(Message::Write<Vector3>("Rotate",   &Vector3(0.0f, -0.5f, 0.0f)));
         b3->SendMessage(Message::Write<Vector3>("Position", &Vector3(3.0f, 0.0f, -0.7f)));
         b4->SendMessage(Message::Write<Vector3>("Position", &Vector3(-1.0f, 0.0f, -1.25f)));
+
+        bX->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.5f, 0.0f, 3.0f)));
+        bY->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, 0.5f, 3.0f)));
+        bZ->SendMessage(Message::Write<Vector3>("Position", &Vector3(0.0f, 0.0f, 3.5f)));
 
         _entities.push_back(std::move(b1));
         _entities.push_back(std::move(b2));
         _entities.push_back(std::move(b3));
         _entities.push_back(std::move(b4));
+
+        _entities.push_back(std::move(bX));
+        _entities.push_back(std::move(bY));
+        _entities.push_back(std::move(bZ));
         // NOTE: because the entity is in the master list, it will be deleted
         // when the game is destroyed, so we don't have to worry about it
         // see the Game destructor...
