@@ -9,8 +9,8 @@
 
 namespace Ceres
 {
-    MovementComponent::MovementComponent(const IEntity& parent)
-        :IComponent(parent, std::type_index(typeid(MovementComponent)))
+    MovementComponent::MovementComponent()
+        :IComponent(std::type_index(typeid(MovementComponent)))
     {}
 
     MovementComponent::~MovementComponent()

@@ -11,23 +11,23 @@ namespace Ceres
     ActorService::~ActorService()
     {}
 
-    ComponentRef ActorService::GenerateComponent(std::string type, const IEntity& parent, ComponentPR& params)
+    ComponentRef ActorService::GenerateComponent(Type type, ComponentPR& params)
     {
-        if (type == "MovementComponent")
+        if (type == Type(typeid(MovementComponent)))
         {
             if (params->Count() == 0)
             {
-                _components.Insert(new MovementComponent(parent));
+                _components.Insert(new MovementComponent());
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else
             {
-                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type));
+                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type.name()));
             }
         }
         else
         {
-            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type));
+            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type.name()));
         }
     }
 

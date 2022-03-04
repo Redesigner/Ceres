@@ -12,8 +12,8 @@ namespace Ceres
     class RenderComponent : public IComponent
     {
         public:
-            RenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh);
-            RenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            RenderComponent(AssetPtr<Mesh> mesh);
+            RenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
 
             ~RenderComponent();
 

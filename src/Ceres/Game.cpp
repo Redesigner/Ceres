@@ -22,6 +22,12 @@
 #include "Core/Physics/Primitives/CubePrimitive.h"
 #include "Core/Physics/PhysicsUtilities.h"
 
+#include "Core/Components/CameraComponent.h"
+#include "Core/Components/ControllerComponent.h"
+#include "Core/Components/MovementComponent.h"
+#include "Core/Components/RenderComponent.h"
+#include "Core/Components/PhysicsComponent.h"
+
 #include <fmt/core.h>
 
 void testFunc()
@@ -50,6 +56,12 @@ namespace Ceres
         serviceContainer.AddService<PhysicsService>(new PhysicsService(serviceContainer.GetService<RenderService>()));
         serviceContainer.AddService<ActorService>(new ActorService());
 
+        serviceContainer.AddTypeAssociation<CameraComponent, RenderService>();
+        serviceContainer.AddTypeAssociation<ControllerComponent, InputService>();
+        serviceContainer.AddTypeAssociation<MovementComponent, ActorService>();
+        serviceContainer.AddTypeAssociation<RenderComponent, RenderService>();
+        serviceContainer.AddTypeAssociation<PhysicsComponent, PhysicsService>();
+
         inputHandler.BindAxis2D("Movement", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
         inputHandler.BindAxis("Vertical", Button::Key_q, Button::Key_e);
         inputHandler.BindAxis("Rotation", Button::Key_o, Button::Key_p);
@@ -61,19 +73,15 @@ namespace Ceres
     void Game::Load()
     {
         Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color(181, 206, 245));
-
         Cube<VertexPositionNormalColor> cubeRed = Cube<VertexPositionNormalColor>(1, 1, 1, Color(216, 25, 30));
-
         Cube<VertexPositionNormalTexture> texturedCube = Cube<VertexPositionNormalTexture>(1, 1, 1);
         Sphere sphere(1, 20, 32, Color::Blue());
-
         AssetPtr<Mesh> cubeMesh = graphicsDevice.LoadMesh(cube);
-
         AssetPtr<Mesh> cubeMeshRed = graphicsDevice.LoadMesh(cubeRed);
-
         AssetPtr<Effect> texturedEffect = graphicsDevice.LoadEffect("textured");
         AssetPtr<Mesh> texturedCubeMesh = graphicsDevice.LoadMesh(texturedCube, texturedEffect);
         AssetPtr<Texture> testTexture = graphicsDevice.LoadTexture("test.png");
+        
         Actor* actor = new Actor(serviceContainer, texturedCubeMesh, testTexture);
         inputHandler.BindInput(Button::Key_pause, [actor](){
             actor->SendMessage(Message::Write<void>("Pause", 0));

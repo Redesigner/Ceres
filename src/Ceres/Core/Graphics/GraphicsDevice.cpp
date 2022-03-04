@@ -174,15 +174,15 @@ namespace Ceres
         _currentCamera = camera;
     }
 
-    ComponentRef GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh)
+    ComponentRef GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh)
     {
-       _renderComponents.Insert(new RenderComponent(parent, mesh));
+       _renderComponents.Insert(new RenderComponent(mesh));
        return ComponentRef(&_renderComponents, _renderComponents.Size() - 1);
     }
 
-    ComponentRef GraphicsDevice::CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
+    ComponentRef GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
     {
-        _renderComponents.Insert(new RenderComponent(parent, mesh, texture));
+        _renderComponents.Insert(new RenderComponent(mesh, texture));
         return ComponentRef(&_renderComponents, _renderComponents.Size() - 1);
     }
 

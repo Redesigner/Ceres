@@ -5,7 +5,7 @@
 namespace Ceres
 {
     IService::IService()
-        :_components(ComponentList(6))
+        :_components(ComponentList())
     {}
 
     IService::~IService()

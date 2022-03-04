@@ -9,21 +9,20 @@
 
 namespace Ceres
 {
-    ControllerComponent::ControllerComponent(const IEntity& parent, InputHandler& inputHandler)
-        :IComponent(parent, std::type_index(typeid(ControllerComponent))), _inputHandler(inputHandler)
+    ControllerComponent::ControllerComponent(InputHandler& inputHandler)
+        :IComponent(std::type_index(typeid(ControllerComponent))), _inputHandler(inputHandler)
     {
-        const IEntity* target = &parent;
-        std::function<void(int, int)> l = [target](int x, int y)
+        std::function<void(int, int)> l = [this](int x, int y)
         {
-            target->SendMessage(Message::Write<Vector3>("CameraRotation", &Vector3(x, y, 0)) );
+            sendMessage(Message::Write<Vector3>("CameraRotation", &Vector3(x, y, 0)) );
         };
         inputHandler.BindCursorInput(l);
 
-        std::function<void()> jump = [target, this]()
+        std::function<void()> jump = [this]()
         {
             if (this->_canJump)
             {
-                target->SendMessage(Message::Write<Vector3>("AddInput", &Vector3(0.0f, 0.0f, 500.0f)));
+                sendMessage(Message::Write<Vector3>("AddInput", &Vector3(0.0f, 0.0f, 500.0f)));
                 this->_canJump = false;
             }
         };
@@ -58,7 +57,7 @@ namespace Ceres
             ( (inputAxis.Y * std::cos(_rotation)) + (inputAxis.X * std::sin(_rotation)) ) * 10,
             0);
 
-        _parent.SendMessage(Message::Write<Vector3>("AddInput", &inputForce));
-        _parent.SendMessage(Message::Write<Vector3>("Rotate", &Vector3(.1f * rotationInput, 0, 0)));
+        sendMessage(Message::Write<Vector3>("AddInput", &inputForce));
+        sendMessage(Message::Write<Vector3>("Rotate", &Vector3(.1f * rotationInput, 0, 0)));
     }
 }

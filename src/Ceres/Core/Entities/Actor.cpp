@@ -1,9 +1,10 @@
 #include "Actor.h"
 
-#include "../Services/RenderService.h"
-#include "../Services/InputService.h"
-#include "../Services/PhysicsService.h"
-#include "../Services/ActorService.h"
+#include "../Components/CameraComponent.h"
+#include "../Components/ControllerComponent.h"
+#include "../Components/MovementComponent.h"
+#include "../Components/RenderComponent.h"
+#include "../Components/PhysicsComponent.h"
 
 #include "../Physics/Primitives/CubePrimitive.h"
 #include "../Physics/Primitives/SpherePrimitive.h"
@@ -11,14 +12,15 @@
 namespace Ceres
 {
     Actor::Actor(ServiceContainer& serviceContainer, AssetPtr<Ceres::Mesh> mesh, AssetPtr<Ceres::Texture> texture)
+        :IEntity(serviceContainer)
     {
         // _primitive = new SpherePrimitive(.25f);
         _primitive = new CubePrimitive(1.0f);
-        GENERATE_COMPONENT(RenderService, "RenderComponent", (mesh, texture));
-        GENERATE_COMPONENT_NOPARAMS(RenderService, "CameraComponent");
-        GENERATE_COMPONENT_NOPARAMS(InputService, "ControllerComponent");
-        GENERATE_COMPONENT(PhysicsService, "PhysicsComponent", (_primitive));
-        GENERATE_COMPONENT_NOPARAMS(ActorService, "MovementComponent");
+        AddComponent<RenderComponent>(ComponentParams::WriteParams(mesh, texture));
+        AddComponent<CameraComponent>();
+        AddComponent<ControllerComponent>();
+        AddComponent<PhysicsComponent>(ComponentParams::WriteParams(_primitive));
+        AddComponent<MovementComponent>();
 
         SendMessage(Message::Write<void>("Pause", 0));
 

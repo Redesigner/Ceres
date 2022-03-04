@@ -9,7 +9,7 @@ namespace Ceres
     class PhysicsComponent : public IComponent
     {
         public:
-            PhysicsComponent(const IEntity& parent, IPrimitive* primitive);
+            PhysicsComponent(IPrimitive* primitive);
             ~PhysicsComponent();
 
             virtual bool RecieveMessage(Message* message) override;

@@ -29,24 +29,24 @@ namespace Ceres
     {}
 
 
-    ComponentRef PhysicsService::GenerateComponent(std::string type, const IEntity& parent, ComponentPR& params)
+    ComponentRef PhysicsService::GenerateComponent(Type type, ComponentPR& params)
     {
-        if (type == "PhysicsComponent")
+        if (type == Type(typeid(PhysicsComponent)))
         {
             if (params->Count() == 1)
             {
                 IPrimitive* primitive = params->Get<IPrimitive*>(0);
-                _components.Insert(new PhysicsComponent(parent, primitive));
+                _components.Insert(new PhysicsComponent(primitive));
                 return ComponentRef(&_components, _components.Size() - 1);
             }
             else
             {
-                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type));
+                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type.name()));
             }
         }
         else
         {
-            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type));
+            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type.name()));
         }
     }
 

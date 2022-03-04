@@ -2,12 +2,12 @@
 
 namespace Ceres
 {
-    RenderComponent::RenderComponent(const IEntity& parent, AssetPtr<Ceres::Mesh> mesh)
-        :IComponent(parent, std::type_index(typeid(RenderComponent))), Mesh(mesh), Transform(), Texture()
+    RenderComponent::RenderComponent(AssetPtr<Ceres::Mesh> mesh)
+        :IComponent(std::type_index(typeid(RenderComponent))), Mesh(mesh), Transform(), Texture()
     {}
 
-    RenderComponent::RenderComponent(const IEntity& parent, AssetPtr<Ceres::Mesh> mesh, AssetPtr<Ceres::Texture> texture)
-            :IComponent(parent, std::type_index(typeid(RenderComponent))), Mesh(mesh), Transform(), Texture(texture)
+    RenderComponent::RenderComponent(AssetPtr<Ceres::Mesh> mesh, AssetPtr<Ceres::Texture> texture)
+            :IComponent(std::type_index(typeid(RenderComponent))), Mesh(mesh), Transform(), Texture(texture)
     {}
 
     RenderComponent::~RenderComponent()

@@ -16,34 +16,34 @@ namespace Ceres
     {
     }
 
-    ComponentRef RenderService::GenerateComponent(std::string type, const IEntity& parent, ComponentPR& params)
+    ComponentRef RenderService::GenerateComponent(Type type, ComponentPR& params)
     {
-        if(type == "RenderComponent")
+        if(type == Type(typeid(RenderComponent)))
         {
             switch(params->Count())
             {
                 case 1:
                 {
                     AssetPtr<Mesh> mesh = params->Get<AssetPtr<Mesh>>(0);
-                    return _parentDevice.CreateRenderComponent(parent, mesh);
+                    return _parentDevice.CreateRenderComponent(mesh);
                 }
                 case 2:
                 {
                     AssetPtr<Mesh> mesh = params->Get<AssetPtr<Mesh>>(0);
                     AssetPtr<Texture> texture = params->Get<AssetPtr<Texture>>(1);
-                    return _parentDevice.CreateRenderComponent(parent, mesh, texture);
+                    return _parentDevice.CreateRenderComponent(mesh, texture);
                 }
                 default:
                 {
-                    throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type));
+                    throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type.name()));
                 }
             }
         }
-        else if(type == "CameraComponent")
+        else if(type == Type(typeid(CameraComponent)))
         {
             if(params->Count() == 0)
             {
-                CameraComponent* camera = new CameraComponent(parent);
+                CameraComponent* camera = new CameraComponent();
                 _components.Insert(camera);
                 // TODO: Set camera properly, rather than setting it each time we create one.
                 _parentDevice.SetCamera(camera);
@@ -51,12 +51,12 @@ namespace Ceres
             }
             else
             {
-                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type));
+                throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type.name()));
             }
         }
         else
         {
-            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type));
+            throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type.name()));
         }
     }
 }

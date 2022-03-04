@@ -9,7 +9,7 @@ namespace Ceres
     class CameraComponent : public IComponent
     {
         public:
-            CameraComponent(const IEntity& parent);
+            CameraComponent();
             ~CameraComponent();
 
             bool virtual RecieveMessage(Message* message) override;

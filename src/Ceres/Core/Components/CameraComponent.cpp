@@ -2,8 +2,8 @@
 
 namespace Ceres
 {
-    CameraComponent::CameraComponent(const IEntity& parent)
-        :IComponent(parent, std::type_index(typeid(CameraComponent)))
+    CameraComponent::CameraComponent()
+        :IComponent(std::type_index(typeid(CameraComponent)))
     {
         const float pitch = -0.785f;
         Rotation = Vector3(pitch, 0.0f, 0.0f);

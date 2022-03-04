@@ -5,8 +5,8 @@
 
 namespace Ceres
 {
-    PhysicsComponent::PhysicsComponent(const IEntity& parent, IPrimitive* primitive)
-        :IComponent(parent, std::type_index(typeid(PhysicsComponent))), _primitive(primitive)
+    PhysicsComponent::PhysicsComponent(IPrimitive* primitive)
+        :IComponent(std::type_index(typeid(PhysicsComponent))), _primitive(primitive)
     {}
 
     PhysicsComponent::~PhysicsComponent()
@@ -58,7 +58,7 @@ namespace Ceres
         Transform newTransform = _primitive->GetTransform();
         newTransform.SetPosition(newPosition);
         _primitive->SetTransform(newTransform);
-        _parent.SendMessage(Message::Write<Vector3>("Position", &newPosition));
+        sendMessage(Message::Write<Vector3>("Position", &newPosition));
     }
 
     float PhysicsComponent::SemiMajorAxis() const
@@ -75,7 +75,7 @@ namespace Ceres
     {
         if (SweepResult.GetNormal().Z <= 0.7f)
         {
-            _parent.SendMessage(Message::Write<void>("Landed", nullptr));
+            sendMessage(Message::Write<void>("Landed", nullptr));
         }
     }
 }

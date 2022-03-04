@@ -4,10 +4,10 @@
 
 namespace Ceres
 {
-    IEntity::IEntity()
-    {
+    IEntity::IEntity(ServiceContainer& serviceContainer)
+        :_serviceContainer(serviceContainer)
+    {}
 
-    }
     IEntity::~IEntity()
     {
 

@@ -57,8 +57,8 @@ namespace Ceres
 
             void SetCamera(CameraComponent* camera);
 
-            ComponentRef CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh);
-            ComponentRef CreateRenderComponent(const IEntity& parent, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            ComponentRef CreateRenderComponent(AssetPtr<Mesh> mesh);
+            ComponentRef CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
 
         private:
             void render(RenderComponent* renderComponent) const;

@@ -7,7 +7,7 @@ namespace Ceres
     class MovementComponent : public IComponent
     {
         public:
-            MovementComponent(const IEntity& parent);
+            MovementComponent();
             ~MovementComponent();
 
             virtual bool RecieveMessage(Message* message) override;

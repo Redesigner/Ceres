@@ -11,20 +11,20 @@ namespace Ceres
     class IComponent
     {
         public:
-            IComponent(const IEntity& parent, const std::type_index typeIndex);
+            IComponent(const std::type_index typeIndex);
             ~IComponent();
             
             virtual bool RecieveMessage(Message* message) = 0;
 
             template <typename T>
             bool TypeOf() { return _typeIndex == std::type_index(typeid(T)); }
+            void SetParent(IEntity* parent);
 
         private:
+            const IEntity* _parent;
+            const std::type_index _typeIndex;
 
         protected:
             bool sendMessage(Message* message) const;
-
-            const IEntity& _parent;
-            const std::type_index _typeIndex;
     };
 }
