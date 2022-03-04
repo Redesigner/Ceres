@@ -18,6 +18,16 @@ namespace Ceres
             target->SendMessage(Message::Write<Vector3>("CameraRotation", &Vector3(x, y, 0)) );
         };
         inputHandler.BindCursorInput(l);
+
+        std::function<void()> jump = [target, this]()
+        {
+            if (this->_canJump)
+            {
+                target->SendMessage(Message::Write<Vector3>("AddInput", &Vector3(0.0f, 0.0f, 500.0f)));
+                this->_canJump = false;
+            }
+        };
+        inputHandler.BindInput(Button::Key_space, jump);
     }
 
     ControllerComponent::~ControllerComponent()
@@ -30,20 +40,23 @@ namespace Ceres
             float angleX = message->GetData<Vector3>().X / 640.0f;
             _rotation -= angleX;
         }
+        if (message->Type == "Landed")
+        {
+            _canJump = true;
+        }
         return false;
     }
 
     void ControllerComponent::Update(double seconds)
     {
         Vector2 inputAxis = _inputHandler.GetAxis2DValue("Movement");
-        bool isJumping = _inputHandler.ButtonPressed(Button::Key_space);
         float rotationInput = _inputHandler.GetAxisValue("Rotation");
 
         // Using a RH coord system with z up, x and y are switched from the traditional 2D values...
         Vector3 inputForce = Vector3(
             ( (inputAxis.X * std::cos(_rotation)) + (-inputAxis.Y * std::sin(_rotation)) ) * 10,
             ( (inputAxis.Y * std::cos(_rotation)) + (inputAxis.X * std::sin(_rotation)) ) * 10,
-            isJumping * 20);
+            0);
 
         _parent.SendMessage(Message::Write<Vector3>("AddInput", &inputForce));
         _parent.SendMessage(Message::Write<Vector3>("Rotate", &Vector3(.1f * rotationInput, 0, 0)));

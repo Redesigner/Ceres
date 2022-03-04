@@ -36,7 +36,7 @@ namespace Ceres
         }
         else if (message->Type == "Acceleration")
         {
-            Acceleration = message->GetData<Vector3>();
+            Acceleration += message->GetData<Vector3>();
             return true;
         }
         else if (message->Type == "Pause")
@@ -69,5 +69,13 @@ namespace Ceres
     IPrimitive*& PhysicsComponent::GetPrimitive()
     {
         return _primitive;
+    }
+
+    void PhysicsComponent::OnHit(SweepResult& SweepResult)
+    {
+        if (SweepResult.GetNormal().Z <= 0.7f)
+        {
+            _parent.SendMessage(Message::Write<void>("Landed", nullptr));
+        }
     }
 }

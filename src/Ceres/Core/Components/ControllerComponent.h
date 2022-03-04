@@ -18,5 +18,6 @@ namespace Ceres
         private:
             const InputHandler& _inputHandler;
             float _rotation = 0;
+            bool _canJump = false;
     };
 }

@@ -2,6 +2,7 @@
 
 #include "Base/IComponent.h"
 #include "../Physics/IPrimitive.h"
+#include "../Physics/SweepResult.h"
 
 namespace Ceres
 {
@@ -17,6 +18,7 @@ namespace Ceres
             void SetPosition(Vector3 newPosition);
             float SemiMajorAxis() const;
             IPrimitive*& GetPrimitive();
+            void OnHit(SweepResult& sweepResult);
 
             Vector3 Velocity;
             Vector3 Acceleration;

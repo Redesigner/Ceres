@@ -20,8 +20,8 @@ namespace Ceres
     {
         if (message->Type == "AddInput")
         {
-            Vector3 gravity = -Vector3::Up() * 9.8f;
-            Vector3 acceleration = message->GetData<Vector3>() + gravity;
+            //Vector3 gravity = -Vector3::Up() * 9.8f;
+            Vector3 acceleration = message->GetData<Vector3>();
             sendMessage(Message::Write<Vector3>("Acceleration", &acceleration));
         }
         return false;

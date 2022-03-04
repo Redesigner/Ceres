@@ -173,23 +173,28 @@ namespace Ceres
                 delta -= (vMag - sweep.GetDistance() + Vector3::Epsilon() / vN.Dot(sweep.GetNormal())) * vN;
                 host->Velocity -= (host->Velocity.Dot(sweep.GetNormal()) * sweep.GetNormal());
 
+                const float frictionCo = 2.0f;
+                float friction = frictionCo * (-Vector3::Up().Dot(sweep.GetNormal()));
+                Vector3 frictionLoss = friction * seconds * Vector3(vN.X, vN.Y, 0.0f);
+                if (std::abs(frictionLoss.X) >= std::abs(host->Velocity.X))
+                {
+                    host->Velocity.X = 0.0f;
+                }
+                if (std::abs(frictionLoss.Y) >= std::abs(host->Velocity.Y))
+                {
+                    host->Velocity.Y = 0.0f;
+                }
+
                 if (vMag != 0.0f)
                 {
                     seconds -= sweep.GetDistance() / host->Velocity.Length();
                 }
+                host->Velocity -= frictionLoss;
 
-                // delta -= (sweep.GetNormal() * Vector3::Epsilon());
+                host->OnHit(sweep);
 
             }
-            /* for (SweepResult sweep : collisions)
-            {
-                if (sweep.Hit() && !sweep.Penetrating())
-                {
-                    delta -= (sweep.GetNormal() * Vector3::Epsilon());
-                }
-            } 
-            _debugRenderer->ClearWireframe();
-            _debugRenderer->LoadWireframeData(debug); */
+
         }
         // Don't make veryy small moves. This should prevent sliding
         Vector3 newPosition = host->GetPosition() + delta;
@@ -198,10 +203,7 @@ namespace Ceres
             newPosition.Z = KILL_Z;
             host->Velocity.Z = 0.0f;
         }
-        if (delta.LengthSquared() > Vector3::Epsilon() * Vector3::Epsilon())
-        {
-            host->SetPosition(newPosition);
-        }
+        host->SetPosition(newPosition);
         if (impact && ( seconds >= Vector3::Epsilon() ) && (!PhysicsUtilities::NearlyZero(host->Velocity) ) )
         {
             stepComponent(host, seconds, iteration + 1);
@@ -215,6 +217,8 @@ namespace Ceres
     void PhysicsService::stepComponent(PhysicsComponent* host, float seconds)
     {
         host->Velocity += host->Acceleration * seconds;
+        host->Velocity += Vector3::Up() * -9.8f * seconds;
+        host->Acceleration = Vector3::Zero();
         stepComponent(host, seconds, 0);
     }
 }

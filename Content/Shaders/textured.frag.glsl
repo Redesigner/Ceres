@@ -26,7 +26,7 @@ float Shadow(vec4 fragPos)
     float shadow = fragDepth - bias <= depth  ? 1.0 : 0.0;
 
     const int pcfSampleWidth = 1;
-    const int pcfSampleCount = (pcfSampleWidth * 2 + 1);
+    const int pcfSampleCount = (pcfSampleWidth * 2 + 1) * (pcfSampleWidth * 2 + 1);
     vec2 texelSize = 1.0 / textureSize(shadowmap, 0);
     for(int x = -pcfSampleWidth; x <= pcfSampleWidth; ++x)
     {
