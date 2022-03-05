@@ -13,27 +13,28 @@ namespace Ceres
     RenderComponent::~RenderComponent()
     {}
 
-    bool RenderComponent::RecieveMessage(Message* message)
+    bool RenderComponent::RecieveMessage(Message& message)
     {
-        if(message->Type == "Translate")
+        if(message.Type == "Translate")
         {
-            Vector3 position = message->GetData<Vector3>();
+            Vector3 position = message.GetData<Vector3>();
             Transform.SetPosition(Transform.GetPosition() + position);
             return true;
         }
-        else if (message->Type == "Position")
+        else if (message.Type == "Position")
         {
-            Transform.SetPosition(message->GetData<Vector3>());
+            const Vector3 position = message.GetData<Vector3>();
+            Transform.SetPosition(position);
         }
-        else if(message->Type == "Scale")
+        else if(message.Type == "Scale")
         {
-            Vector3 scale = message->GetData<Vector3>();
+            Vector3 scale = message.GetData<Vector3>();
             Transform.SetScale(scale);
             return true;
         }
-        else if(message->Type == "Rotate")
+        else if(message.Type == "Rotate")
         {
-            Transform.SetRotation(Transform.GetRotation() + message->GetData<Vector3>());
+            Transform.SetRotation(Transform.GetRotation() + message.GetData<Vector3>());
             return true;
         }
         return false;

@@ -20,6 +20,6 @@ namespace Ceres
             ~Actor();
 
         private:
-            IPrimitive* _primitive;
+            std::shared_ptr<IPrimitive> _primitive;
     };
 }

@@ -17,7 +17,7 @@ namespace Ceres
 
             ~RenderComponent();
 
-            virtual bool RecieveMessage(Message* message) override;
+            virtual bool RecieveMessage(Message& message) override;
 
             AssetPtr<Mesh> Mesh;
             AssetPtr<Texture> Texture;

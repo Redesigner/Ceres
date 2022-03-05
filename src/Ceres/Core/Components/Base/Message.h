@@ -11,22 +11,29 @@ namespace Ceres
     {
         public:
             ~Message();
+            Message(Message& message);
             
             template <typename T>
             T GetData()
             {
-                if(std::type_index(typeid(T)) == _type)
+                std::type_index requestedType = std::type_index(typeid(T));
+                if(requestedType == _dataType)
                 {
-                    return *(T*)(_data);
+                    return *reinterpret_cast<T*>(_data);
                 }
                 throw std::invalid_argument("That data type is not stored inside the message.");
             }
             template <typename T>
-            static Message* Write(std::string name, T* data)
+            static Message Write(std::string name, T data)
             {
-                Message* message = new Message(name);
-                message->SetData<T>(data);
+                Message message = Message(name);
+                message.SetData(data);
                 return message;
+            }
+
+            static Message Write(std::string name)
+            {
+                return Message(name);
             }
 
             std::string Type;
@@ -35,13 +42,19 @@ namespace Ceres
             Message(std::string messageType);
 
             template <typename T>
-            void SetData(T* data)
+            void SetData(T&& data)
             {
-                _type = std::type_index(typeid(T));
-                _data = data;
+                if (_data == nullptr)
+                {
+                    _dataType = std::type_index(typeid(T));
+                    _dataSize = sizeof(T);
+                    _data = new char[_dataSize];
+                    memcpy(_data, &data, _dataSize);
+                }
             }
 
-            void* _data;
-            std::type_index _type = (typeid(char));
+            char* _data = nullptr;
+            std::size_t _dataSize = 0;
+            std::type_index _dataType = (typeid(char));
     };
 }

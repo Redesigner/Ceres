@@ -12,7 +12,7 @@ namespace Ceres
             CameraComponent();
             ~CameraComponent();
 
-            bool virtual RecieveMessage(Message* message) override;
+            bool virtual RecieveMessage(Message& message) override;
             const Matrix& GetMatrix();
             const Matrix& GetRotationMatrix();
             const Matrix& GetPositionMatrix();

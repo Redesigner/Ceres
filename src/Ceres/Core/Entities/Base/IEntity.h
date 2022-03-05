@@ -15,10 +15,21 @@ namespace Ceres
     {
         public:
             IEntity(ServiceContainer& serviceContainer);
+            IEntity(const IEntity&) = delete;
+            IEntity(IEntity&&);
             ~IEntity();
 
-            // TODO: move to protected once testing is done
-            bool SendMessage(Message* Message) const;
+            IEntity& operator =(const IEntity&) = delete;
+            IEntity& operator =(IEntity&& entity) noexcept;
+
+            template <typename T>
+            bool SendMessage(std::string type, T value) const
+            {
+                return SendMessage(Message::Write(type, value));
+            }
+
+            bool SendMessage(std::string type) const;
+            bool SendMessage(Message& Message) const;
             
             template <typename T>
             void AddComponent(std::unique_ptr<ComponentParams> &params)

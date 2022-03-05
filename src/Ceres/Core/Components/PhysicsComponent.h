@@ -4,20 +4,23 @@
 #include "../Physics/IPrimitive.h"
 #include "../Physics/SweepResult.h"
 
+#include <memory>
+
 namespace Ceres
 {
     class PhysicsComponent : public IComponent
     {
+        using PrimitivePtr = std::shared_ptr<IPrimitive>;
         public:
-            PhysicsComponent(IPrimitive* primitive);
+            PhysicsComponent(PrimitivePtr &primitive);
             ~PhysicsComponent();
 
-            virtual bool RecieveMessage(Message* message) override;
+            virtual bool RecieveMessage(Message& message) override;
 
             const Vector3 GetPosition() const;
             void SetPosition(Vector3 newPosition);
             float SemiMajorAxis() const;
-            IPrimitive*& GetPrimitive();
+            PrimitivePtr& GetPrimitive();
             void OnHit(SweepResult& sweepResult);
 
             Vector3 Velocity;
@@ -26,6 +29,6 @@ namespace Ceres
             bool Paused = true;
 
         private:
-            IPrimitive* _primitive;
+            PrimitivePtr _primitive;
     };
 }

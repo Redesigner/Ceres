@@ -14,7 +14,7 @@ namespace Ceres
             IComponent(const std::type_index typeIndex);
             ~IComponent();
             
-            virtual bool RecieveMessage(Message* message) = 0;
+            virtual bool RecieveMessage(Message& message) = 0;
 
             template <typename T>
             bool TypeOf() { return _typeIndex == std::type_index(typeid(T)); }
@@ -25,6 +25,6 @@ namespace Ceres
             const std::type_index _typeIndex;
 
         protected:
-            bool sendMessage(Message* message) const;
+            bool sendMessage(Message& message) const;
     };
 }

@@ -12,7 +12,7 @@ namespace Ceres
             ControllerComponent(InputHandler& inputHandler);
             ~ControllerComponent();
 
-            virtual bool RecieveMessage(Message* message) override;
+            virtual bool RecieveMessage(Message& message) override;
             void Update(double seconds);
 
         private:

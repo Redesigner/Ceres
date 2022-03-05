@@ -10,7 +10,7 @@ namespace Ceres
             MovementComponent();
             ~MovementComponent();
 
-            virtual bool RecieveMessage(Message* message) override;
+            virtual bool RecieveMessage(Message& message) override;
 
         private:
     };

@@ -35,7 +35,7 @@ namespace Ceres
         {
             if (params->Count() == 1)
             {
-                IPrimitive* primitive = params->Get<IPrimitive*>(0);
+                std::shared_ptr<IPrimitive> primitive = params->Get<std::shared_ptr<IPrimitive>>(0);
                 _components.Insert(new PhysicsComponent(primitive));
                 return ComponentRef(&_components, _components.Size() - 1);
             }
@@ -192,16 +192,13 @@ namespace Ceres
                 host->Velocity -= frictionLoss;
 
                 host->OnHit(sweep);
-
             }
-
         }
-        // Don't make veryy small moves. This should prevent sliding
         Vector3 newPosition = host->GetPosition() + delta;
         if (newPosition.Z <= KILL_Z)
         {
-            newPosition.Z = KILL_Z;
-            host->Velocity.Z = 0.0f;
+            newPosition = Vector3::Zero();
+            host->Velocity = Vector3::Zero();
         }
         host->SetPosition(newPosition);
         if (impact && ( seconds >= Vector3::Epsilon() ) && (!PhysicsUtilities::NearlyZero(host->Velocity) ) )

@@ -21,7 +21,7 @@ namespace Ceres
         }
     }
 
-    bool IComponent::sendMessage(Message* message) const
+    bool IComponent::sendMessage(Message& message) const
     {
         if (!_parent)
         {

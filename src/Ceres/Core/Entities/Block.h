@@ -8,6 +8,8 @@
 
 #include "../Services/ServiceContainer.h"
 
+#include <memory>
+
 namespace Ceres
 {
     struct IPrimitive;
@@ -18,6 +20,6 @@ namespace Ceres
             Block(ServiceContainer& serviceContainer, float x, float y, float z, AssetPtr<Mesh> mesh);
             ~Block();
         private:
-            IPrimitive* _primitive;
+            std::shared_ptr<IPrimitive> _primitive;
     };
 }

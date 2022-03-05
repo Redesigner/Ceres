@@ -15,20 +15,19 @@ namespace Ceres
         :IEntity(serviceContainer)
     {
         // _primitive = new SpherePrimitive(.25f);
-        _primitive = new CubePrimitive(1.0f);
+        _primitive.reset(dynamic_cast<IPrimitive*>(new CubePrimitive(1.0f)));
         AddComponent<RenderComponent>(ComponentParams::WriteParams(mesh, texture));
         AddComponent<CameraComponent>();
         AddComponent<ControllerComponent>();
         AddComponent<PhysicsComponent>(ComponentParams::WriteParams(_primitive));
         AddComponent<MovementComponent>();
 
-        SendMessage(Message::Write<void>("Pause", 0));
+        SendMessage("Pause");
 
-        SendMessage(Message::Write<Vector3>("Position", &Vector3::Zero() ));
+        SendMessage("Position", Vector3::Zero() );
     }
 
     Actor::~Actor()
     {
-        delete _primitive;
     }
 }

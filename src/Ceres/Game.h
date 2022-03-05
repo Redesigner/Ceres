@@ -6,8 +6,7 @@
 #include "Core/Input/InputHandler.h"
 #include "Core/Services/RenderService.h"
 #include "Core/Services/ServiceContainer.h"
-
-#include "Core/Entities/Base/IEntity.h"
+#include "Core/World/World.h"
 
 namespace Ceres
 {
@@ -30,6 +29,6 @@ namespace Ceres
             
         private:
             int _status;
-            std::vector<IEntity*> _entities;
+            World _world;
     };
 }

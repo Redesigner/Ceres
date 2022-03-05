@@ -8,12 +8,36 @@ namespace Ceres
         :_serviceContainer(serviceContainer)
     {}
 
-    IEntity::~IEntity()
+    IEntity::IEntity(IEntity&& entity)
+        :_serviceContainer(entity._serviceContainer)
     {
-
+        _components = std::vector<ComponentRef>(entity._components);
+        for (ComponentRef component : _components)
+        {
+            component->SetParent(this);
+        }
     }
 
-    bool IEntity::SendMessage(Message* message) const
+    IEntity::~IEntity()
+    {}
+
+    IEntity& IEntity::operator=(IEntity&& entity) noexcept
+    {
+        _serviceContainer = entity._serviceContainer;
+        _components = std::vector<ComponentRef>(entity._components);
+        for (ComponentRef component : _components)
+        {
+            component->SetParent(this);
+        }
+        return *this;
+    }
+
+    bool IEntity::SendMessage(std::string type) const
+    {
+        return SendMessage(Message::Write(type, 0));
+    }
+
+    bool IEntity::SendMessage(Message& message) const
     {
         bool handled = false;
         for(ComponentRef component : _components)
@@ -23,7 +47,6 @@ namespace Ceres
                 handled = true;
             }
         }
-        delete message;
         return handled;
     }
 }

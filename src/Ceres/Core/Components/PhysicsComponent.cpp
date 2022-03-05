@@ -5,41 +5,42 @@
 
 namespace Ceres
 {
-    PhysicsComponent::PhysicsComponent(IPrimitive* primitive)
+    using PrimitivePtr = std::shared_ptr<IPrimitive>;
+
+    PhysicsComponent::PhysicsComponent(PrimitivePtr &primitive)
         :IComponent(std::type_index(typeid(PhysicsComponent))), _primitive(primitive)
     {}
 
     PhysicsComponent::~PhysicsComponent()
     {
-        delete _primitive;
     }
 
-    bool PhysicsComponent::RecieveMessage(Message* message)
+    bool PhysicsComponent::RecieveMessage(Message& message)
     {
-        if (message->Type == "Position")
+        if (message.Type == "Position")
         {
             Transform newTransform = _primitive->GetTransform();
-            newTransform.SetPosition(message->GetData<Vector3>());
+            newTransform.SetPosition(message.GetData<Vector3>());
             _primitive->SetTransform(newTransform);
         }
-        else if (message->Type == "Rotate")
+        else if (message.Type == "Rotate")
         {
             Transform newTransform = _primitive->GetTransform();
-            newTransform.SetRotation(newTransform.GetRotation() + message->GetData<Vector3>());
+            newTransform.SetRotation(newTransform.GetRotation() + message.GetData<Vector3>());
             _primitive->SetTransform(newTransform);
         }
-        else if (message->Type == "Scale")
+        else if (message.Type == "Scale")
         {
             Transform newTransfrom = _primitive->GetTransform();
-            newTransfrom.SetScale(message->GetData<Vector3>());
+            newTransfrom.SetScale(message.GetData<Vector3>());
             _primitive->SetTransform(newTransfrom);
         }
-        else if (message->Type == "Acceleration")
+        else if (message.Type == "Acceleration")
         {
-            Acceleration += message->GetData<Vector3>();
+            Acceleration += message.GetData<Vector3>();
             return true;
         }
-        else if (message->Type == "Pause")
+        else if (message.Type == "Pause")
         {
             Paused = !Paused;
             return true;
@@ -58,7 +59,7 @@ namespace Ceres
         Transform newTransform = _primitive->GetTransform();
         newTransform.SetPosition(newPosition);
         _primitive->SetTransform(newTransform);
-        sendMessage(Message::Write<Vector3>("Position", &newPosition));
+        sendMessage(Message::Write("Position", newPosition));
     }
 
     float PhysicsComponent::SemiMajorAxis() const
@@ -66,16 +67,16 @@ namespace Ceres
         return _primitive->SemiMajorAxis();
     }
 
-    IPrimitive*& PhysicsComponent::GetPrimitive()
+    PrimitivePtr& PhysicsComponent::GetPrimitive()
     {
         return _primitive;
     }
 
     void PhysicsComponent::OnHit(SweepResult& SweepResult)
     {
-        if (SweepResult.GetNormal().Z <= 0.7f)
+        if (SweepResult.GetNormal().Z <= -0.7f)
         {
-            sendMessage(Message::Write<void>("Landed", nullptr));
+            sendMessage(Message::Write("Landed"));
         }
     }
 }

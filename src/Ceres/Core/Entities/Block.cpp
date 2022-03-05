@@ -9,16 +9,14 @@ namespace Ceres
     Block::Block(ServiceContainer& serviceContainer, float x, float y, float z, AssetPtr<Mesh> mesh)
         :IEntity(serviceContainer)
     {
-        _primitive = new CubePrimitive(1);
+        _primitive.reset(dynamic_cast<IPrimitive*>(new CubePrimitive(1)));
         AddComponent<RenderComponent>(ComponentParams::WriteParams(mesh));
         AddComponent<PhysicsComponent>(ComponentParams::WriteParams(_primitive));
 
-        SendMessage(Message::Write<Vector3>("Scale", &Vector3(x, y, z)));
-        SendMessage(Message::Write<Vector3>("Position", &Vector3(-2.0f, 0, 0)));
+        SendMessage("Scale", Vector3(x, y, z));
     }
     
     Block::~Block()
     {
-        delete _primitive;
     }
 }

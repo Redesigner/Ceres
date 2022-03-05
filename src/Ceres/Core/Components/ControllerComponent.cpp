@@ -14,7 +14,7 @@ namespace Ceres
     {
         std::function<void(int, int)> l = [this](int x, int y)
         {
-            sendMessage(Message::Write<Vector3>("CameraRotation", &Vector3(x, y, 0)) );
+            sendMessage(Message::Write<Vector3>("CameraRotation", Vector3(x, y, 0)) );
         };
         inputHandler.BindCursorInput(l);
 
@@ -22,24 +22,28 @@ namespace Ceres
         {
             if (this->_canJump)
             {
-                sendMessage(Message::Write<Vector3>("AddInput", &Vector3(0.0f, 0.0f, 500.0f)));
+                sendMessage(Message::Write<Vector3>("AddInput", Vector3(0.0f, 0.0f, 500.0f)));
                 this->_canJump = false;
             }
         };
         inputHandler.BindInput(Button::Key_space, jump);
+
+        inputHandler.BindInput(Button::Key_pause, [this](){
+            sendMessage(Message::Write<int>("Pause", 0));
+        });
     }
 
     ControllerComponent::~ControllerComponent()
     {}
 
-    bool ControllerComponent::RecieveMessage(Message* message)
+    bool ControllerComponent::RecieveMessage(Message& message)
     {
-        if (message->Type == "CameraRotation")
+        if (message.Type == "CameraRotation")
         {
-            float angleX = message->GetData<Vector3>().X / 640.0f;
+            float angleX = message.GetData<Vector3>().X / 640.0f;
             _rotation -= angleX;
         }
-        if (message->Type == "Landed")
+        if (message.Type == "Landed")
         {
             _canJump = true;
         }
@@ -57,7 +61,7 @@ namespace Ceres
             ( (inputAxis.Y * std::cos(_rotation)) + (inputAxis.X * std::sin(_rotation)) ) * 10,
             0);
 
-        sendMessage(Message::Write<Vector3>("AddInput", &inputForce));
-        sendMessage(Message::Write<Vector3>("Rotate", &Vector3(.1f * rotationInput, 0, 0)));
+        sendMessage(Message::Write("AddInput", inputForce));
+        sendMessage(Message::Write("Rotate", Vector3(.1f * rotationInput, 0, 0)));
     }
 }

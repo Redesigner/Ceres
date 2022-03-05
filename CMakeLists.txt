@@ -88,7 +88,6 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Physics/GJK/GJK.cpp
 	src/Ceres/Core/Physics/GJK/Simplex.cpp
 
-
 	# Services
 	src/Ceres/Core/Services/IService.cpp
 	src/Ceres/Core/Services/ServiceContainer.cpp
@@ -97,6 +96,8 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Services/RenderService.cpp
 	src/Ceres/Core/Services/PhysicsService.cpp
 	src/Ceres/Core/Services/InputService.cpp
+
+	src/Ceres/Core/World/World.cpp
 )
 target_include_directories(ceres PUBLIC src/Ceres/)
 
