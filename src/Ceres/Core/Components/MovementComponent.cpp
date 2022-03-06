@@ -20,9 +20,31 @@ namespace Ceres
     {
         if (message.Type == "AddInput")
         {
-            //Vector3 gravity = -Vector3::Up() * 9.8f;
-            Vector3 acceleration = message.GetData<Vector3>();
+            const float accelerationRate = 50.0f;
+            const float airControl = 0.2f;
+            Vector2 input = message.GetData<Vector2>();
+            Vector3 acceleration = Vector3(input.X, input.Y, 0.0f) * accelerationRate;
+            if (!_grounded)
+            {
+                acceleration = acceleration * airControl;
+            }
             sendMessage(Message::Write("Acceleration", acceleration));
+            return true;
+        }
+        if (message.Type == "Jump")
+        {
+            if (_grounded)
+            {
+                const float jumpForce = 500.0f;
+                _grounded = false;
+                sendMessage(Message::Write("Acceleration", Vector3(0.0f, 0.0f, jumpForce)));
+            }
+            return true;
+        }
+        if (message.Type == "Landed")
+        {
+            _grounded = message.GetData<bool>();
+            return true;
         }
         return false;
     }

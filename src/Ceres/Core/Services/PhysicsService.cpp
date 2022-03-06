@@ -173,8 +173,9 @@ namespace Ceres
                 delta -= (vMag - sweep.GetDistance() + Vector3::Epsilon() / vN.Dot(sweep.GetNormal())) * vN;
                 host->Velocity -= (host->Velocity.Dot(sweep.GetNormal()) * sweep.GetNormal());
 
-                const float frictionCo = 2.0f;
-                float friction = frictionCo * (-Vector3::Up().Dot(sweep.GetNormal()));
+                const float frictionCo = host->Friction;
+                const float normalCo = -Vector3::Up().Dot(sweep.GetNormal());
+                float friction = frictionCo * std::pow(normalCo, 16); // not realistic to have normal coefficient squared
                 Vector3 frictionLoss = friction * seconds * Vector3(vN.X, vN.Y, 0.0f);
                 if (std::abs(frictionLoss.X) >= std::abs(host->Velocity.X))
                 {
@@ -192,7 +193,15 @@ namespace Ceres
                 host->Velocity -= frictionLoss;
 
                 host->OnHit(sweep);
+                if (sweep.GetNormal().Z <= - 0.7f)
+                {
+                    host->SetGrounded(true);
+                }
             }
+        }
+        else if (iteration == 0)
+        {
+            host->SetGrounded(false);
         }
         Vector3 newPosition = host->GetPosition() + delta;
         if (newPosition.Z <= KILL_Z)
@@ -214,8 +223,15 @@ namespace Ceres
     void PhysicsService::stepComponent(PhysicsComponent* host, float seconds)
     {
         host->Velocity += host->Acceleration * seconds;
-        host->Velocity += Vector3::Up() * -9.8f * seconds;
         host->Acceleration = Vector3::Zero();
+        host->Velocity += Vector3::Up() * -9.8f * seconds;
         stepComponent(host, seconds, 0);
+        const float planarSpeed2 = (host->Velocity.X) * (host->Velocity.X) + (host->Velocity.Y) * (host->Velocity.Y);
+        if (planarSpeed2 >= host->MaxSpeed * host->MaxSpeed)
+        {
+            const float planarSpeed = std::sqrt(planarSpeed2);
+            host->Velocity.X = host->Velocity.X / planarSpeed * host->MaxSpeed;
+            host->Velocity.Y = host->Velocity.Y / planarSpeed * host->MaxSpeed;
+        }
     }
 }

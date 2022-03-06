@@ -74,9 +74,17 @@ namespace Ceres
 
     void PhysicsComponent::OnHit(SweepResult& SweepResult)
     {
-        if (SweepResult.GetNormal().Z <= -0.7f)
+    }
+
+    void PhysicsComponent::SetGrounded(const bool grounded)
+    {
+        if (!_grounded && grounded)
         {
-            sendMessage(Message::Write("Landed"));
+            sendMessage(Message::Write("Landed", true));
+        }
+        else if (_grounded && !grounded)
+        {
+            sendMessage(Message::Write("Landed", false));
         }
     }
 }

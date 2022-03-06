@@ -5,7 +5,7 @@ namespace Ceres
     CameraComponent::CameraComponent()
         :IComponent(std::type_index(typeid(CameraComponent)))
     {
-        const float pitch = -0.785f;
+        const float pitch = -0.55f;
         Rotation = Vector3(pitch, 0.0f, 0.0f);
         Offset = Vector3(0.0f, -7.0f, 0.0f);
     }
@@ -17,12 +17,12 @@ namespace Ceres
     {
         if(message.Type == "Translate")
         {
-            _translate(message.GetData<Vector3>());
+            translate(message.GetData<Vector3>());
             return true;
         }
         else if (message.Type == "Position")
         {
-            _setPosition(message.GetData<Vector3>());
+            setPosition(message.GetData<Vector3>());
             return true;
         }
         else if (message.Type == "CameraRotation")
@@ -36,7 +36,7 @@ namespace Ceres
                 Rotation.X += deltaRotation.X;
             }
             Rotation.Z += deltaRotation.Z;
-            _updateTransform();
+            updateTransform();
             return true;
         }
         else
@@ -66,19 +66,19 @@ namespace Ceres
     }
 
     // Private methods
-    void CameraComponent::_setPosition(const Vector3& position)
+    void CameraComponent::setPosition(const Vector3& position)
     {
         Position = position;
-        _updateTransform();
+        updateTransform();
     }
 
-    void CameraComponent::_translate(const Vector3& translation)
+    void CameraComponent::translate(const Vector3& translation)
     {
         Position += translation;
-        _updateTransform();
+        updateTransform();
     }
 
-    void CameraComponent::_updateTransform()
+    void CameraComponent::updateTransform()
     {
         Matrix rotation = Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X);
         _matrix = Matrix::LookAt((rotation * Offset) + Position, Position, Vector3::Up());

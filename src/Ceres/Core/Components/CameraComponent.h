@@ -23,9 +23,9 @@ namespace Ceres
             Vector3 Offset;
 
         private:
-            void _setPosition(const Vector3& position);
-            void _translate(const Vector3& translation);
-            void _updateTransform();
+            void setPosition(const Vector3& position);
+            void translate(const Vector3& translation);
+            void updateTransform();
 
             Matrix _matrix;
             Matrix _viewPosition;

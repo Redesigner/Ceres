@@ -18,19 +18,8 @@ namespace Ceres
         };
         inputHandler.BindCursorInput(l);
 
-        std::function<void()> jump = [this]()
-        {
-            if (this->_canJump)
-            {
-                sendMessage(Message::Write<Vector3>("AddInput", Vector3(0.0f, 0.0f, 500.0f)));
-                this->_canJump = false;
-            }
-        };
-        inputHandler.BindInput(Button::Key_space, jump);
-
-        inputHandler.BindInput(Button::Key_pause, [this](){
-            sendMessage(Message::Write<int>("Pause", 0));
-        });
+        inputHandler.BindInput(Button::Key_space,  [this]() { sendMessage(Message::Write("Jump")); });
+        inputHandler.BindInput(Button::Key_pause, [this]() { sendMessage(Message::Write("Pause")); });
     }
 
     ControllerComponent::~ControllerComponent()
@@ -42,10 +31,7 @@ namespace Ceres
         {
             float angleX = message.GetData<Vector3>().X / 640.0f;
             _rotation -= angleX;
-        }
-        if (message.Type == "Landed")
-        {
-            _canJump = true;
+            return true;
         }
         return false;
     }
@@ -56,12 +42,11 @@ namespace Ceres
         float rotationInput = _inputHandler.GetAxisValue("Rotation");
 
         // Using a RH coord system with z up, x and y are switched from the traditional 2D values...
-        Vector3 inputForce = Vector3(
-            ( (inputAxis.X * std::cos(_rotation)) + (-inputAxis.Y * std::sin(_rotation)) ) * 10,
-            ( (inputAxis.Y * std::cos(_rotation)) + (inputAxis.X * std::sin(_rotation)) ) * 10,
-            0);
+        Vector2 input = Vector2(
+            ( (inputAxis.X * std::cos(_rotation)) + (-inputAxis.Y * std::sin(_rotation)) ),
+            ( (inputAxis.Y * std::cos(_rotation)) + (inputAxis.X * std::sin(_rotation)) ));
 
-        sendMessage(Message::Write("AddInput", inputForce));
+        sendMessage(Message::Write("AddInput", input));
         sendMessage(Message::Write("Rotate", Vector3(.1f * rotationInput, 0, 0)));
     }
 }

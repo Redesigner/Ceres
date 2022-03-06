@@ -13,5 +13,6 @@ namespace Ceres
             virtual bool RecieveMessage(Message& message) override;
 
         private:
+            bool _grounded = false;
     };
 }

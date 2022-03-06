@@ -22,13 +22,17 @@ namespace Ceres
             float SemiMajorAxis() const;
             PrimitivePtr& GetPrimitive();
             void OnHit(SweepResult& sweepResult);
+            void SetGrounded(const bool grounded);
 
             Vector3 Velocity;
             Vector3 Acceleration;
+            float MaxSpeed = 5.0f;
+            float Friction = 20.0f;
 
             bool Paused = true;
 
         private:
             PrimitivePtr _primitive;
+            bool _grounded = false;
     };
 }
