@@ -23,6 +23,7 @@ namespace Ceres
             PrimitivePtr& GetPrimitive();
             void OnHit(SweepResult& sweepResult);
             void SetGrounded(const bool grounded);
+            void FinalizeVelocity();
 
             Vector3 Velocity;
             Vector3 Acceleration;

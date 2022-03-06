@@ -30,5 +30,6 @@ namespace Ceres
             Matrix _matrix;
             Matrix _viewPosition;
             Matrix _viewRotation;
+            Vector3 _velocityOffset;
     };
 }

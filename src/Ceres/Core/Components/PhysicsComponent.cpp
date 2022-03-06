@@ -22,18 +22,21 @@ namespace Ceres
             Transform newTransform = _primitive->GetTransform();
             newTransform.SetPosition(message.GetData<Vector3>());
             _primitive->SetTransform(newTransform);
+            return true;
         }
         else if (message.Type == "Rotate")
         {
             Transform newTransform = _primitive->GetTransform();
             newTransform.SetRotation(newTransform.GetRotation() + message.GetData<Vector3>());
             _primitive->SetTransform(newTransform);
+            return true;
         }
         else if (message.Type == "Scale")
         {
             Transform newTransfrom = _primitive->GetTransform();
             newTransfrom.SetScale(message.GetData<Vector3>());
             _primitive->SetTransform(newTransfrom);
+            return true;
         }
         else if (message.Type == "Acceleration")
         {
@@ -86,5 +89,11 @@ namespace Ceres
         {
             sendMessage(Message::Write("Landed", false));
         }
+        _grounded = grounded;
+    }
+
+    void PhysicsComponent::FinalizeVelocity()
+    {
+        sendMessage(Message::Write("Velocity", Velocity));
     }
 }

@@ -80,6 +80,7 @@ target_sources(ceres PRIVATE
 	# Physics
 	src/Ceres/Core/Physics/ConvexHull.cpp
 	src/Ceres/Core/Physics/IPrimitive.cpp
+	src/Ceres/Core/Physics/Primitives/CapsulePrimitive.cpp
 	src/Ceres/Core/Physics/Primitives/CubePrimitive.cpp
 	src/Ceres/Core/Physics/Primitives/SpherePrimitive.cpp
 	src/Ceres/Core/Physics/PhysicsUtilities.cpp

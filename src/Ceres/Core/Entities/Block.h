@@ -5,6 +5,7 @@
 #include "../Common/AssetPointer.h"
 
 #include "../Graphics/Mesh.h"
+#include "../Graphics/Texture.h"
 
 #include "../Services/ServiceContainer.h"
 
@@ -18,6 +19,7 @@ namespace Ceres
     {
         public:
             Block(ServiceContainer& serviceContainer, float x, float y, float z, AssetPtr<Mesh> mesh);
+            Block(ServiceContainer& serviceContainer, float x, float y, float z, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
             ~Block();
         private:
             std::shared_ptr<IPrimitive> _primitive;

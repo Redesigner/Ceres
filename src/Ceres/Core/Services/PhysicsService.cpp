@@ -177,18 +177,23 @@ namespace Ceres
                 const float normalCo = -Vector3::Up().Dot(sweep.GetNormal());
                 float friction = frictionCo * std::pow(normalCo, 16); // not realistic to have normal coefficient squared
                 Vector3 frictionLoss = friction * seconds * Vector3(vN.X, vN.Y, 0.0f);
-                if (std::abs(frictionLoss.X) >= std::abs(host->Velocity.X))
-                {
-                    host->Velocity.X = 0.0f;
-                }
-                if (std::abs(frictionLoss.Y) >= std::abs(host->Velocity.Y))
-                {
-                    host->Velocity.Y = 0.0f;
-                }
 
+                const bool xComparison = std::abs(frictionLoss.X) >= std::abs(host->Velocity.X);
+                const bool yComparison = std::abs(frictionLoss.Y) >= std::abs(host->Velocity.Y);
                 if (vMag != 0.0f)
                 {
                     seconds -= sweep.GetDistance() / host->Velocity.Length();
+                }
+
+                if (xComparison)
+                {
+                    host->Velocity.X = 0.0f;
+                    frictionLoss.X = 0.0f;
+                }
+                if (yComparison)
+                {
+                    host->Velocity.Y = 0.0f;
+                    frictionLoss.Y = 0.0f;
                 }
                 host->Velocity -= frictionLoss;
 
@@ -233,5 +238,6 @@ namespace Ceres
             host->Velocity.X = host->Velocity.X / planarSpeed * host->MaxSpeed;
             host->Velocity.Y = host->Velocity.Y / planarSpeed * host->MaxSpeed;
         }
+        host->FinalizeVelocity();
     }
 }

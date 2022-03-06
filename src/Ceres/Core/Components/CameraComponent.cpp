@@ -39,10 +39,14 @@ namespace Ceres
             updateTransform();
             return true;
         }
-        else
+        else if (message.Type == "Velocity")
         {
-            return false;
+            const float a = 0.25f;
+            const float b = 1.0f - a;
+            _velocityOffset = message.GetData<Vector3>() * a + _velocityOffset * b;
+            return true;
         }
+        return false;
     }
 
     const Matrix& CameraComponent::GetMatrix()
@@ -80,8 +84,9 @@ namespace Ceres
 
     void CameraComponent::updateTransform()
     {
+        const float velocityScale = 0.05f;
         Matrix rotation = Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X);
-        _matrix = Matrix::LookAt((rotation * Offset) + Position, Position, Vector3::Up());
+        _matrix = Matrix::LookAt((rotation * Offset) + Position + (_velocityOffset * velocityScale), Position + (_velocityOffset * velocityScale), Vector3::Up());
         _viewRotation = Matrix::LookAt(Vector3::Zero(), (rotation * Vector3(0, 1, 0)), Vector3::Up());
     }
 }
