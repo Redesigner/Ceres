@@ -15,7 +15,7 @@ namespace Ceres
         :IEntity(serviceContainer)
     {
         // _primitive = new SpherePrimitive(.25f);
-        _primitive.reset(dynamic_cast<IPrimitive*>(new CubePrimitive(1.0f)));
+        _primitive.reset(dynamic_cast<IPrimitive*>(new CubePrimitive(1.0f, 1.0f, 1.6f)));
         AddComponent<RenderComponent>(ComponentParams::WriteParams(mesh, texture));
         AddComponent<CameraComponent>();
         AddComponent<ControllerComponent>();

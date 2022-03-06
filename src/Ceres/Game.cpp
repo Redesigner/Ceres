@@ -28,6 +28,8 @@
 #include "Core/Components/RenderComponent.h"
 #include "Core/Components/PhysicsComponent.h"
 
+#include "Core/IO/ContentManager.h"
+
 #include <fmt/core.h>
 
 void testFunc()
@@ -76,8 +78,10 @@ namespace Ceres
         AssetPtr<Mesh> texturedCubeMesh = graphicsDevice.LoadMesh(texturedCube, texturedEffect);
         AssetPtr<Texture> testTexture = graphicsDevice.LoadTexture("test.png");
         AssetPtr<Texture> cloudTexture = graphicsDevice.LoadTexture("Cloud.png");
+
+        AssetPtr<Mesh> testMesh = graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/test.obj"), texturedEffect);
         
-        _world.CreateEntity<Actor>(serviceContainer, texturedCubeMesh, testTexture);
+        _world.CreateEntity<Actor>(serviceContainer, testMesh, testTexture);
 
         IEntity& floor =    _world.CreateEntity<Block>(serviceContainer, 10.0f, 10.0f, 1.0f, cubeMesh);
         IEntity& rail1 =    _world.CreateEntity<Block>(serviceContainer, 10.0f, 0.1f, 0.5f, cubeMeshRed);

@@ -2,6 +2,9 @@
 
 #include "../VertexTypes/IVertexLayout.h"
 #include "../VertexTypes/IVertexType.h"
+
+#include <vector>
+
 using uint = unsigned int;
 
 namespace Ceres
@@ -37,6 +40,16 @@ namespace Ceres
             {
                 _typedVertices = new VertexType[_vertexCount];
                 _vertices = static_cast<IVertexType*>(_typedVertices);
+            }
+
+            MeshPrimitive(std::vector<VertexType>& vertices, std::vector<int>& indices)
+                : MeshPrimitiveBase(vertices.size(), indices.size())
+            {
+                _typedVertices = new VertexType[_vertexCount];
+                _vertices = static_cast<IVertexType*>(_typedVertices);
+                memcpy(_typedVertices, vertices.data(), _vertexCount * sizeof(VertexType));
+                _indices = new uint[_indexCount];
+                memcpy(_indices, indices.data(), _indexCount * sizeof(uint));
             }
 
             virtual ~MeshPrimitive() override

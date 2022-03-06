@@ -73,7 +73,8 @@
 			"stack": "cpp",
 			"deque": "cpp",
 			"forward_list": "cpp",
-			"numeric": "cpp"
+			"numeric": "cpp",
+			"regex": "cpp"
 		}
 	}
 }
