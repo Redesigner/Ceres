@@ -53,7 +53,7 @@ namespace Ceres
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
         _skyboxCubemap = new Cubemap(cubeMapLocation.c_str()); 
-        _skyboxEffect->SetCubemap("skybox", _skyboxCubemap);
+        _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
 
         _shadowmap = new Shadowmap(1024, LoadEffect("shadowmap"));
     }
@@ -254,9 +254,8 @@ namespace Ceres
 
         _skyboxEffect->Begin();
         _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
-        _skyboxEffect->SetCubemap("skybox", _skyboxCubemap);
+        _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
         glDepthMask(GL_TRUE);
-        // glCullFace(GL_BACK);
     }
 }

@@ -34,6 +34,7 @@ namespace Ceres
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
             void SetTexture(std::string name, AssetPtr<Texture> texture);
+            void SetTexture(std::string name, Cubemap* cubemap);
             void SetCubemap(std::string name, Cubemap* cubemap);
             void SetShadowmap(Shadowmap* shadowmap);
             void SetViewMatrix(const Matrix& matrix);

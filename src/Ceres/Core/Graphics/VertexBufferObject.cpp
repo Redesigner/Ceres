@@ -15,7 +15,7 @@ namespace Ceres
         glGenBuffers(1, &_gVBO);
         glBindBuffer(GL_ARRAY_BUFFER, _gVBO);
         glBufferData(GL_ARRAY_BUFFER, _capacity * vertexLayout.Size(), NULL, GL_DYNAMIC_DRAW);
-        fmt::print("{} Vertex size: {} bytes each.\n", DEBUG_PREFIX, vertexLayout.Size());
+        // fmt::print("{} Vertex size: {} bytes each.\n", DEBUG_PREFIX, vertexLayout.Size());
     }
     VertexBufferObject::VertexBufferObject(VertexBufferObject&& vertexBufferObject)
         :_capacity(vertexBufferObject._capacity)
@@ -36,7 +36,7 @@ namespace Ceres
 
     void VertexBufferObject::SetData(const IVertexType data[], const uint size, const uint offset)
     {
-        fmt::print("{} Loading {} vertices.\n", DEBUG_PREFIX, size);
+        // fmt::print("{} Loading {} vertices.\n", DEBUG_PREFIX, size);
         if(offset + size > _capacity)
         {
             throw std::out_of_range("VertexBufferObject data out of range.");

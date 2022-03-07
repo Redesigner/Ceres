@@ -6,12 +6,16 @@ extern "C"
 }
 
 #include <fmt/core.h>
+
+#include <algorithm>
+#include <cmath>
 #include <regex>
 
 const std::string CWD = SDL_GetBasePath();
 const std::string CONTENT_DIR = CWD + "..\\..\\content\\";
 
 const std::string DEBUG_PREFIX = "[content]";
+const std::string FILESIZE_SUFFIX[] = {"B", "kB", "mB", "gB"};
 
 namespace Ceres
 {
@@ -34,15 +38,21 @@ namespace Ceres
         }
         SDL_RWclose(sdlRW);
 
-        fmt::print("{} loaded file '{}' successfully | {}B\n", DEBUG_PREFIX, filename, result.length());
+        float size = result.length();
+        int i = 0;
+        for (; i < sizeof(FILESIZE_SUFFIX) && size > 1000.0f; i++)
+        {
+            size = std::round(size) / 1000.0f;
+        }
+        fmt::print("{} loaded file '{}' successfully | {} {}\n", DEBUG_PREFIX, filename, size, FILESIZE_SUFFIX[i]);
         return result;
     }
 
     const MeshPrimitive<VertexPositionNormalTexture> ContentManager::LoadMesh(const char* filename)
     {
         std::string fileRaw = LoadString(filename);
-        size_t lineStart = 0;
-        size_t lineEnd = 0;
+        std::string::iterator lineStart = fileRaw.begin();
+        std::string::iterator lineEnd = lineStart;
         const char newLine = '\n';
 
         std::vector<Vector3> points = std::vector<Vector3>();
@@ -52,11 +62,10 @@ namespace Ceres
         std::vector<VertexPositionNormalTexture> vertices = std::vector<VertexPositionNormalTexture>();
         std::vector<int> indices = std::vector<int>();
 
-        while(lineEnd != std::string::npos)
+        while(lineEnd < fileRaw.end() && lineStart < fileRaw.end())
         {
-            lineEnd = fileRaw.find(newLine, lineStart);
-            std::string line = fileRaw.substr(lineStart, lineEnd - lineStart + 1);
-            switch (line[0])
+            lineEnd = std::find(lineStart, fileRaw.end(), newLine);
+            switch (*lineStart)
             {
                 case '#':
                 {
@@ -64,21 +73,21 @@ namespace Ceres
                 }
                 case 'v':
                 {
-                    switch (line[1])
+                    switch (*(lineStart + 1))
                     {
                         case ' ':
                         {
-                            points.emplace_back(generateVertex(line));
+                            points.emplace_back(generateVertex(lineStart, lineEnd + 1));
                             break;
                         }
                         case 'n':
                         {
-                            normals.emplace_back(generateVertex(line));
+                            normals.emplace_back(generateVertex(lineStart, lineEnd + 1));
                             break;
                         }
                         case 't':
                         {
-                            Vector3 vertex = generateVertex(line);
+                            Vector3 vertex = generateVertex(lineStart, lineEnd + 1);
                             uV.emplace_back(vertex.X, vertex.Y);
                         }
                     }
@@ -86,7 +95,7 @@ namespace Ceres
                 }
                 case 'f':
                 {
-                    addFace(line, points, normals, uV, vertices, indices);
+                    addFace(lineStart, lineEnd + 1, points, normals, uV, vertices, indices);
                 }
             }
             lineStart = lineEnd + 1;
@@ -94,13 +103,13 @@ namespace Ceres
         return MeshPrimitive<VertexPositionNormalTexture>(vertices, indices);
     }
 
-    Vector3 ContentManager::generateVertex(const std::string& dataLine)
+    Vector3 ContentManager::generateVertex(std::string::iterator& start, std::string::iterator& end)
     {
         Vector3 vertex;
         const std::regex separator("(?!\\s)[0-9|.|-]+?(?=\\s)");
-        std::sregex_iterator iter(dataLine.begin(), dataLine.end(), separator);
-        std::sregex_iterator end;
-        for (int i = 0; i < 3 && iter != end; i++)
+        std::sregex_iterator iter(start, end, separator);
+        std::sregex_iterator endRX;
+        for (int i = 0; i < 3 && iter != endRX; i++)
         {
             float value = std::stof(iter->str());
             ++iter;
@@ -120,10 +129,10 @@ namespace Ceres
         return vertex;
     }
 
-    void ContentManager::addFace(const std::string& dataLine, const std::vector<Vector3> &vertices, const std::vector<Vector3> &normals, const std::vector<Vector2> &uvs, std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices)
+    void ContentManager::addFace(std::string::iterator& dataStart, std::string::iterator& dataEnd, const std::vector<Vector3> &vertices, const std::vector<Vector3> &normals, const std::vector<Vector2> &uvs, std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices)
     {
         const std::regex separator("(?!\\s)[0-9|/]+?(?=\\s)");
-        std::sregex_iterator iter(dataLine.begin(), dataLine.end(), separator);
+        std::sregex_iterator iter(dataStart, dataEnd, separator);
         std::sregex_iterator end;
         
         int vertexCount = 0;

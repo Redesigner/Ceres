@@ -16,7 +16,7 @@ namespace Ceres
             static const std::string LoadString(const char* filename);
             static const MeshPrimitive<VertexPositionNormalTexture> LoadMesh(const char* filename);
         private:
-            static Vector3 generateVertex(const std::string& dataLine);
-            static void addFace(const std::string& dataLine, const std::vector<Vector3> &vertices, const std::vector<Vector3> &normals, const std::vector<Vector2> &uvs, std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices);
+            static Vector3 generateVertex(std::string::iterator& start, std::string::iterator& end);
+            static void addFace(std::string::iterator& start, std::string::iterator& end, const std::vector<Vector3> &vertices, const std::vector<Vector3> &normals, const std::vector<Vector2> &uvs, std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices);
     };
 }

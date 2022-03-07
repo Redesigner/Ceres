@@ -70,13 +70,12 @@ namespace Ceres
     {
         Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color(181, 206, 245));
         Cube<VertexPositionNormalColor> cubeRed = Cube<VertexPositionNormalColor>(1, 1, 1, Color(216, 25, 30));
-        Cube<VertexPositionNormalTexture> texturedCube = Cube<VertexPositionNormalTexture>(1, 1, 1);
         Sphere sphere(1, 20, 32, Color::Blue());
         AssetPtr<Mesh> cubeMesh = graphicsDevice.LoadMesh(cube);
         AssetPtr<Mesh> cubeMeshRed = graphicsDevice.LoadMesh(cubeRed);
         AssetPtr<Effect> texturedEffect = graphicsDevice.LoadEffect("textured");
-        AssetPtr<Mesh> texturedCubeMesh = graphicsDevice.LoadMesh(texturedCube, texturedEffect);
-        AssetPtr<Texture> testTexture = graphicsDevice.LoadTexture("test.png");
+        AssetPtr<Mesh> roundCubeMesh = graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/RoundCube.obj"), texturedEffect);
+        AssetPtr<Texture> testTexture = graphicsDevice.LoadTexture("dummyTex2.png");
         AssetPtr<Texture> cloudTexture = graphicsDevice.LoadTexture("Cloud.png");
 
         AssetPtr<Mesh> testMesh = graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/test.obj"), texturedEffect);
@@ -88,16 +87,16 @@ namespace Ceres
         IEntity& rail2 =    _world.CreateEntity<Block>(serviceContainer, 0.1f, 10.0f, 0.5f, cubeMeshRed);
         IEntity& rail3 =    _world.CreateEntity<Block>(serviceContainer, 0.1f, 10.0f, 0.5f, cubeMeshRed);
         IEntity& ramp =     _world.CreateEntity<Block>(serviceContainer, 2.0f, 10.0f, 0.2f, cubeMesh);
-        IEntity& plat1 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, texturedCubeMesh, cloudTexture);
-        IEntity& plat2 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, texturedCubeMesh, cloudTexture);
-        IEntity& plat3 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, texturedCubeMesh, cloudTexture);
+        IEntity& plat1 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
+        IEntity& plat2 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
+        IEntity& plat3 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
 
         floor.SendMessage("Position", Vector3(0.0f, 0.0f, -2.0f));
         rail1.SendMessage("Position", Vector3(0.0f, 4.95f, -1.25f));
         rail2.SendMessage("Position", Vector3(-4.95f, 0.0f, -1.25f));
         rail3.SendMessage("Position", Vector3(4.95f, 0.0f, -1.25f));
         ramp.SendMessage("Rotate", Vector3(0.0f, 0.0f, 0.5f));
-        ramp.SendMessage("Position", Vector3(0.0f, 7.0f, 0.2f));
+        ramp.SendMessage("Position", Vector3(-2.0f, 7.0f, 0.2f));
         plat1.SendMessage("Position", Vector3(0.0f, 2.0f, 0.0f));
         plat2.SendMessage("Position", Vector3(0.0f, 7.0f, 2.5f));
         plat3.SendMessage("Position", Vector3(0.0f, 12.0f, 5.0f));
