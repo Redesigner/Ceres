@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Common/Vector2.h"
+
 struct SDL_Window;
 
 namespace Ceres
@@ -17,6 +19,8 @@ namespace Ceres
             void ToggleFullscreen();
             void Maximize();
             void ResizeViewport();
+            
+            Vector2 GetViewportSize() const; 
 
         private:
             SDL_Window* _sdlWindow;

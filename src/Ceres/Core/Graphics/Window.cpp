@@ -25,7 +25,7 @@ namespace Ceres
             return;
         }
         const int multisampleBufferCount = 1;
-        const int multisampleSampleCount = 4;
+        const int multisampleSampleCount = 8;
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, multisampleBufferCount);
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisampleSampleCount);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
@@ -94,5 +94,11 @@ namespace Ceres
         int height = 0;
         SDL_GetWindowSize(_sdlWindow, &width, &height);
         glViewport(0, 0, width, height);
+    }
+
+    Vector2 Window::GetViewportSize() const
+    {
+        // There really shouldn't be any loss of precision here, unless the viewport size is something outrageous
+        return Vector2(_width, _height);
     }
 }

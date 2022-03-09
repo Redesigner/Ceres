@@ -37,6 +37,11 @@ namespace Ceres
             Transform.SetRotation(Transform.GetRotation() + message.GetData<Vector3>());
             return true;
         }
+        else if(message.Type == "RotateMesh")
+        {
+            Transform.SetRotation(Transform.GetRotation() + message.GetData<Vector3>());
+            return true;
+        }
         return false;
     }
 

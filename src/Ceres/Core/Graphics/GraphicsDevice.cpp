@@ -92,6 +92,7 @@ namespace Ceres
         renderSkybox();
 
         glCullFace(GL_FRONT);
+        _shadowmap->SetPosition(_currentCamera->GetPosition());
         _shadowmap->Bind();
         for (IComponent* component : _renderComponents)
         {
@@ -101,6 +102,8 @@ namespace Ceres
         glCullFace(GL_BACK);
         _shadowmap->Unbind();
         _window.ResizeViewport();
+
+
         for (IComponent* component : _renderComponents)
         {
             RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component);
@@ -169,21 +172,34 @@ namespace Ceres
         return AssetPtr<Texture>(_loadedTextures, _loadedTextures.size() - 1);
     }
 
-    void GraphicsDevice::SetCamera(CameraComponent* camera)
+    void GraphicsDevice::SetCamera(ComponentRef<CameraComponent> camera)
     {
         _currentCamera = camera;
     }
 
-    ComponentRef GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh)
+
+
+    ComponentRefBase GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh)
     {
        _renderComponents.Insert(new RenderComponent(mesh));
-       return ComponentRef(&_renderComponents, _renderComponents.Size() - 1);
+       return ComponentRefBase(&_renderComponents, _renderComponents.Size() - 1);
     }
 
-    ComponentRef GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
+    ComponentRefBase GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
     {
         _renderComponents.Insert(new RenderComponent(mesh, texture));
-        return ComponentRef(&_renderComponents, _renderComponents.Size() - 1);
+        return ComponentRefBase(&_renderComponents, _renderComponents.Size() - 1);
+    }
+
+    ComponentRefBase GraphicsDevice::CreateCamera()
+    {
+        _cameraComponents.Insert(new CameraComponent());
+        _currentCamera = ComponentRef<CameraComponent>(&_cameraComponents, _cameraComponents.Size() - 1);
+        _currentCamera->SetClipRange(0.1f, 100.0f);
+        const Vector2 resolution = _window.GetViewportSize();
+        _currentCamera->SetResolution(resolution.X, resolution.Y);
+        _currentCamera->SetFOV(90.0f);
+        return _currentCamera;
     }
 
 
@@ -199,15 +215,12 @@ namespace Ceres
         componentEffect.SetViewMatrix(_currentCamera->GetMatrix());
         componentEffect.SetVector3("cameraPos", _currentCamera->GetPosition());
         componentEffect.SetMatrix("model", renderComponent->Transform.GetMatrix());
-
         componentEffect.SetMatrix("lightSpace", _shadowmap->GetMatrix());
-        
         if (renderComponent->Texture)
         {
             componentEffect.SetTexture("surfaceTexture", renderComponent->Texture);
         }
         componentEffect.SetShadowmap(_shadowmap);
-
         glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
     }
 
@@ -216,6 +229,7 @@ namespace Ceres
         Mesh& componentMesh = *renderComponent->Mesh;
         componentMesh.GetVertexArray().Bind();
         componentMesh.GetIndexBuffer().Bind();
+        // Render component to the shadow map
         _shadowmap->SetModelMatrix(renderComponent->Transform.GetMatrix());
         glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
 

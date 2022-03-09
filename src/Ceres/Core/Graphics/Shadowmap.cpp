@@ -9,7 +9,7 @@ namespace Ceres
 		
 		glGenTextures(1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, _resolution, _resolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, _resolution, _resolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
@@ -56,6 +56,15 @@ namespace Ceres
 	void Shadowmap::SetModelMatrix(Matrix& matrix)
 	{
 		_effect->SetMatrix("model", matrix);
+	}
+
+	void Shadowmap::SetPosition(Vector3 position)
+	{
+		_projection = Matrix::LookAt(
+			_lightPosition + position,
+			position,
+			Vector3::Up()
+		) * Matrix::Orthographic(20.0f, 20.0f, 0.1f, 100.0f);
 	}
 
 	const Matrix& Shadowmap::GetMatrix() const

@@ -18,7 +18,7 @@ namespace Ceres
             RenderService(GraphicsDevice& graphicsDevice);
             ~RenderService();
 
-            virtual ComponentRef GenerateComponent(Type type, ComponentPR& params) override;
+            virtual ComponentRefBase GenerateComponent(Type type, ComponentPR& params) override;
             
         private:
             GraphicsDevice& _parentDevice;

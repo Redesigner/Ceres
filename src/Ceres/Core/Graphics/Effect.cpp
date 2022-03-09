@@ -3,13 +3,14 @@
 #include "Core/IO/ContentManager.h"
 #include "Shadowmap.h"
 
+#include "../Components/CameraComponent.h"
+
 #include <fmt/core.h>
 #include <stdexcept>
 
 namespace Ceres
 {
     Effect::Effect(const char* vertFile, const char* fragFile)
-        : _frustrum(Matrix::Perspective(1280, 720, 90, .1f, 100.f))
     {
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -36,13 +37,11 @@ namespace Ceres
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
             glUseProgram(_glProgram);
-            SetMatrix("viewProjection", _viewPosition * _frustrum);
             SetVector3("lightPos", Vector3(0, -1000, 100));
         }
     }
 
     Effect::Effect(Effect&& effect)
-        : _frustrum(effect._frustrum)
     {
         _glProgram = effect._glProgram;
         _vertexShader = effect._vertexShader;
@@ -65,6 +64,11 @@ namespace Ceres
     void Effect::Begin()
     {
         glUseProgram(_glProgram);
+    }
+
+    void Effect::SetCamera(CameraComponent* camera)
+    {
+        SetViewMatrix(camera->GetMatrix());
     }
 
     void Effect::SetMatrix(std::string name, Matrix matrix)
@@ -143,13 +147,7 @@ namespace Ceres
 
     void Effect::SetViewMatrix(const Matrix& matrix)
     {
-        _viewPosition = matrix;
-        SetMatrix("viewProjection", _viewPosition * _frustrum);
-    }
-
-    void Effect::SetFrustrum(const Matrix& matrix)
-    {
-        _frustrum = matrix;
+        SetMatrix("viewProjection", matrix);
     }
 
 

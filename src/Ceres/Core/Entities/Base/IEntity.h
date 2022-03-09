@@ -34,7 +34,7 @@ namespace Ceres
             template <typename T>
             void AddComponent(std::unique_ptr<ComponentParams> &params)
             {
-                ComponentRef component = _serviceContainer.CreateComponent<T>(params);
+                ComponentRefBase component = _serviceContainer.CreateComponent<T>(params);
                 component->SetParent(this);
                 _components.emplace_back(component);
             }
@@ -42,7 +42,7 @@ namespace Ceres
             template <typename T>
             void AddComponent()
             {
-                ComponentRef component = _serviceContainer.CreateComponent<T>(ComponentParams::Empty());
+                ComponentRefBase component = _serviceContainer.CreateComponent<T>(ComponentParams::Empty());
                 component->SetParent(this);
                 _components.emplace_back(component);
             }
@@ -55,6 +55,6 @@ namespace Ceres
         protected:
             /// Returns true if message is recieved by a component, otherwise returns false.
 
-            std::vector<ComponentRef> _components;
+            std::vector<ComponentRefBase> _components;
     };
 }

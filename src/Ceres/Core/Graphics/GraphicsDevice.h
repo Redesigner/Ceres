@@ -55,10 +55,12 @@ namespace Ceres
             AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive);
             AssetPtr<Texture> LoadTexture(std::string textureName);
 
-            void SetCamera(CameraComponent* camera);
+            void SetCamera(ComponentRef<CameraComponent> camera);
 
-            ComponentRef CreateRenderComponent(AssetPtr<Mesh> mesh);
-            ComponentRef CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            ComponentRefBase CreateRenderComponent(AssetPtr<Mesh> mesh);
+            ComponentRefBase CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+
+            ComponentRefBase CreateCamera();
 
         private:
             void render(RenderComponent* renderComponent) const;
@@ -73,10 +75,11 @@ namespace Ceres
             void renderSkybox();
 
             ComponentList _renderComponents;
+            ComponentList _cameraComponents;
 
             Window _window;
             Context* _currentContext;
-            CameraComponent* _currentCamera;
+            ComponentRef<CameraComponent> _currentCamera;
 
             std::vector<Effect>     _loadedEffects;
             std::vector<Mesh>       _loadedMeshes;

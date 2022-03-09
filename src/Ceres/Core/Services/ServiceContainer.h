@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <typeindex>
+#include <type_traits>
 
 namespace Ceres
 {
@@ -25,6 +26,7 @@ namespace Ceres
                 template <typename T>
                 T* GetService()
                 {
+                    static_assert(std::is_base_of<IService, T>::value, "The type requested from 'ServiceContainer' must be derived from 'IService'.");
                     return dynamic_cast<T*>(_serviceMap.at(Type(typeid(T))));
                 }
 
@@ -38,7 +40,7 @@ namespace Ceres
                 }
 
                 template <typename T>
-                ComponentRef CreateComponent(std::unique_ptr<ComponentParams> &params)
+                ComponentRefBase CreateComponent(std::unique_ptr<ComponentParams> &params)
                 {
                     Type componentType = Type(typeid(T));
                     Type serviceType = _componentTypeMap.at(componentType);

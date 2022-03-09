@@ -46,9 +46,11 @@ namespace Ceres
 
     Vector3 Vector3::Normalize() const
     {
-        float l = Length();
-        if (l == 0) { return Vector3::Zero(); }
-        return *this / l;
+        float l2 = LengthSquared();
+        if (l2 == 0.0f) { return Vector3::Zero(); }
+        // if the vector is normalized, we can at least skip the sqrt and division
+        if (l2 == 1.0f) { return *this; }
+        return *this / std::sqrtf(l2);
     }
 
     Vector3 Vector3::Cross(const Vector3& vector) const
@@ -68,6 +70,11 @@ namespace Ceres
     float Vector3::Dot(const Vector3& vector) const
     {
         return (X * vector.X) + (Y * vector.Y) + (Z * vector.Z);
+    }
+
+    double Vector3::Angle(const Vector3& vector) const
+    {
+        return std::acos(Normalize().Dot(vector.Normalize()));
     }
 
 
@@ -125,12 +132,12 @@ namespace Ceres
         return Vector3(-X, -Y, -Z);
     }
 
-    bool Vector3::operator==(const Vector3& vector)
+    bool Vector3::operator==(const Vector3& vector) const
     {
         return (X == vector.X) && (Y == vector.Y) && (Z == vector.Z);
     }
 
-    bool Vector3::operator!=(const Vector3& vector)
+    bool Vector3::operator!=(const Vector3& vector) const
     {
         return (X != vector.X) || (Y != vector.Y) || (Z != vector.Z);
     }

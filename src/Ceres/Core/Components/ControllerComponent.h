@@ -17,7 +17,8 @@ namespace Ceres
 
         private:
             const InputHandler& _inputHandler;
-            float _rotation = 0;
+            float _rotation = 0.0f;
+            float _ownerRotation = 0.0f;
             bool _canJump = false;
     };
 }

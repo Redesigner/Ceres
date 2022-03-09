@@ -5,9 +5,11 @@ namespace Ceres
     CameraComponent::CameraComponent()
         :IComponent(std::type_index(typeid(CameraComponent)))
     {
-        const float pitch = -0.55f;
-        Rotation = Vector3(pitch, 0.0f, 0.0f);
-        Offset = Vector3(0.0f, -7.0f, 0.0f);
+    }
+
+    CameraComponent::CameraComponent(int width, int height, float fOV, float near, float far)
+        :IComponent(std::type_index(typeid(CameraComponent))), _width(width), _height(height), _fOV(fOV), _clipStart(near), _clipEnd(far)
+    {
     }
 
     CameraComponent::~CameraComponent()
@@ -28,22 +30,20 @@ namespace Ceres
         else if (message.Type == "CameraRotation")
         {
             float roll = 0.0f;
-            float pitch = -message.GetData<Vector3>().Y / 480.0f;
+            float pitch = -message.GetData<Vector3>().Y / static_cast<float>(_height);
+            // This should really be screen width, but currently the controller component can't tell what that is, so it's fixed for now
             float yaw = message.GetData<Vector3>().X / 640.0f;
-            Vector3 deltaRotation = Vector3(pitch, roll, -yaw);
-            if (Rotation.X + deltaRotation.X < 1.57f && Rotation.X + deltaRotation.X > -1.57f)
-            {
-                Rotation.X += deltaRotation.X;
-            }
-            Rotation.Z += deltaRotation.Z;
-            updateTransform();
+            rotate(Vector3(pitch, roll, -yaw));
             return true;
         }
         else if (message.Type == "Velocity")
         {
+            const float velocityScale = 0.05f;
             const float a = 0.25f;
             const float b = 1.0f - a;
-            _velocityOffset = message.GetData<Vector3>() * a + _velocityOffset * b;
+            _velocity = message.GetData<Vector3>() * a + _velocity * b;
+            _velocityOffset = _velocity * velocityScale;
+            _regenViewMatrix = true;
             return true;
         }
         return false;
@@ -51,42 +51,115 @@ namespace Ceres
 
     const Matrix& CameraComponent::GetMatrix()
     {
+        if (_regenProjectionMatrix)
+        {
+            _projection = Matrix::Perspective(_width, _height, _fOV, _clipStart, _clipEnd);
+            _regenProjectionMatrix = false;
+        }
+        if (_regenViewMatrix)
+        {
+            const float velocityScale = 0.05f;
+            Matrix rotation = Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X);
+            _matrix = Matrix::LookAt((rotation * Offset) + Position + _velocityOffset, Position + _velocityOffset, Vector3::Up()) * _projection;
+            _regenViewMatrix = false;
+        }
         return _matrix;
     }
 
     const Matrix& CameraComponent::GetRotationMatrix()
     {
+        if (_regenProjectionMatrix)
+        {
+            _projection = Matrix::Perspective(_width, _height, _fOV, _clipStart, _clipEnd);
+            _regenProjectionMatrix = false;
+        }
+        if (_regenRotationMatrix)
+        {
+            Matrix rotation = Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X);
+            _viewRotation = Matrix::LookAt(Vector3::Zero(), (rotation * Vector3(0, 1, 0)), Vector3::Up()) * _projection;
+            _regenRotationMatrix = false;
+        }
         return _viewRotation;
     }
 
-    const Matrix& CameraComponent::GetPositionMatrix()
+    const Vector3 CameraComponent::GetPosition() const
     {
-        return _viewPosition;
+        return Position + (Matrix::RotationFromEuler(Rotation.X, Rotation.Y, Rotation.Z) * Offset) + _velocityOffset;
     }
 
-    const Vector3 CameraComponent::GetPosition()
+    const Vector3 CameraComponent::GetFocalPoint() const
     {
-        return Position + (Matrix::RotationFromEuler(Rotation.X, Rotation.Y, Rotation.Z) * Offset);
+        return Position;
+    }
+
+    const float CameraComponent::GetFOV() const
+    {
+        return _fOV;
+    }
+
+    void CameraComponent::SetFOV(const float fOV)
+    {
+        if (_fOV != fOV)
+        {
+            _fOV = fOV;
+            _regenViewMatrix = true;
+        }
+    }
+
+    void CameraComponent::SetResolution(unsigned int width, unsigned int height)
+    {
+        if (_width != width || _height != height)
+        {
+            _width = width;
+            _height = height;
+            _regenViewMatrix = true;
+        }
+    }
+
+    /// Sets the clipping range for the camera, recalculating the relevant transformation matrix if necessary
+    /// Negative values will be set to 0
+    /// The end distance must be greater than the start, or it will be forced to be the start distance plus 0.01
+
+    void CameraComponent::SetClipRange(float start, float end)
+    {
+        if (start < 0.0f)
+        {
+            start = 0.0f;
+        }
+        if (end < start)
+        {
+            end = start + 0.01f;
+        }
+        _regenViewMatrix = true;
     }
 
     // Private methods
     void CameraComponent::setPosition(const Vector3& position)
     {
         Position = position;
-        updateTransform();
+        _regenViewMatrix = true;
     }
 
     void CameraComponent::translate(const Vector3& translation)
     {
-        Position += translation;
-        updateTransform();
+        if (translation != Vector3::Zero())
+        {
+            Position += translation;
+            _regenViewMatrix = true;
+        }
     }
 
-    void CameraComponent::updateTransform()
+    void CameraComponent::rotate(const Vector3& rotation)
     {
-        const float velocityScale = 0.05f;
-        Matrix rotation = Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X);
-        _matrix = Matrix::LookAt((rotation * Offset) + Position + (_velocityOffset * velocityScale), Position + (_velocityOffset * velocityScale), Vector3::Up());
-        _viewRotation = Matrix::LookAt(Vector3::Zero(), (rotation * Vector3(0, 1, 0)), Vector3::Up());
+        if (rotation != Vector3::Zero())
+        {
+            if (Rotation.X + rotation.X < 1.57f && Rotation.X + rotation.X > -1.57f)
+            {
+                Rotation.X += rotation.X;
+            }
+            Rotation.Z += rotation.Z;
+            _regenRotationMatrix = true;
+            _regenViewMatrix = true;
+        }
     }
 }

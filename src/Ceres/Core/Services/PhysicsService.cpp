@@ -29,7 +29,7 @@ namespace Ceres
     {}
 
 
-    ComponentRef PhysicsService::GenerateComponent(Type type, ComponentPR& params)
+    ComponentRefBase PhysicsService::GenerateComponent(Type type, ComponentPR& params)
     {
         if (type == Type(typeid(PhysicsComponent)))
         {
@@ -37,7 +37,7 @@ namespace Ceres
             {
                 std::shared_ptr<IPrimitive> primitive = params->Get<std::shared_ptr<IPrimitive>>(0);
                 _components.Insert(new PhysicsComponent(primitive));
-                return ComponentRef(&_components, _components.Size() - 1);
+                return ComponentRefBase(&_components, _components.Size() - 1);
             }
             else
             {

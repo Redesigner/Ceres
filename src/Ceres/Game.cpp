@@ -90,6 +90,7 @@ namespace Ceres
         IEntity& plat1 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
         IEntity& plat2 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
         IEntity& plat3 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
+        IEntity& block1 =   _world.CreateEntity<Block>(serviceContainer, 1.0f, 1.0f, 1.0f, cubeMesh);
 
         floor.SendMessage("Position", Vector3(0.0f, 0.0f, -2.0f));
         rail1.SendMessage("Position", Vector3(0.0f, 4.95f, -1.25f));
@@ -100,6 +101,7 @@ namespace Ceres
         plat1.SendMessage("Position", Vector3(0.0f, 2.0f, 0.0f));
         plat2.SendMessage("Position", Vector3(0.0f, 7.0f, 2.5f));
         plat3.SendMessage("Position", Vector3(0.0f, 12.0f, 5.0f));
+        block1.SendMessage("Position", Vector3(2.0f, 0.0f, 0.0f));
     }
 
     void Game::Update(double seconds)

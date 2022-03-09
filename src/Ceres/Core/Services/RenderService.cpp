@@ -16,7 +16,7 @@ namespace Ceres
     {
     }
 
-    ComponentRef RenderService::GenerateComponent(Type type, ComponentPR& params)
+    ComponentRefBase RenderService::GenerateComponent(Type type, ComponentPR& params)
     {
         if(type == Type(typeid(RenderComponent)))
         {
@@ -42,12 +42,8 @@ namespace Ceres
         else if(type == Type(typeid(CameraComponent)))
         {
             if(params->Count() == 0)
-            {
-                CameraComponent* camera = new CameraComponent();
-                _components.Insert(camera);
-                // TODO: Set camera properly, rather than setting it each time we create one.
-                _parentDevice.SetCamera(camera);
-                return ComponentRef(&_components, _components.Size() - 1);
+            {;
+                return _parentDevice.CreateCamera();
             }
             else
             {

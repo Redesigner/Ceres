@@ -19,6 +19,7 @@ extern "C"
 
 namespace Ceres
 {
+    class CameraComponent;
     class Shadowmap;
     class Effect
     {
@@ -31,6 +32,7 @@ namespace Ceres
             Effect& operator=(Effect&) = delete;
 
             void Begin();
+            void SetCamera(CameraComponent* camera);
             void SetMatrix(std::string name, Matrix matrix);
             void SetVector3(std::string name, Vector3 vector);
             void SetTexture(std::string name, AssetPtr<Texture> texture);
@@ -38,7 +40,6 @@ namespace Ceres
             void SetCubemap(std::string name, Cubemap* cubemap);
             void SetShadowmap(Shadowmap* shadowmap);
             void SetViewMatrix(const Matrix& matrix);
-            void SetFrustrum(const Matrix& matrix);
 
         private:
             bool compileShader(GLuint shader, const char* filename, std::string source);
@@ -52,7 +53,6 @@ namespace Ceres
             std::string _vertexShaderSource;
             std::string _fragmentShaderSource;
 
-            Matrix _frustrum;
             Matrix _viewPosition;
 
             std::unordered_map<std::string, GLint> _uniformLocationMap;

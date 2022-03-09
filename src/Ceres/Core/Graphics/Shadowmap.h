@@ -25,6 +25,7 @@ namespace Ceres
 			void Unbind();
 			GLuint GetID() const;
 			void SetModelMatrix(Matrix& model);
+			void SetPosition(Vector3 position);
 			const Matrix& GetMatrix() const;
 
 		private:

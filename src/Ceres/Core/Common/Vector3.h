@@ -25,6 +25,7 @@ namespace Ceres
             Vector3 Cross(const Vector3& vector) const;
             Vector3 Triple(const Vector3& vector) const;
             float Dot(const Vector3& vector) const;
+            double Angle(const Vector3& vector) const;
 
             Vector3& operator+=(const Vector3& vector);
             Vector3 operator+(const Vector3& vector) const;
@@ -38,8 +39,8 @@ namespace Ceres
             
             std::string ToString() const;
 
-            bool operator==(const Vector3& vector);
-            bool operator!=(const Vector3& vector);
+            bool operator==(const Vector3& vector) const;
+            bool operator!=(const Vector3& vector) const;
         private:
     };
 
