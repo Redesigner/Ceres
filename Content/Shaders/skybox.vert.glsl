@@ -14,5 +14,5 @@ void main()
 {
     wPosition = vec4(position, 1.0);
     wTexCoords = texCoords;
-    gl_Position = viewProjection * wPosition;
+    gl_Position = (viewProjection * wPosition).xyww;
 }

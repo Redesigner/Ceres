@@ -142,17 +142,26 @@ namespace Ceres
         );
     }
 
-    Matrix Matrix::Orthographic(float width, float height, float near, float far)
+    Matrix Matrix::Orthographic(float right, float left, float top, float bottom, float near, float far)
     {
-        float ratio = width / height;
-        float t = height / 2;
-        float b = -t;
-        float r = width / 2;
-        float l = -r;
-
+        const float r = right;
+        const float l = left;
+        const float t = top;
+        const float b = bottom;
         return Matrix(
             2 / (r - l),        0,                  0,                  -(r + l) / (r - l),
             0,                  2 / (t - b),        0,                  -(t + b) / (t - b),
+            0,                  0,                  -2 / (far - near),  -(far + near) / (far - near),
+            0,                  0,                  0,                  1
+        );
+    }
+
+
+    Matrix Matrix::Orthographic(float width, float height, float near, float far)
+    {
+        return Matrix(
+            2 / width,          0,                  0,                  0,
+            0,                  2 / height,         0,                  0,
             0,                  0,                  -2 / (far - near),  -(far + near) / (far - near),
             0,                  0,                  0,                  1
         );

@@ -55,7 +55,7 @@ namespace Ceres
         _skyboxCubemap = new Cubemap(cubeMapLocation.c_str()); 
         _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
 
-        _shadowmap = new Shadowmap(1024, LoadEffect("shadowmap"));
+        _shadowmap = new Shadowmap(2048, LoadEffect("shadowmap"));
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -89,8 +89,6 @@ namespace Ceres
 
     void GraphicsDevice::Render()
     {
-        renderSkybox();
-
         glCullFace(GL_FRONT);
         _shadowmap->SetPosition(_currentCamera->GetPosition());
         _shadowmap->Bind();
@@ -103,12 +101,12 @@ namespace Ceres
         _shadowmap->Unbind();
         _window.ResizeViewport();
 
-
         for (IComponent* component : _renderComponents)
         {
             RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component);
             render(renderComponent);
         }
+        renderSkybox();
     }
 
     void GraphicsDevice::ReceiveEvent(SDL_WindowEvent& windowEvent)
@@ -127,6 +125,7 @@ namespace Ceres
             case SDL_WINDOWEVENT_MAXIMIZED:
             {
                 _window.Maximize();
+                return;
             }
         }
     }
@@ -195,7 +194,7 @@ namespace Ceres
     {
         _cameraComponents.Insert(new CameraComponent());
         _currentCamera = ComponentRef<CameraComponent>(&_cameraComponents, _cameraComponents.Size() - 1);
-        _currentCamera->SetClipRange(0.1f, 100.0f);
+        _currentCamera->SetClipRange(1.0f, 10.0f);
         const Vector2 resolution = _window.GetViewportSize();
         _currentCamera->SetResolution(resolution.X, resolution.Y);
         _currentCamera->SetFOV(90.0f);
@@ -261,8 +260,8 @@ namespace Ceres
 
     void GraphicsDevice::renderSkybox()
     {
-        // glCullFace(GL_FRONT);
-        glDepthMask(GL_FALSE);
+        glDepthFunc(GL_LEQUAL);
+        // glDepthMask(GL_FALSE);
         _skybox->GetVertexArray().Bind();
         _skybox->GetIndexBuffer().Bind();
 
@@ -270,6 +269,7 @@ namespace Ceres
         _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
         _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
-        glDepthMask(GL_TRUE);
+        glDepthFunc(GL_LESS);
+        // glDepthMask(GL_TRUE);
     }
 }

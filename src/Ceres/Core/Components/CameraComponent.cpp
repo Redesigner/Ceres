@@ -60,7 +60,7 @@ namespace Ceres
         {
             const float velocityScale = 0.05f;
             Matrix rotation = Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X);
-            _matrix = Matrix::LookAt((rotation * Offset) + Position + _velocityOffset, Position + _velocityOffset, Vector3::Up()) * _projection;
+            _matrix = Matrix::LookAt((rotation * Offset) + FocalPoint + _velocityOffset, FocalPoint + _velocityOffset, Vector3::Up()) * _projection;
             _regenViewMatrix = false;
         }
         return _matrix;
@@ -84,12 +84,12 @@ namespace Ceres
 
     const Vector3 CameraComponent::GetPosition() const
     {
-        return Position + (Matrix::RotationFromEuler(Rotation.X, Rotation.Y, Rotation.Z) * Offset) + _velocityOffset;
+        return FocalPoint + (Matrix::RotationFromEuler(Rotation.Z, Rotation.Y, Rotation.X) * Offset) + _velocityOffset;
     }
 
     const Vector3 CameraComponent::GetFocalPoint() const
     {
-        return Position;
+        return FocalPoint;
     }
 
     const float CameraComponent::GetFOV() const
@@ -136,7 +136,7 @@ namespace Ceres
     // Private methods
     void CameraComponent::setPosition(const Vector3& position)
     {
-        Position = position;
+        FocalPoint = position;
         _regenViewMatrix = true;
     }
 
@@ -144,7 +144,7 @@ namespace Ceres
     {
         if (translation != Vector3::Zero())
         {
-            Position += translation;
+            FocalPoint += translation;
             _regenViewMatrix = true;
         }
     }

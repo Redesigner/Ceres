@@ -26,8 +26,8 @@ namespace Ceres
 
             void SetClipRange(float start, float end);
 
-            Vector3 Position;
-            Vector3 Rotation = Vector3(-0.55f, 0.0f, 0.0f);
+            Vector3 FocalPoint;
+            Vector3 Rotation = Vector3(-0.2f, 0.0f, 0.0f);
             Vector3 Offset = Vector3(0.0f, -7.0f, 0.0f);
 
         private:

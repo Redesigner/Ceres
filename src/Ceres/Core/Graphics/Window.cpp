@@ -85,7 +85,6 @@ namespace Ceres
     
     void Window::Maximize()
     {
-
     }
 
     void Window::ResizeViewport()
