@@ -1,5 +1,6 @@
 #include "ControllerComponent.h"
 
+#include "../Common/Math.h"
 #include "../Common/Vector2.h"
 #include "../Common/Vector3.h"
 #include "../Entities/Base/IEntity.h"
@@ -30,17 +31,8 @@ namespace Ceres
     {
         if (message.Type == "CameraRotation")
         {
-            const float pi = 3.14159f;
             float angleX = message.GetData<Vector3>().X / 640.0f;
-            _rotation -= angleX;
-            if (_rotation > pi)
-            {
-                _rotation -= 2 * pi;
-            }
-            if (_rotation < -pi)
-            {
-                _rotation += 2 * pi;
-            }
+            _rotation =  Math::ClampRadians(_rotation - angleX);
             return true;
         }
         return false;
@@ -56,36 +48,19 @@ namespace Ceres
             ( (inputAxis.X * std::cos(_rotation)) + (-inputAxis.Y * std::sin(_rotation)) ),
             ( (inputAxis.Y * std::cos(_rotation)) + (inputAxis.X * std::sin(_rotation)) ));
 
-        if (input.LengthSquared() > 0.0f)
+        float i2 = input.LengthSquared();
+        if (i2 > 0.0f)
         {
-            const float pi = 3.14159f;
-            float desiredRotation = std::atan2f(input.Y, input.X) + pi / 2;
-            float rotationDifference = desiredRotation - _ownerRotation;
-            if (rotationDifference > pi)
-            {
-                rotationDifference -= 2 * pi;
-            }
-            else if (rotationDifference < -pi)
-            {
-                rotationDifference += 2 * pi;
-            }
-            float deltaRotation = (std::signbit(rotationDifference) ? -1 : 1) * rotationSpeed * input.Length() * seconds;
+            float desiredRotation = std::atan2f(input.Y, input.X) + Math::Tau();
+            float rotationDifference = Math::ClampRadians(desiredRotation - _ownerRotation);
+            float deltaRotation = (std::signbit(rotationDifference) ? -1 : 1) * rotationSpeed * std::sqrtf(i2) * seconds;
             if (std::abs(deltaRotation) > std::abs(rotationDifference))
             {
                 deltaRotation = rotationDifference;
             }
-            _ownerRotation += deltaRotation;
-            if (_ownerRotation > pi)
-            {
-                _ownerRotation -= 2 * pi;
-            }
-            if (_ownerRotation < -pi)
-            {
-                _ownerRotation += 2 * pi;
-            }
+            _ownerRotation =  Math::ClampRadians(_ownerRotation + deltaRotation);
             Vector3 rotation = Vector3(deltaRotation, 0.0f, 0.0f);
             sendMessage(Message::Write("RotateMesh", rotation));
-            //sendMessage(Message::Write("CameraRotation", Vector3((desiredRotation - _rotation), 0.0f, 0.0f)) );
         }
 
         sendMessage(Message::Write("AddInput", input));
