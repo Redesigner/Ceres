@@ -61,8 +61,15 @@ namespace Ceres
         serviceContainer.AddTypeAssociation<PhysicsComponent, PhysicsService>();
 
         inputHandler.BindAxis2D("Movement", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
+        inputHandler.BindAxis2D("Movement", 0, 0, -1);
+
         inputHandler.BindAxis("Vertical", Button::Key_q, Button::Key_e);
         inputHandler.BindAxis("Rotation", Button::Key_o, Button::Key_p);
+
+        inputHandler.BindInput(Button::Key_space, "Jump");
+        inputHandler.BindInput(Button::Gamepad_a, "Jump");
+        inputHandler.BindInput(Button::Key_pause, "Pause");
+        inputHandler.BindInput(Button::Gamepad_start, "Pause");
         return true;
     }
 

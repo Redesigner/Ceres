@@ -20,6 +20,7 @@ namespace Ceres
                 template <typename T>
                 void AddService(T* service)
                 {
+                    static_assert(std::is_base_of<IService, T>::value, "The type requested from 'ServiceContainer' must be derived from 'IService'.");
                     _serviceMap.emplace(Type(typeid(T)), service);
                 }
 

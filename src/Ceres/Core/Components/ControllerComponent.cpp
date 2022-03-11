@@ -19,8 +19,8 @@ namespace Ceres
         };
         inputHandler.BindCursorInput(l);
 
-        inputHandler.BindInput(Button::Key_space,  [this]() { sendMessage(Message::Write("Jump")); });
-        inputHandler.BindInput(Button::Key_pause, [this]() { sendMessage(Message::Write("Pause")); });
+        inputHandler.BindAction("Jump",  [this]() { sendMessage(Message::Write("Jump")); });
+        inputHandler.BindAction("Pause", [this]() { sendMessage(Message::Write("Pause")); });
     }
 
     ControllerComponent::~ControllerComponent()
@@ -69,7 +69,7 @@ namespace Ceres
             {
                 rotationDifference += 2 * pi;
             }
-            float deltaRotation = (std::signbit(rotationDifference) ? -1 : 1) * rotationSpeed * seconds;
+            float deltaRotation = (std::signbit(rotationDifference) ? -1 : 1) * rotationSpeed * input.Length() * seconds;
             if (std::abs(deltaRotation) > std::abs(rotationDifference))
             {
                 deltaRotation = rotationDifference;

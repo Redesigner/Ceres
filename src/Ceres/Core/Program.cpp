@@ -69,14 +69,24 @@ namespace Ceres
                     _game->inputHandler.HandleInput(Buttons::GetButton(event.key.keysym.scancode));
                     break;
                 }
-            case SDL_CONTROLLERBUTTONDOWN:
+            case SDL_MOUSEMOTION:
+                {
+                    _game->inputHandler.HandleCursorInput(event.motion.xrel, event.motion.yrel);
+                    break;
+                }
+            case SDL_JOYBUTTONDOWN:
+                {
+                    _game->inputHandler.HandleInput(Buttons::GetButton(event.jbutton.button));
+                    break;
+                }
+            case SDL_JOYAXISMOTION:
                 {
 
                     break;
                 }
-            case SDL_MOUSEMOTION:
+            case SDL_JOYDEVICEADDED:
                 {
-                    _game->inputHandler.HandleCursorInput(event.motion.xrel, event.motion.yrel);
+                    _game->inputHandler.RegisterController(event.jdevice.which);
                     break;
                 }
             case SDL_WINDOWEVENT:

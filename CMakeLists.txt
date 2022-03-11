@@ -74,6 +74,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Input/Axis2D.cpp
 	src/Ceres/Core/Input/Buttons.cpp
 	src/Ceres/Core/Input/InputHandler.cpp
+	src/Ceres/Core/Input/Joystick.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp
 

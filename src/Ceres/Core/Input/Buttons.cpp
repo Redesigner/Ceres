@@ -6,12 +6,17 @@ namespace Ceres
 
     Button Buttons::GetButton(SDL_Scancode scanCode)
     {
-        return Button((int) scanCode);
+        return Button(scanCode);
     }
 
     Button Buttons::GetButton(SDL_GameControllerButton button)
     {
-        return Button( ((int) button) + KEYBOARD_OFFSET );
+        return Button(button + KEYBOARD_OFFSET);
+    }
+
+    Button Buttons::GetButton(uint8_t buttonId)
+    {
+        return Button(buttonId + 233);
     }
 
 }

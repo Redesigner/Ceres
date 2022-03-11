@@ -7,16 +7,42 @@ const int MAX_AXIS_SIZE = 2;
 namespace Ceres
 {
     InputHandler::InputHandler()
-        :_inputMap(std::unordered_map<Button, voidFunctionType>(MAX_INPUTMAP_SIZE)),
-        _axis2DMap(std::unordered_map<std::string, Axis2D>(MAX_AXIS_SIZE))
-    {}
+        :_inputMap(std::unordered_map<Button, std::string>()),
+        _actionMap(std::unordered_map<std::string, voidFunctionType>()),
+        _axis2DMap(std::multimap<std::string, Axis2D*>())
+    {
+        SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS,"1");
+        if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+        {
+            fmt::print("[input] Unable to initialize sdl gamecontroller subsystem.\n");
+            return;
+        }
+        SDL_JoystickEventState(SDL_ENABLE);
+    }
 
     InputHandler::~InputHandler()
-    {}
-
-    void InputHandler::BindInput(Button input, voidFunctionType function)
     {
-        _inputMap.insert(std::pair<Button, voidFunctionType>(input, function));
+        _controllers.clear();
+        for (std::pair<std::string, Axis2D*> binding : _axis2DMap)
+        {
+            delete binding.second;
+        }
+        SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+    }
+
+    void InputHandler::RegisterController(int deviceIndex)
+    {
+        _controllers.emplace_back(deviceIndex);
+    }
+
+    void InputHandler::BindInput(Button input, std::string actionName)
+    {
+        _inputMap.insert(std::pair<Button, std::string>(input, actionName));
+    }
+
+    void InputHandler::BindAction(std::string actionName, voidFunctionType function)
+    {
+        _actionMap.insert(std::pair<std::string, voidFunctionType>(actionName, function));
     }
     
     void InputHandler::BindCursorInput(cursorFunctionType& function)
@@ -27,12 +53,17 @@ namespace Ceres
 
     void InputHandler::HandleInput(Button input)
     {
-        std::unordered_map<Button, voidFunctionType>::const_iterator get = _inputMap.find(input);
-        if(get == _inputMap.end())
+        std::unordered_map<Button, std::string>::const_iterator get = _inputMap.find(input);
+        if (get == _inputMap.end())
         {
             return;
         }
-        get->second();
+        std::unordered_map<std::string, voidFunctionType>::const_iterator action = _actionMap.find(get->second);
+        if (action == _actionMap.end())
+        {
+            return;
+        }
+        action->second();
     }
 
     void InputHandler::HandleCursorInput(int x, int y)
@@ -77,40 +108,38 @@ namespace Ceres
 
     void InputHandler::BindAxis2D(std::string id, Button up, Button down, Button left, Button right)
     {
-        _axis2DMap.insert(std::pair<std::string, Axis2D>(id, Axis2D(up, down, left, right)));
+        Axis2D* axis2D = new Axis2DKey(up, down, left, right);
+        _axis2DMap.insert(std::pair<std::string, Axis2D*>(id, axis2D));
     }
+
+    void InputHandler::BindAxis2D(std::string id, int playerIndex, int axisX, int axisY)
+    {
+        Axis2D* axis2D = new Axis2DJoy(_controllers, playerIndex, axisX, axisY);
+        _axis2DMap.insert(std::pair<std::string, Axis2D*>(id, axis2D));
+    }
+
 
     Vector2 InputHandler::GetAxis2DValue(std::string id) const
     {
-        std::unordered_map<std::string, Axis2D>::const_iterator get = _axis2DMap.find(id);
-        if(get == _axis2DMap.end())
+        auto get = _axis2DMap.equal_range(id);
+        if(get.first == get.second)
         {
             fmt::print("Unable to find axis {}\n", id);
-            return Vector2(0, 0);
+            return Vector2(0.0f, 0.0f);
         }
-
-        Axis2D axis = get->second;
-
-        float x = 0;
-        float y = 0;
-
-        if(ButtonPressed(axis.Up))
+        float longestAxis = 0.0f;
+        Vector2 result = Vector2(0.0f, 0.0f);
+        for (auto iter = get.first; iter != get.second; ++iter)
         {
-            y++;
+            Vector2 current = iter->second->GetValue();
+            float currentLength = current.LengthSquared();
+            if (currentLength > longestAxis)
+            {
+                longestAxis = currentLength;
+                result = current;
+            }
         }
-        if(ButtonPressed(axis.Down))
-        {
-            y--;
-        }
-        if(ButtonPressed(axis.Left))
-        {
-            x--;
-        }
-        if(ButtonPressed(axis.Right))
-        {
-            x++;
-        }
-        return Vector2(x, y).Normalize();
+        return result;
     }
 
 
@@ -121,7 +150,7 @@ namespace Ceres
         {
             const Uint8 *state = SDL_GetKeyboardState(NULL);
             // define safer conversion?
-            return state[(int) button] == 1;
+            return state[static_cast<int>(button)] == 1;
         }
         return false;
     }

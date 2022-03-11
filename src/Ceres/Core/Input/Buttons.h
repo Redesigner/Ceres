@@ -101,17 +101,13 @@ namespace Ceres
         Gamepad_b = 234,
         Gamepad_x = 235,
         Gamepad_y = 236,
-        Gamepad_back = 237,
-        Gamepad_guide = 238,
-        Gamepad_start = 239,
-        Gamepad_leftstick = 240,
-        Gamepad_rightstick = 241,
-        Gamepad_leftshoulder = 242,
-        Gamepad_rightshoulder = 243,
-        Gamepad_dpad_up = 244,
-        Gamepad_dpad_down = 245,
-        Gamepad_dpad_left = 246,
-        Gamepad_dpad_right = 247
+        Gamepad_leftbumper = 237,
+        Gamepad_rightbumper = 238,
+        Gamepad_back = 239,
+        Gamepad_start = 240,
+        Gamepad_lefthat = 241,
+        Gampead_righthat = 242,
+        Gamepad_home = 243
     };
 
     class Buttons
@@ -119,5 +115,6 @@ namespace Ceres
         public:
             static Button GetButton(SDL_Scancode scanCode);
             static Button GetButton(SDL_GameControllerButton button);
+            static Button GetButton(uint8_t buttonId);
     };
 }
