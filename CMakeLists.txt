@@ -18,6 +18,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Program.cpp
 
 	src/Ceres/Core/Common/Matrix.cpp
+	src/Ceres/Core/Common/Matrix2D.cpp
 	src/Ceres/Core/Common/Transform.cpp
 	src/Ceres/Core/Common/Vector2.cpp
 	src/Ceres/Core/Common/Vector3.cpp
@@ -52,6 +53,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/Mesh.cpp
 	src/Ceres/Core/Graphics/Shadowmap.cpp
 	src/Ceres/Core/Graphics/Skybox.cpp
+	src/Ceres/Core/Graphics/Sprite.cpp
 	src/Ceres/Core/Graphics/Texture.cpp
 	src/Ceres/Core/Graphics/VertexStream.cpp
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
@@ -67,6 +69,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalColorLayout.cpp
 	src/Ceres/Core/Graphics/VertexTypes/VertexPositionNormalTextureLayout.cpp
+	src/Ceres/Core/Graphics/VertexTypes/VertexPositionTextureLayout.cpp
 
 
 	# I/O

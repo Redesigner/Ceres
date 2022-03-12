@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Shadowmap.h"
 #include "Skybox.h"
+#include "Sprite.h"
 #include "Texture.h"
 #include "Window.h"
 
@@ -90,7 +91,11 @@ namespace Ceres
             Shadowmap* _shadowmap;
 
             AssetPtr<Effect> _skyboxEffect;
+            AssetPtr<Effect> _spriteEffect;
 
             Cubemap* _lightMap;
+
+            Sprite* _sprite;
+            AssetPtr<Texture> _spriteTexture;
     };
 }

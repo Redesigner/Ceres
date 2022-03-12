@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Common/Matrix.h"
+#include "../Common/Matrix2D.h"
 #include "../Common/Vector3.h"
 #include "../Common/AssetPointer.h"
 
@@ -34,6 +35,7 @@ namespace Ceres
             void Begin();
             void SetCamera(CameraComponent* camera);
             void SetMatrix(std::string name, Matrix matrix);
+            void SetMatrix2D(std::string name, Matrix2D matrix);
             void SetVector3(std::string name, Vector3 vector);
             void SetTexture(std::string name, AssetPtr<Texture> texture);
             void SetTexture(std::string name, Cubemap* cubemap);

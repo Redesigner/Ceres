@@ -4,6 +4,7 @@
 #include "Effect.h"
 #include "Mesh.h"
 #include "../Entities/Base/IEntity.h"
+#include "../Common/Matrix2D.h"
 
 #include <stdexcept>
 #include <fmt/core.h>
@@ -47,8 +48,9 @@ namespace Ceres
         std::string lightMapLocation = CONTENT_DIR + "Textures\\lightmap\\ambient_";
         _lightMap = new Cubemap(lightMapLocation.c_str());
         
-        AssetPtr<Effect> defaultEffect = LoadEffect("default");
+        LoadEffect("default");
         _skyboxEffect = LoadEffect("skybox");
+        _spriteEffect = LoadEffect("sprite");
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
@@ -56,6 +58,9 @@ namespace Ceres
         _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
 
         _shadowmap = new Shadowmap(2048, LoadEffect("shadowmap"));
+
+        _sprite = new Sprite();
+        _spriteTexture = LoadTexture("test.png");
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -68,6 +73,8 @@ namespace Ceres
         delete _skyboxCubemap;
         delete _lightMap;
         delete _shadowmap;
+
+        delete _sprite;
     }
 
     // This method is called by the Program object, which abstracts it away from
@@ -269,6 +276,14 @@ namespace Ceres
         _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
         _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
+
+        // Move this into another function later
+        _spriteEffect->Begin();
+        _sprite->GetVertexArray().Bind();
+        _sprite->GetIndexBuffer().Bind();
+        _spriteEffect->SetTexture("tex", _spriteTexture);
+        _spriteEffect->SetMatrix2D("transform", Matrix2D::Scale(256.0f / 1280.0f, 256.0f / 720.0f));
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         glDepthFunc(GL_LESS);
         // glDepthMask(GL_TRUE);
     }

@@ -82,6 +82,17 @@ namespace Ceres
         glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
     }
 
+    void Effect::SetMatrix2D(std::string name, Matrix2D matrix)
+    {
+        GLint location = getUniformLocation(name);
+        if (location == -1)
+        {
+            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            return;
+        }
+        glUniformMatrix3fv(location, 1, GL_FALSE, matrix);
+    }
+
     void Effect::SetVector3(std::string name, Vector3 vector)
     {
         GLint location = getUniformLocation(name);
