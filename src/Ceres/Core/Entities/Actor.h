@@ -9,6 +9,8 @@
 
 #include "../Services/ServiceContainer.h"
 
+#include <string>
+
 namespace Ceres
 {
     struct IPrimitive;
@@ -16,7 +18,7 @@ namespace Ceres
     class Actor : public IEntity
     {
         public:
-            Actor(ServiceContainer& serviceContainer, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            Actor(ServiceContainer& serviceContainer);
             ~Actor();
 
         private:

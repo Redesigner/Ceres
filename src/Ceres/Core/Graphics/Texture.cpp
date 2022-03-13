@@ -39,41 +39,10 @@ namespace Ceres
         _name = textureName;
     }
 
-    Texture::Texture(std::string filePath)
-    {
-        SDL_Surface* surface = IMG_Load(filePath.c_str());
-        if (surface == nullptr)
-        {
-            fmt::print("{} Failed to load texture: '{}'\n", DEBUG_PREFIX, IMG_GetError());
-            return;
-        }
-        flipSurface(surface);
-        GLuint texture = 0;
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        const int bytesPerPixel = surface->format->BytesPerPixel;
-        if (bytesPerPixel == 3)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
-        }
-        else
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-        }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        SDL_FreeSurface(surface);
-        _textureID = texture;
-        size_t nameBegin = filePath.rfind('\\') + 1;
-        std::string filename = filePath.substr(nameBegin, filePath.length() - nameBegin);
-        _name = filename;
-        fmt::print("{} Loaded texture file successfully: '{}'.\n", DEBUG_PREFIX, filename);
-    }
-
     Texture::Texture(Texture&& texture)
     {
         _textureID = texture._textureID;
+        _name = texture._name;
         texture._initialized = false;
     }
 
@@ -88,6 +57,7 @@ namespace Ceres
     Texture& Texture::operator=(Texture&& texture)
     {
         this->_textureID = texture._textureID;
+        this->_name = texture._name;
         return *this;
     }
 

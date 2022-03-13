@@ -13,7 +13,7 @@ namespace Ceres
             PhysicsService(RenderService* debugRenderer);
             ~PhysicsService();
 
-            virtual ComponentRefBase GenerateComponent(Type type, ComponentPR& params) override;
+            virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) override;
             void Update(float deltaSeconds);
 
         private:

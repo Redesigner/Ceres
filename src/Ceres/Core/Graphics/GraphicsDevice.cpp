@@ -95,8 +95,8 @@ namespace Ceres
     {
         renderShadows();
         renderMeshes();
-        renderSprites();
         renderSkybox();
+        renderSprites();
     }
 
     void GraphicsDevice::ReceiveEvent(SDL_WindowEvent& windowEvent)
@@ -139,26 +139,72 @@ namespace Ceres
         std::string fragmentName = SHADER_PATH + shaderName + FRAG_EXTENSTION;
         return LoadEffect(vertexName.c_str(), fragmentName.c_str(), shaderName);
     }
-
-    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], uint indexCount, AssetPtr<Effect> effect)
+    AssetPtr<Effect> GraphicsDevice::GetEffect(std::string effectName)
     {
-        _loadedMeshes.push_back(std::move(Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, effect)));
+        for (int i = 0; i < _loadedEffects.size(); i++)
+        {
+            if (_loadedEffects[i].GetName() == effectName)
+            {
+                return AssetPtr<Effect>(_loadedEffects, i);
+            }
+        }
+        fmt::print("[graphicsdevice] Unable to find effect: '{}'.\n", effectName);
+        return AssetPtr<Effect>();
+    }
+
+
+    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], uint indexCount, AssetPtr<Effect> effect, std::string name)
+    {
+        _loadedMeshes.push_back(std::move(Mesh(vertexData, vertexLayout, vertexCount, indices, indexCount, effect, name)));
         return AssetPtr<Mesh>(_loadedMeshes, _loadedMeshes.size() - 1);
     }
-    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive, AssetPtr<Effect> effect)
+    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive, AssetPtr<Effect> effect, std::string name)
     {
-        return LoadMesh(meshPrimitive.GetVertices(), *meshPrimitive.GetVertexLayout(), meshPrimitive.GetVertexCount(), meshPrimitive.GetIndices(), meshPrimitive.GetIndexCount(), effect);
+        return LoadMesh(meshPrimitive.GetVertices(), *meshPrimitive.GetVertexLayout(), meshPrimitive.GetVertexCount(), meshPrimitive.GetIndices(), meshPrimitive.GetIndexCount(), effect, name);
     }
-    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive)
+    AssetPtr<Mesh> GraphicsDevice::LoadMesh(const MeshPrimitiveBase& meshPrimitive, std::string name)
     {
-        return LoadMesh(meshPrimitive, AssetPtr<Effect>(_loadedEffects, 0));
+        return LoadMesh(meshPrimitive, AssetPtr<Effect>(_loadedEffects, 0), name);
+    }
+    AssetPtr<Mesh> GraphicsDevice::GetMesh(std::string meshName)
+    {
+        for (int i = 0; i < _loadedMeshes.size(); i++)
+        {
+            if (_loadedMeshes[i].GetName() == meshName)
+            {
+                return AssetPtr<Mesh>(_loadedMeshes, i);
+            }
+        }
+        fmt::print("[graphicsdevice] Unable to find mesh: '{}'.\n", meshName);
+        return AssetPtr<Mesh>();
+    }
+
+
+    AssetPtr<Texture> GraphicsDevice::LoadTexture(std::string fileName, std::string textureName)
+    {
+        std::string texturePath = CONTENT_DIR + "Textures\\" + fileName;
+        _loadedTextures.push_back(std::move(Texture(texturePath, textureName)));
+        return AssetPtr<Texture>(_loadedTextures, _loadedTextures.size() - 1);
     }
 
     AssetPtr<Texture> GraphicsDevice::LoadTexture(std::string textureName)
     {
         std::string texturePath = CONTENT_DIR + "Textures\\" + textureName;
-        _loadedTextures.push_back(std::move(Texture(texturePath)));
+        _loadedTextures.push_back(std::move(Texture(texturePath, textureName)));
         return AssetPtr<Texture>(_loadedTextures, _loadedTextures.size() - 1);
+    }
+
+    AssetPtr<Texture> GraphicsDevice::GetTexture(std::string textureName)
+    {
+        for (int i = 0; i < _loadedTextures.size(); i++)
+        {
+            if (_loadedTextures[i].GetName() == textureName)
+            {
+                return AssetPtr<Texture>(_loadedTextures, i);
+            }
+        }
+        fmt::print("[graphicsdevice] Unable to find texture: '{}'.\n", textureName);
+        return AssetPtr<Texture>();
     }
 
     void GraphicsDevice::SetCamera(ComponentRef<CameraComponent> camera)
@@ -168,19 +214,19 @@ namespace Ceres
 
 
     // ======== Component creation methods ========
-    ComponentRefBase GraphicsDevice::CreateMeshComponent(AssetPtr<Mesh> mesh)
+    ComponentPtrBase GraphicsDevice::CreateMeshComponent(AssetPtr<Mesh> mesh)
     {
        _meshComponents.Insert(new MeshComponent(mesh));
-       return ComponentRefBase(&_meshComponents, _meshComponents.Size() - 1);
+       return ComponentPtrBase(&_meshComponents, _meshComponents.Size() - 1);
     }
 
-    ComponentRefBase GraphicsDevice::CreateMeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
+    ComponentPtrBase GraphicsDevice::CreateMeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
     {
         _meshComponents.Insert(new MeshComponent(mesh, texture));
-        return ComponentRefBase(&_meshComponents, _meshComponents.Size() - 1);
+        return ComponentPtrBase(&_meshComponents, _meshComponents.Size() - 1);
     }
 
-    ComponentRefBase GraphicsDevice::CreateCamera()
+    ComponentPtrBase GraphicsDevice::CreateCamera()
     {
         _cameraComponents.Insert(new CameraComponent());
         _currentCamera = ComponentRef<CameraComponent>(&_cameraComponents, _cameraComponents.Size() - 1);
@@ -191,10 +237,10 @@ namespace Ceres
         return _currentCamera;
     }
 
-    ComponentRefBase GraphicsDevice::CreateSprite(AssetPtr<Texture> texture, int x, int y, int w, int h)
+    ComponentPtrBase GraphicsDevice::CreateSprite(AssetPtr<Texture> texture, int x, int y, int w, int h)
     {
         _spriteComponents.Insert(new SpriteComponent(texture, x, y, w, h));
-        return ComponentRefBase(&_spriteComponents, _spriteComponents.Size() - 1);
+        return ComponentPtrBase(&_spriteComponents, _spriteComponents.Size() - 1);
     }
 
 
@@ -230,6 +276,10 @@ namespace Ceres
 
     void GraphicsDevice::render(SpriteComponent& spriteComponent)
     {
+        if (!spriteComponent.Texture)
+        {
+            return;
+        }
         _spriteEffect->SetTexture("tex", spriteComponent.Texture);
         Vector2 windowSize = _window.GetViewportSize();
         _spriteEffect->SetMatrix2D("transform", Matrix2D::Sprite(

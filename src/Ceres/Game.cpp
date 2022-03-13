@@ -66,6 +66,7 @@ namespace Ceres
         inputHandler.BindInput(Button::Gamepad_a, "Jump");
         inputHandler.BindInput(Button::Key_pause, "Pause");
         inputHandler.BindInput(Button::Gamepad_start, "Pause");
+
         return true;
     }
 
@@ -74,26 +75,27 @@ namespace Ceres
         Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color(181, 206, 245));
         Cube<VertexPositionNormalColor> cubeRed = Cube<VertexPositionNormalColor>(1, 1, 1, Color(216, 25, 30)); 
         Sphere sphere(1, 20, 32, Color::Blue());
-        AssetPtr<Mesh> cubeMesh = graphicsDevice.LoadMesh(cube);
-        AssetPtr<Mesh> cubeMeshRed = graphicsDevice.LoadMesh(cubeRed);
-        AssetPtr<Effect> texturedEffect = graphicsDevice.LoadEffect("textured");
-        AssetPtr<Mesh> roundCubeMesh = graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/RoundCube.obj"), texturedEffect);
-        AssetPtr<Texture> testTexture = graphicsDevice.LoadTexture("dummyTex2.png");
-        AssetPtr<Texture> cloudTexture = graphicsDevice.LoadTexture("Cloud.png");
+        graphicsDevice.LoadMesh(cube, "cube");
+        graphicsDevice.LoadMesh(cubeRed, "cubered");
+        graphicsDevice.LoadEffect("textured");
+        graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/RoundCube.obj"), graphicsDevice.GetEffect("textured"), "roundcube");
+        graphicsDevice.LoadTexture("dummyTex2.png", "dummy");
+        graphicsDevice.LoadTexture("Cloud.png", "cloud");
+        graphicsDevice.LoadTexture("transparency.png", "heart");
+        graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/test.obj"), graphicsDevice.GetEffect("textured"), "dummy");
 
-        AssetPtr<Mesh> testMesh = graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/test.obj"), texturedEffect);
-        
-        _world.CreateEntity<Actor>(serviceContainer, testMesh, testTexture);
 
-        IEntity& floor =    _world.CreateEntity<Block>(serviceContainer, 10.0f, 10.0f, 1.0f, cubeMesh);
-        IEntity& rail1 =    _world.CreateEntity<Block>(serviceContainer, 10.0f, 0.1f, 0.5f, cubeMeshRed);
-        IEntity& rail2 =    _world.CreateEntity<Block>(serviceContainer, 0.1f, 10.0f, 0.5f, cubeMeshRed);
-        IEntity& rail3 =    _world.CreateEntity<Block>(serviceContainer, 0.1f, 10.0f, 0.5f, cubeMeshRed);
-        IEntity& ramp =     _world.CreateEntity<Block>(serviceContainer, 2.0f, 10.0f, 0.2f, cubeMesh);
-        IEntity& plat1 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
-        IEntity& plat2 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
-        IEntity& plat3 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, roundCubeMesh, cloudTexture);
-        IEntity& block1 =   _world.CreateEntity<Block>(serviceContainer, 1.0f, 1.0f, 1.0f, cubeMesh);
+        _world.CreateEntity<Actor>(serviceContainer);
+
+        IEntity& floor =    _world.CreateEntity<Block>(serviceContainer, 10.0f, 10.0f, 1.0f, "cube");
+        IEntity& rail1 =    _world.CreateEntity<Block>(serviceContainer, 10.0f, 0.1f, 0.5f, "cubered");
+        IEntity& rail2 =    _world.CreateEntity<Block>(serviceContainer, 0.1f, 10.0f, 0.5f, "cubered");
+        IEntity& rail3 =    _world.CreateEntity<Block>(serviceContainer, 0.1f, 10.0f, 0.5f, "cubered");
+        IEntity& ramp =     _world.CreateEntity<Block>(serviceContainer, 2.0f, 10.0f, 0.2f, "cube");
+        IEntity& plat1 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, "roundcube", "cloud");
+        IEntity& plat2 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, "roundcube", "cloud");
+        IEntity& plat3 =    _world.CreateEntity<Block>(serviceContainer, 2.0f, 2.0f, 0.5f, "roundcube", "cloud");
+        IEntity& block1 =   _world.CreateEntity<Block>(serviceContainer, 1.0f, 1.0f, 1.0f, "cube");
 
         floor.SendMessage("Position", Vector3(0.0f, 0.0f, -2.0f));
         rail1.SendMessage("Position", Vector3(0.0f, 4.95f, -1.25f));
@@ -105,6 +107,7 @@ namespace Ceres
         plat2.SendMessage("Position", Vector3(0.0f, 7.0f, 2.5f));
         plat3.SendMessage("Position", Vector3(0.0f, 12.0f, 5.0f));
         block1.SendMessage("Position", Vector3(2.0f, 0.0f, 0.0f));
+        
     }
 
     void Game::Update(double seconds)

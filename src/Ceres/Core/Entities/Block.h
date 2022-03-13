@@ -18,8 +18,8 @@ namespace Ceres
     class Block : public IEntity
     {
         public:
-            Block(ServiceContainer& serviceContainer, float x, float y, float z, AssetPtr<Mesh> mesh);
-            Block(ServiceContainer& serviceContainer, float x, float y, float z, AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            Block(ServiceContainer& serviceContainer, float x, float y, float z, std::string mesh);
+            Block(ServiceContainer& serviceContainer, float x, float y, float z, std::string mesh, std::string texture);
             ~Block();
         private:
             std::shared_ptr<IPrimitive> _primitive;

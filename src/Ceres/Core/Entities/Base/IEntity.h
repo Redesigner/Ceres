@@ -2,7 +2,7 @@
 
 #include "../../Components/Base/IComponent.h"
 #include "../../Components/Base/ComponentParameters.h"
-#include "../../Components/Base/ComponentRef.h"
+#include "../../Components/Base/ComponentPtr.h"
 #include "../../Components/Base/Message.h"
 
 #include "../../Services/ServiceContainer.h"
@@ -34,7 +34,7 @@ namespace Ceres
             template <typename T>
             void AddComponent(std::unique_ptr<ComponentParams> &params)
             {
-                ComponentRefBase component = _serviceContainer.CreateComponent<T>(params);
+                ComponentPtrBase component = _serviceContainer.CreateComponent<T>(params);
                 component->SetParent(this);
                 _components.emplace_back(component);
             }
@@ -42,7 +42,7 @@ namespace Ceres
             template <typename T>
             void AddComponent()
             {
-                ComponentRefBase component = _serviceContainer.CreateComponent<T>(ComponentParams::Empty());
+                ComponentPtrBase component = _serviceContainer.CreateComponent<T>(ComponentParams::Empty());
                 component->SetParent(this);
                 _components.emplace_back(component);
             }
@@ -55,6 +55,6 @@ namespace Ceres
         protected:
             /// Returns true if message is recieved by a component, otherwise returns false.
 
-            std::vector<ComponentRefBase> _components;
+            std::vector<ComponentPtrBase> _components;
     };
 }

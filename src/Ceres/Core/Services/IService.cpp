@@ -11,8 +11,8 @@ namespace Ceres
     IService::~IService()
     {}
 
-    ComponentRefBase IService::GetComponent(unsigned int id)
+    ComponentPtrBase IService::GetComponent(unsigned int id)
     {
-        return ComponentRefBase(&_components, id);
+        return ComponentPtrBase(&_components, id);
     }
 }

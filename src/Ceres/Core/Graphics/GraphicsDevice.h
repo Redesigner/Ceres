@@ -17,7 +17,7 @@
 #include "../Common/AssetPointer.h"
 #include "../Common/Matrix.h"
 
-#include "../Components/Base/ComponentRef.h"
+#include "../Components/Base/ComponentPtr.h"
 #include "../Components/CameraComponent.h"
 #include "../Components/MeshComponent.h"
 #include "../Components/SpriteComponent.h"
@@ -52,19 +52,25 @@ namespace Ceres
 
             AssetPtr<Effect> LoadEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName);
             AssetPtr<Effect> LoadEffect(const char* shaderName);
-            AssetPtr<Mesh> LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect);
-            AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive, AssetPtr<Effect> effect);
-            AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive);
+            AssetPtr<Effect> GetEffect(std:: string effectName);
+
+            AssetPtr<Mesh> LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect, std::string name);
+            AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive, AssetPtr<Effect> effect, std::string name);
+            AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive, std::string name);
+            AssetPtr<Mesh> GetMesh(std::string meshName);
+
+            AssetPtr<Texture> LoadTexture(std::string fileName, std::string textureName);
             AssetPtr<Texture> LoadTexture(std::string textureName);
+            AssetPtr<Texture> GetTexture(std::string textureName);
 
             void SetCamera(ComponentRef<CameraComponent> camera);
 
-            ComponentRefBase CreateMeshComponent(AssetPtr<Mesh> mesh);
-            ComponentRefBase CreateMeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            ComponentPtrBase CreateMeshComponent(AssetPtr<Mesh> mesh);
+            ComponentPtrBase CreateMeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
 
-            ComponentRefBase CreateCamera();
+            ComponentPtrBase CreateCamera();
 
-            ComponentRefBase CreateSprite(AssetPtr<Texture> texture, int x, int y, int w, int h);
+            ComponentPtrBase CreateSprite(AssetPtr<Texture> texture, int x, int y, int w, int h);
 
         private:
             void render(MeshComponent& meshComponent) const;

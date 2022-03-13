@@ -11,14 +11,14 @@ namespace Ceres
     ActorService::~ActorService()
     {}
 
-    ComponentRefBase ActorService::GenerateComponent(Type type, ComponentPR& params)
+    ComponentPtrBase ActorService::GenerateComponent(Type type, ComponentPR& params)
     {
         if (type == Type(typeid(MovementComponent)))
         {
             if (params->Count() == 0)
             {
                 _components.Insert(new MovementComponent());
-                return ComponentRefBase(&_components, _components.Size() - 1);
+                return ComponentPtrBase(&_components, _components.Size() - 1);
             }
             else
             {

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ACTORSERVICE_H
+#define ACTORSERVICE_H
 
 #include "IService.h"
 #include "../Components/Base/ComponentList.h"
@@ -13,9 +14,11 @@ namespace Ceres
             ActorService();
             ~ActorService();
 
-            virtual ComponentRefBase GenerateComponent(Type type, ComponentPR& params) override;
+            virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) override;
             void Update(double seconds);
 
         private:
     };
 }
+
+#endif // ACTORSERVICE_H

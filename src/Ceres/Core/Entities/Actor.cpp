@@ -10,18 +10,22 @@
 #include "../Physics/Primitives/CubePrimitive.h"
 #include "../Physics/Primitives/SpherePrimitive.h"
 
+#include "../Services/RenderService.h"
+
 namespace Ceres
 {
-    Actor::Actor(ServiceContainer& serviceContainer, AssetPtr<Ceres::Mesh> mesh, AssetPtr<Ceres::Texture> texture)
+    Actor::Actor(ServiceContainer& serviceContainer)
         :IEntity(serviceContainer)
     {
+        AssetPtr<Mesh> meshPtr = serviceContainer.GetService<RenderService>()->GetMesh("dummy");
+        AssetPtr<Texture> texturePtr = serviceContainer.GetService<RenderService>()->GetTexture("dummy");
         _primitive.reset(dynamic_cast<IPrimitive*>(new CubePrimitive(0.5f, 0.5f, 1.6f)));
-        AddComponent<MeshComponent>(ComponentParams::WriteParams(mesh, texture));
+        AddComponent<MeshComponent>(ComponentParams::WriteParams(meshPtr, texturePtr));
         AddComponent<CameraComponent>();
         AddComponent<ControllerComponent>();
         AddComponent<PhysicsComponent>(ComponentParams::WriteParams(_primitive));
         AddComponent<MovementComponent>();
-        AddComponent<SpriteComponent>(ComponentParams::WriteParams(texture, 64, 64, 64, 64));
+        AddComponent<SpriteComponent>(ComponentParams::WriteParams(serviceContainer.GetService<RenderService>()->GetTexture("heart"), 64, 64, 64, 64));
 
         SendMessage("Pause");
         SendMessage("Position", Vector3::Zero() );

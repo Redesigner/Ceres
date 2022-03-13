@@ -28,7 +28,7 @@ target_sources(ceres PRIVATE
 	# Components
 	src/Ceres/Core/Components/Base/ComponentList.cpp
 	src/Ceres/Core/Components/Base/ComponentParameters.cpp
-	src/Ceres/Core/Components/Base/ComponentRef.cpp
+	src/Ceres/Core/Components/Base/ComponentPtr.cpp
 	src/Ceres/Core/Components/Base/IComponent.cpp
 	src/Ceres/Core/Components/Base/Message.cpp
 

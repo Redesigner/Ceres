@@ -48,6 +48,7 @@ namespace Ceres
         _vertexShader = effect._vertexShader;
         _fragmentShader = effect._fragmentShader;
         _viewPosition = effect._viewPosition;
+        _name = effect._name;
 
         effect._initialized = false;
     }
@@ -60,6 +61,18 @@ namespace Ceres
             glDeleteShader(_vertexShader);
             glDeleteProgram(_glProgram);
         }
+    }
+
+    Effect& Effect::operator=(Effect&& effect)
+    {
+        _glProgram = effect._glProgram;
+        _vertexShader = effect._vertexShader;
+        _fragmentShader = effect._fragmentShader;
+        _viewPosition = effect._viewPosition;
+        _name = effect._name;
+
+        effect._initialized = false;
+        return *this;
     }
 
     void Effect::Begin()
@@ -160,6 +173,11 @@ namespace Ceres
     void Effect::SetViewMatrix(const Matrix& matrix)
     {
         SetMatrix("viewProjection", matrix);
+    }
+
+    const std::string& Effect::GetName() const
+    {
+        return _name;
     }
 
 

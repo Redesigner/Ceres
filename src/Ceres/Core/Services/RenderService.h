@@ -18,7 +18,10 @@ namespace Ceres
             RenderService(GraphicsDevice& graphicsDevice);
             ~RenderService();
 
-            virtual ComponentRefBase GenerateComponent(Type type, ComponentPR& params) override;
+            virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) override;
+            AssetPtr<Texture> GetTexture(std::string textureName);
+            AssetPtr<Effect> GetEffect(std::string effectName);
+            AssetPtr<Mesh> GetMesh(std::string meshName);
             
         private:
             GraphicsDevice& _parentDevice;

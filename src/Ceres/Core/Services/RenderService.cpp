@@ -16,7 +16,7 @@ namespace Ceres
     {
     }
 
-    ComponentRefBase RenderService::GenerateComponent(Type type, ComponentPR& params)
+    ComponentPtrBase RenderService::GenerateComponent(Type type, ComponentPR& params)
     {
         if(type == Type(typeid(MeshComponent)))
         {
@@ -64,5 +64,18 @@ namespace Ceres
         {
             throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type.name()));
         }
+    }
+
+    AssetPtr<Texture> RenderService::GetTexture(std::string textureName)
+    {
+        return _parentDevice.GetTexture(textureName);
+    }
+    AssetPtr<Effect> RenderService::GetEffect(std::string effectName)
+    {
+        return _parentDevice.GetEffect(effectName);
+    }
+    AssetPtr<Mesh> RenderService::GetMesh(std::string meshName)
+    {
+        return _parentDevice.GetMesh(meshName);
     }
 }

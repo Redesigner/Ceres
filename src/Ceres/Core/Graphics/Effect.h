@@ -31,6 +31,7 @@ namespace Ceres
             ~Effect();
 
             Effect& operator=(Effect&) = delete;
+            Effect& operator=(Effect&& effect);
 
             void Begin();
             void SetCamera(CameraComponent* camera);
@@ -42,6 +43,8 @@ namespace Ceres
             void SetCubemap(std::string name, Cubemap* cubemap);
             void SetShadowmap(Shadowmap* shadowmap);
             void SetViewMatrix(const Matrix& matrix);
+
+            const std::string& GetName() const;
 
         private:
             bool compileShader(GLuint shader, const char* filename, std::string source);
@@ -55,7 +58,7 @@ namespace Ceres
             std::string _vertexShaderSource;
             std::string _fragmentShaderSource;
 
-            /// A human readable name for this shader. This value should only be used for error messages
+            /// A human readable name for this shader
             std::string _name;
 
             Matrix _viewPosition;

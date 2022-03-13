@@ -41,7 +41,7 @@ namespace Ceres
                 }
 
                 template <typename T>
-                ComponentRefBase CreateComponent(std::unique_ptr<ComponentParams> &params)
+                ComponentPtrBase CreateComponent(std::unique_ptr<ComponentParams> &params)
                 {
                     Type componentType = Type(typeid(T));
                     if (_componentTypeMap.find(componentType) == _componentTypeMap.end())

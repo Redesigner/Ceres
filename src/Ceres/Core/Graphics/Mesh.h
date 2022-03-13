@@ -7,6 +7,7 @@
 #include "VertexTypes/IVertexType.h"
 
 #include <memory>
+#include <string>
 
 #include "../Common/AssetPointer.h"
 
@@ -21,7 +22,7 @@ namespace Ceres
     class Mesh
     {
         public:
-            Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect);
+            Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect, std::string name);
             Mesh(Mesh&& mesh);
             Mesh(const Mesh&) = delete;
             ~Mesh();
@@ -30,6 +31,7 @@ namespace Ceres
 
             int Size() const;
             AssetPtr<Effect> GetEffect() const;
+            const std::string& GetName() const;
             const VertexArrayObject& GetVertexArray() const;
             const IndexBuffer& GetIndexBuffer() const;
 
@@ -40,5 +42,6 @@ namespace Ceres
             IndexBuffer _iBO;
             VertexArrayObject _vAO;
             VertexBufferObject _vBO;
+            std::string _name;
     };
 }

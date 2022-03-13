@@ -14,14 +14,14 @@ namespace Ceres
     InputService::~InputService()
     {}
 
-    ComponentRefBase InputService::GenerateComponent(Type type, ComponentPR& params)
+    ComponentPtrBase InputService::GenerateComponent(Type type, ComponentPR& params)
     {
         if(type == Type(typeid(ControllerComponent)))
         {
             if(params->Count() == 0)
             {
                 _components.Insert(new ControllerComponent(_inputHandler));
-                return ComponentRefBase(&_components, _components.Size() - 1);
+                return ComponentPtrBase(&_components, _components.Size() - 1);
             }
             else
             {

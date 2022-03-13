@@ -12,7 +12,7 @@ namespace Ceres
             InputService(InputHandler& inputHandler);
             ~InputService();
 
-            virtual ComponentRefBase GenerateComponent(Type type, ComponentPR& params) override;
+            virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) override;
             void Update(double seconds);
 
         private:

@@ -23,6 +23,8 @@ namespace Ceres
     {
         std::string currentPath = CONTENT_DIR;
         currentPath.append(filename);
+        size_t nameLeft = currentPath.rfind('\\') + 1;
+        std::string filenameEnd = currentPath.substr(nameLeft, currentPath.size() - nameLeft);
         SDL_RWops* sdlRW = SDL_RWFromFile(currentPath.c_str(), "r");
         if (!sdlRW)
         {
@@ -44,7 +46,7 @@ namespace Ceres
         {
             size = std::round(size) / 1000.0f;
         }
-        fmt::print("{} loaded file '{}' successfully | {} {}\n", DEBUG_PREFIX, filename, size, FILESIZE_SUFFIX[i]);
+        fmt::print("{} loaded file '{}' successfully | {} {}\n", DEBUG_PREFIX, filenameEnd, size, FILESIZE_SUFFIX[i]);
         return result;
     }
 

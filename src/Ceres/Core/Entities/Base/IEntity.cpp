@@ -11,8 +11,8 @@ namespace Ceres
     IEntity::IEntity(IEntity&& entity)
         :_serviceContainer(entity._serviceContainer)
     {
-        _components = std::vector<ComponentRefBase>(entity._components);
-        for (ComponentRefBase component : _components)
+        _components = std::vector<ComponentPtrBase>(entity._components);
+        for (ComponentPtrBase component : _components)
         {
             component->SetParent(this);
         }
@@ -24,8 +24,8 @@ namespace Ceres
     IEntity& IEntity::operator=(IEntity&& entity) noexcept
     {
         _serviceContainer = entity._serviceContainer;
-        _components = std::vector<ComponentRefBase>(entity._components);
-        for (ComponentRefBase component : _components)
+        _components = std::vector<ComponentPtrBase>(entity._components);
+        for (ComponentPtrBase component : _components)
         {
             component->SetParent(this);
         }
@@ -40,7 +40,7 @@ namespace Ceres
     bool IEntity::SendMessage(Message& message) const
     {
         bool handled = false;
-        for(ComponentRefBase component : _components)
+        for(ComponentPtrBase component : _components)
         {
             if(component->ReceiveMessage(message))
             {
