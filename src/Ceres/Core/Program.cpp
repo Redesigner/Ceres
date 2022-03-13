@@ -17,7 +17,6 @@ namespace Ceres
         _game = game;
         _exit = !game->Initialize();
         game->Load();
-        SDL_SetRelativeMouseMode(SDL_TRUE);
     }
 
     Program::~Program()
@@ -54,6 +53,11 @@ namespace Ceres
                     _exit = true;
                     break;
                 }
+            case SDL_MOUSEBUTTONDOWN:
+                {
+                    _game->graphicsDevice.LockWindow();
+                    break;
+                }
             case SDL_KEYDOWN:
                 {
                     if(event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
@@ -65,6 +69,10 @@ namespace Ceres
                     {
                         _game->graphicsDevice.ToggleFullscreen();
                         break;
+                    }
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_TAB)
+                    {
+                        _game->graphicsDevice.UnlockWindow();
                     }
                     _game->inputHandler.HandleInput(Buttons::GetButton(event.key.keysym.scancode));
                     break;

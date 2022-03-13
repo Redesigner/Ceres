@@ -30,6 +30,7 @@ namespace Ceres
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisampleSampleCount);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
         _sdlWindow = SDL_CreateWindow("Ceres",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+        Lock();
     }
 
     Window::~Window()
@@ -45,16 +46,23 @@ namespace Ceres
         return _sdlWindow;
     }
 
+    void Window::Lock()
+    {
+        SDL_SetRelativeMouseMode(SDL_TRUE);
+    }
+    void Window::Unlock()
+    {
+        SDL_SetRelativeMouseMode(SDL_FALSE);
+    }
+
     void Window::Resize(const int width, const int height)
     {
         glViewport(0, 0, width, height);
         SDL_SetWindowSize(_sdlWindow, width, height);
         _width = width;
         _height = height;
-        /* for (EffectPtr effect : _loadedEffects)
-        {
-            effect->SetFrustrum(Matrix::Perspective(w, h, 90, .1f, 100.f));
-        } */
+        _restoreWidth = width;
+        _restoreHeight = height;
     }
 
     void Window::SwapBuffer() const
@@ -74,12 +82,16 @@ namespace Ceres
             SDL_SetWindowSize(_sdlWindow, displayMode.w, displayMode.h);
             glViewport(0, 0, displayMode.w, displayMode.h);
             SDL_SetWindowFullscreen(_sdlWindow, true);
+            _width = displayMode.w;
+            _height = displayMode.h;
         }
         else
         {
             SDL_SetWindowFullscreen(_sdlWindow, false);
-            glViewport(0, 0, _width, _height);
-            SDL_SetWindowSize(_sdlWindow, _width, _height);
+            glViewport(0, 0, _restoreWidth, _restoreHeight);
+            SDL_SetWindowSize(_sdlWindow, _restoreWidth, _restoreHeight);
+            _width = _restoreWidth;
+            _height = _restoreHeight;
         }
     }
     

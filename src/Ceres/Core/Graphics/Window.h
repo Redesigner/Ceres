@@ -14,6 +14,9 @@ namespace Ceres
 
             SDL_Window* Get() const;
 
+            void Lock();
+            void Unlock();
+
             void Resize(const int width, const int height);
             void SwapBuffer() const;
             void ToggleFullscreen();
@@ -27,5 +30,8 @@ namespace Ceres
 
             unsigned int _width = 1280;
             unsigned int _height = 720;
+
+            unsigned int _restoreWidth = 1280;
+            unsigned int _restoreHeight = 720;
     };
 }

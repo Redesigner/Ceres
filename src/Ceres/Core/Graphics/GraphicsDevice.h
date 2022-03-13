@@ -50,6 +50,9 @@ namespace Ceres
             void ReceiveEvent(SDL_WindowEvent& windowEvent);
             void ToggleFullscreen();
 
+            void LockWindow();
+            void UnlockWindow();
+
             AssetPtr<Effect> LoadEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName);
             AssetPtr<Effect> LoadEffect(const char* shaderName);
             AssetPtr<Effect> GetEffect(std:: string effectName);

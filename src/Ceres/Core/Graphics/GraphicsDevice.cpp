@@ -125,6 +125,14 @@ namespace Ceres
         _window.ToggleFullscreen();
     }
     
+    void GraphicsDevice::LockWindow()
+    {
+        _window.Lock();
+    }
+    void GraphicsDevice::UnlockWindow()
+    {
+        _window.Unlock();
+    }
 
     AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName)
     {
