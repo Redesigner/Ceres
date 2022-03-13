@@ -15,7 +15,7 @@ namespace Ceres
     {
     }
 
-    bool PhysicsComponent::RecieveMessage(Message& message)
+    bool PhysicsComponent::ReceiveMessage(Message& message)
     {
         if (message.Type == "Position")
         {

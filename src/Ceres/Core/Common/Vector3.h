@@ -4,6 +4,10 @@
 
 namespace Ceres
 {
+    /**
+     * @brief 3-dimensional vector
+     * 
+     */
     struct Vector3
     {
         public:
@@ -19,12 +23,49 @@ namespace Ceres
             static Vector3 Up();
             static float Epsilon() { return 0.0001; }
             
+            /**
+             * @brief Gets the length of the vector
+             * @return float 
+             */
             float Length() const;
+            /**
+             * @brief Gets the length of the vector, squared. Slightly faster than Length(), useful for comparing two vectors
+             * @return float 
+             */
             float LengthSquared() const;
+            /**
+             * @brief Gets the normalized vector
+             * 
+             * @return Vector3, or Vector3::Zero() if the vector cannot be normalized
+             */
             Vector3 Normalize() const;
+            /**
+             * @brief Get the cross product of this and another vector
+             * 
+             * @param vector
+             * @return Vector3 
+             */
             Vector3 Cross(const Vector3& vector) const;
+            /**
+             * @brief Triple cross product of this and another vector
+             * 
+             * @param vector 
+             * @return Vector3 
+             */
             Vector3 Triple(const Vector3& vector) const;
+            /**
+             * @brief Dot product of this and another vector
+             * 
+             * @param vector 
+             * @return float 
+             */
             float Dot(const Vector3& vector) const;
+            /**
+             * @brief Angle between this and another vector
+             * 
+             * @param vector 
+             * @return double representing the shortest rotation, in radians
+             */
             double Angle(const Vector3& vector) const;
 
             Vector3& operator+=(const Vector3& vector);

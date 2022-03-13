@@ -13,7 +13,7 @@ namespace Ceres
     MeshComponent::~MeshComponent()
     {}
 
-    bool MeshComponent::RecieveMessage(Message& message)
+    bool MeshComponent::ReceiveMessage(Message& message)
     {
         if(message.Type == "Translate")
         {

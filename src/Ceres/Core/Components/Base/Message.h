@@ -13,6 +13,9 @@ namespace Ceres
             ~Message();
             Message(Message& message);
             
+            /// Get the message's internal data of specified type.
+            /// Throws an exception if the requested data type
+            /// does not match the internally stored type.
             template <typename T>
             T GetData()
             {
@@ -23,14 +26,17 @@ namespace Ceres
                 }
                 throw std::invalid_argument("That data type is not stored inside the message.");
             }
+            /// Construct a message and pack it with data.
+            /// The message must be explicitly destroyed.
             template <typename T>
             static Message Write(std::string name, T data)
             {
                 Message message = Message(name);
-                message.SetData(data);
+                message.setData(data);
                 return message;
             }
 
+            /// Construct a message without any additional data.
             static Message Write(std::string name)
             {
                 return Message(name);
@@ -42,7 +48,7 @@ namespace Ceres
             Message(std::string messageType);
 
             template <typename T>
-            void SetData(T&& data)
+            void setData(T&& data)
             {
                 if (_data == nullptr)
                 {

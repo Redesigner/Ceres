@@ -4,30 +4,41 @@
 
 namespace Ceres
 {
-    template <typename T>
+    /**
+     * @brief A weak reference to an asset that is managed by some other class. Can be zero-initialized
+     * 
+     * @tparam AssetType
+     */
+    template <typename AssetType>
     struct AssetPtr
     {
         public:
+            AssetPtr(std::vector<AssetType>& container, int id)	: _container(&container), _id(id) {};
             AssetPtr() {};
-            AssetPtr(std::vector<T>& container, int id)	: _container(&container), _id(id) {};
             ~AssetPtr() {};
 
-            T& operator*()
+            AssetType& operator*()
             {
                 return _container->at(_id);
             };
-            T* operator->()
+            AssetType* operator->()
             {
 		        return &_container->at(_id);
 	        };
 
+            /**
+             * @brief Does the asset exist?
+             * 
+             * @return true if there is an asset in the associated container
+             * @return false otherwise
+             */
             explicit operator bool() const
             {
                 return _container && _container->size() > _id;
             };
 
         private:
-            std::vector<T>* _container = nullptr;
+            std::vector<AssetType>* _container = nullptr;
             int _id = 0;
     };
 }

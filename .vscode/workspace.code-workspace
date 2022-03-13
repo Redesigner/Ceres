@@ -74,7 +74,8 @@
 			"deque": "cpp",
 			"forward_list": "cpp",
 			"numeric": "cpp",
-			"regex": "cpp"
+			"regex": "cpp",
+			"map": "cpp"
 		}
 	}
 }

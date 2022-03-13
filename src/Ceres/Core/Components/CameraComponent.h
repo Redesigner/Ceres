@@ -6,22 +6,53 @@
 
 namespace Ceres
 {
+    /**
+     * @brief A camera object
+     * 
+     */
     class CameraComponent : public IComponent
     {
         public:
-            CameraComponent();
             CameraComponent(int width, int height, float fOV, float near, float far);
+            CameraComponent();
             ~CameraComponent();
 
-            bool virtual RecieveMessage(Message& message) override;
+            bool virtual ReceiveMessage(Message& message) override;
+
+            /**
+             * @brief Get the Matrix object associated with this camera's transformation
+             * 
+             * @return const Matrix& 
+             */
             const Matrix& GetMatrix();
+            /**
+             * @brief Get the Matrix object associated with this camera's rotation only
+             * 
+             * @return const Matrix& 
+             */
             const Matrix& GetRotationMatrix();
+            /**
+             * @brief Get the current position of the camera, in world space
+             * 
+             * @return const Vector3 
+             */
             const Vector3 GetPosition() const;
+            /**
+             * @brief Get the current position of whatever the camera is looking at, in world space
+             * 
+             * @return const Vector3 
+             */
             const Vector3 GetFocalPoint() const;
 
             const float GetFOV() const;
             void SetFOV(const float fOV);
 
+            /**
+             * @brief Set the dimensions of the camera, in pixels
+             * 
+             * @param width 
+             * @param height 
+             */
             void SetResolution(unsigned int width, unsigned int height);
 
             void SetClipRange(float start, float end);
@@ -42,6 +73,7 @@ namespace Ceres
             /// The velocity of our parent, for when we are tracking slightly behind the object
             Vector3 _velocity;
 
+            // Cache on-data-requested flags
             bool _regenViewMatrix = true;
             bool _regenRotationMatrix = true;
             bool _regenProjectionMatrix = true;

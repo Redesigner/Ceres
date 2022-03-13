@@ -4,6 +4,10 @@
 
 namespace Ceres
 {
+	/**
+	 * @brief A 2D affine transformation matrix, represented internally as a 3x3 array of floats
+	 * 
+	 */
 	struct Matrix2D
 	{
 		public:
@@ -19,6 +23,17 @@ namespace Ceres
 			static Matrix2D Rotation(float theta);
 			static Matrix2D Scale(float x, float y);
 
+			/**
+			 * @brief Transformation matrix for mapping a sprite from screen coordinates to OpenGL space
+			 * 
+			 * @param x Sprite X position
+			 * @param y Sprite Y position
+			 * @param w Sprite width
+			 * @param h Sprite height
+			 * @param screenW Destination screen width
+			 * @param screenH Destination screen height
+			 * @return Matrix2D 
+			 */
 			static Matrix2D Sprite(float x, float y, float w, float h, float screenW, float screenH);
 
 			static Matrix2D Zero();

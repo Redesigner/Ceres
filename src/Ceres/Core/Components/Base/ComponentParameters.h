@@ -10,13 +10,27 @@
 
 namespace Ceres
 {
+	/** 
+	* @brief An object for packing the parameters needed to create a component. Type must be deduced by the receiving factory object.
+	**/
     struct ComponentParams
     {
         public:
-			ComponentParams();
+
+			/**
+			 * @brief Construct a new Component Params object
+			 * 
+			 * @param count number of bytes to allocate for storing data
+			 */
             ComponentParams(size_t count);
+			ComponentParams();
             ~ComponentParams();
 
+			/**
+			 * @brief Creates a ComponentParams object and pack data into it
+			 * 
+			 * @return A unique_ptr containing a ComponentParams object with all of the data
+			 */
             template <typename... Ts>
             static std::unique_ptr<ComponentParams> WriteParams(Ts... args)
 			{
@@ -27,6 +41,10 @@ namespace Ceres
 				return params;
 			}
 
+			/**
+			 * @brief Creates an empty ComponentParams object
+			 *  
+			 */
 			static std::unique_ptr<ComponentParams> Empty();
 
 			template <typename T, typename... Ts>
@@ -52,6 +70,11 @@ namespace Ceres
 				throw std::invalid_argument("The type of the requested parameter does not match the supplied type.");
 			}
 
+			/**
+			 * @brief Gets the number of data objects
+			 * 
+			 * @return int
+			 */
 			int Count() const;
 
 			std::string ToString() const;

@@ -8,11 +8,15 @@ namespace Ceres
     class Transform
     {
         public:
+            /// A collection of matrices representing world transformation.
+            /// Handles recalculation only when necessary.
             Transform();
             ~Transform();
 
             void SetPosition(const Vector3& position);
+            /// The transformation's position component, as a Vector.
             Vector3 GetPosition() const;
+            /// The transformation's position component, as a Matrix.
             Matrix GetPositionMatrix() const;
 
             void SetRotation(const Vector3& rotation);
@@ -23,6 +27,7 @@ namespace Ceres
             Vector3 GetScale() const;
             Matrix GetScaleMatrix() const;
 
+            /// Returns the complete transformation matrix.
             Matrix GetMatrix() const;
             Matrix GetInverse() const;
 

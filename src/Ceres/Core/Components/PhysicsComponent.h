@@ -15,7 +15,7 @@ namespace Ceres
             PhysicsComponent(PrimitivePtr &primitive);
             ~PhysicsComponent();
 
-            virtual bool RecieveMessage(Message& message) override;
+            virtual bool ReceiveMessage(Message& message) override;
 
             const Vector3 GetPosition() const;
             void SetPosition(Vector3 newPosition);

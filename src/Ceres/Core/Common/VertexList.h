@@ -6,10 +6,10 @@
 
 namespace Ceres
 {
-    /// Wrapper around std::vector that has some helpful behavior
     class VertexList
     {
         public:
+            /// Wrapper around std::vector that has some helpful behavior
             VertexList();
             VertexList(const VertexList& Other);
             VertexList(int size);

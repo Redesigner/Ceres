@@ -11,6 +11,10 @@ using VertexStack = std::stack<Ceres::Vector3>;
 
 namespace Ceres
 {
+    /**
+     * @brief Collection of helper math functions for the physics engine
+     * 
+     */
     class PhysicsUtilities
     {
     public:

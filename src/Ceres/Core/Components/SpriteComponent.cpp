@@ -17,7 +17,7 @@ namespace Ceres
 	SpriteComponent::~SpriteComponent()
 	{}
 
-	bool SpriteComponent::RecieveMessage(Message& message)
+	bool SpriteComponent::ReceiveMessage(Message& message)
 	{
 		return false;
 	}

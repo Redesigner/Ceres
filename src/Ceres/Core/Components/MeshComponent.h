@@ -12,12 +12,14 @@ namespace Ceres
     class MeshComponent : public IComponent
     {
         public:
-            MeshComponent(AssetPtr<Mesh> mesh);
+            /// A renderable instance of a mesh. Renders with an associated texture
+            /// if one is specified.
             MeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            MeshComponent(AssetPtr<Mesh> mesh);
 
             ~MeshComponent();
 
-            virtual bool RecieveMessage(Message& message) override;
+            virtual bool ReceiveMessage(Message& message) override;
 
             AssetPtr<Mesh> Mesh;
             AssetPtr<Texture> Texture;

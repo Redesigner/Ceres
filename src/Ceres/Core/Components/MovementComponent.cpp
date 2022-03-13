@@ -16,7 +16,7 @@ namespace Ceres
     MovementComponent::~MovementComponent()
     {}
 
-    bool MovementComponent::RecieveMessage(Message& message)
+    bool MovementComponent::ReceiveMessage(Message& message)
     {
         if (message.Type == "AddInput")
         {

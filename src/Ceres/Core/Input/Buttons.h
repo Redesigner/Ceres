@@ -7,6 +7,10 @@ extern "C"
 
 namespace Ceres
 {
+    /**
+     * @brief Enum representing the SDL scancodes of various keys
+     * 
+     */
     enum class Button
     {
         Key_a = 4,

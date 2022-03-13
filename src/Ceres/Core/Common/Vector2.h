@@ -4,6 +4,10 @@
 
 namespace Ceres
 {
+    /**
+     * @brief 2-dimensional vector
+     * 
+     */
     struct Vector2
     {
         Vector2(float x, float y);

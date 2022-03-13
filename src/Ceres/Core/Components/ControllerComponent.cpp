@@ -27,7 +27,7 @@ namespace Ceres
     ControllerComponent::~ControllerComponent()
     {}
 
-    bool ControllerComponent::RecieveMessage(Message& message)
+    bool ControllerComponent::ReceiveMessage(Message& message)
     {
         if (message.Type == "CameraRotation")
         {

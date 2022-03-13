@@ -4,6 +4,10 @@
 
 namespace Ceres
 {
+	/**
+	 * @brief Object containing all of the entities currently in the game.
+	 * 
+	 */
 	class World
 	{
 		public:

@@ -11,6 +11,10 @@ namespace Ceres
 	class Plane
 	{
 		public:
+			/// Container of OpenGL objects for rendering an image directly to the screen.
+			/// Each OpenGL instance really only needs one of these.
+			/// Setting the bounds and size of the sprite should be done with a
+			/// transformation Matrix.
 			Plane();
 			~Plane();
 

@@ -42,7 +42,7 @@ namespace Ceres
         bool handled = false;
         for(ComponentRefBase component : _components)
         {
-            if(component->RecieveMessage(message))
+            if(component->ReceiveMessage(message))
             {
                 handled = true;
             }

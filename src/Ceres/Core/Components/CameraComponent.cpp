@@ -15,7 +15,7 @@ namespace Ceres
     CameraComponent::~CameraComponent()
     {}
 
-    bool CameraComponent::RecieveMessage(Message& message)
+    bool CameraComponent::ReceiveMessage(Message& message)
     {
         if(message.Type == "Translate")
         {

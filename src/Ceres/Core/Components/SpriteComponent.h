@@ -15,7 +15,7 @@ namespace Ceres
 			SpriteComponent();
 			~SpriteComponent();
 
-			virtual bool RecieveMessage(Message& message) override;
+			virtual bool ReceiveMessage(Message& message) override;
 
 			AssetPtr<Texture> Texture;
 			Vector2 Position;
