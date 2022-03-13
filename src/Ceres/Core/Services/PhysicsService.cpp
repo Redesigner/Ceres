@@ -12,8 +12,8 @@
 #include <stdexcept>
 #include <fmt/core.h>
 
-#define MAX_SUBSTEPS 4
-#define KILL_Z -3.0f
+const int MAX_SUBSTEPS = 4;
+const float KILL_Z = -10.0f;
 
 namespace Ceres
 {

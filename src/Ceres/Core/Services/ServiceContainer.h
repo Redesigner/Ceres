@@ -44,6 +44,10 @@ namespace Ceres
                 ComponentRefBase CreateComponent(std::unique_ptr<ComponentParams> &params)
                 {
                     Type componentType = Type(typeid(T));
+                    if (_componentTypeMap.find(componentType) == _componentTypeMap.end())
+                    {
+                        throw std::invalid_argument(fmt::format("Component type {} is not associated with any service. Did you remember to create the type association?", componentType.name()));
+                    }
                     Type serviceType = _componentTypeMap.at(componentType);
                     if (_serviceMap.find(serviceType) == _serviceMap.end())
                     {

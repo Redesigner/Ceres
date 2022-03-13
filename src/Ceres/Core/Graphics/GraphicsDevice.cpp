@@ -58,9 +58,7 @@ namespace Ceres
         _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
 
         _shadowmap = new Shadowmap(2048, LoadEffect("shadowmap"));
-
-        _sprite = new Sprite();
-        _spriteTexture = LoadTexture("test.png");
+        _spritePlane = new Plane();
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -73,8 +71,7 @@ namespace Ceres
         delete _skyboxCubemap;
         delete _lightMap;
         delete _shadowmap;
-
-        delete _sprite;
+        delete _spritePlane;
     }
 
     // This method is called by the Program object, which abstracts it away from
@@ -96,23 +93,9 @@ namespace Ceres
 
     void GraphicsDevice::Render()
     {
-        glCullFace(GL_FRONT);
-        _shadowmap->SetPosition(_currentCamera->GetPosition());
-        _shadowmap->Bind();
-        for (IComponent* component : _renderComponents)
-        {
-            RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component);
-            prerender(renderComponent);
-        }
-        glCullFace(GL_BACK);
-        _shadowmap->Unbind();
-        _window.ResizeViewport();
-
-        for (IComponent* component : _renderComponents)
-        {
-            RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component);
-            render(renderComponent);
-        }
+        renderShadows();
+        renderMeshes();
+        renderSprites();
         renderSkybox();
     }
 
@@ -143,9 +126,9 @@ namespace Ceres
     }
     
 
-    AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName)
+    AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName)
     {
-        _loadedEffects.push_back(std::move(Effect(vertexShaderName, fragmentShaderName)));
+        _loadedEffects.push_back(std::move(Effect(vertexShaderName, fragmentShaderName, shaderName)));
         // set the ambient lightmap here, since it shouldn't change once we load the effect
         _loadedEffects.at(_loadedEffects.size() - 1).SetCubemap("lightmap", _lightMap);
         return AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1);
@@ -154,7 +137,7 @@ namespace Ceres
     {
         std::string vertexName = SHADER_PATH + shaderName + VERT_EXTENSION;
         std::string fragmentName = SHADER_PATH + shaderName + FRAG_EXTENSTION;
-        return LoadEffect(vertexName.c_str(), fragmentName.c_str());
+        return LoadEffect(vertexName.c_str(), fragmentName.c_str(), shaderName);
     }
 
     AssetPtr<Mesh> GraphicsDevice::LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], uint indexCount, AssetPtr<Effect> effect)
@@ -184,17 +167,17 @@ namespace Ceres
     }
 
 
-
-    ComponentRefBase GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh)
+    // ======== Component creation methods ========
+    ComponentRefBase GraphicsDevice::CreateMeshComponent(AssetPtr<Mesh> mesh)
     {
-       _renderComponents.Insert(new RenderComponent(mesh));
-       return ComponentRefBase(&_renderComponents, _renderComponents.Size() - 1);
+       _meshComponents.Insert(new MeshComponent(mesh));
+       return ComponentRefBase(&_meshComponents, _meshComponents.Size() - 1);
     }
 
-    ComponentRefBase GraphicsDevice::CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
+    ComponentRefBase GraphicsDevice::CreateMeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture)
     {
-        _renderComponents.Insert(new RenderComponent(mesh, texture));
-        return ComponentRefBase(&_renderComponents, _renderComponents.Size() - 1);
+        _meshComponents.Insert(new MeshComponent(mesh, texture));
+        return ComponentRefBase(&_meshComponents, _meshComponents.Size() - 1);
     }
 
     ComponentRefBase GraphicsDevice::CreateCamera()
@@ -208,11 +191,17 @@ namespace Ceres
         return _currentCamera;
     }
 
-
-    // Private methods
-    void GraphicsDevice::render(RenderComponent* renderComponent) const
+    ComponentRefBase GraphicsDevice::CreateSprite(AssetPtr<Texture> texture, int x, int y, int w, int h)
     {
-        Mesh& componentMesh = *renderComponent->Mesh;
+        _spriteComponents.Insert(new SpriteComponent(texture, x, y, w, h));
+        return ComponentRefBase(&_spriteComponents, _spriteComponents.Size() - 1);
+    }
+
+
+    // ======== Instanced rendering methods ========
+    void GraphicsDevice::render(MeshComponent& meshComponent) const
+    {
+        Mesh& componentMesh = *(meshComponent.Mesh);
         Effect& componentEffect = *componentMesh.GetEffect();
         componentMesh.GetVertexArray().Bind();
         componentMesh.GetIndexBuffer().Bind();
@@ -220,25 +209,34 @@ namespace Ceres
         componentEffect.Begin();
         componentEffect.SetViewMatrix(_currentCamera->GetMatrix());
         componentEffect.SetVector3("cameraPos", _currentCamera->GetPosition());
-        componentEffect.SetMatrix("model", renderComponent->Transform.GetMatrix());
+        componentEffect.SetMatrix("model", meshComponent.Transform.GetMatrix());
         componentEffect.SetMatrix("lightSpace", _shadowmap->GetMatrix());
-        if (renderComponent->Texture)
+        if (meshComponent.Texture)
         {
-            componentEffect.SetTexture("surfaceTexture", renderComponent->Texture);
+            componentEffect.SetTexture("surfaceTexture", meshComponent.Texture);
         }
         componentEffect.SetShadowmap(_shadowmap);
         glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
     }
 
-    void GraphicsDevice::prerender(RenderComponent* renderComponent) const
+    void GraphicsDevice::prerender(MeshComponent& meshComponent) const
     {
-        Mesh& componentMesh = *renderComponent->Mesh;
+        Mesh& componentMesh = *(meshComponent.Mesh);
         componentMesh.GetVertexArray().Bind();
         componentMesh.GetIndexBuffer().Bind();
-        // Render component to the shadow map
-        _shadowmap->SetModelMatrix(renderComponent->Transform.GetMatrix());
+        _shadowmap->SetModelMatrix(meshComponent.Transform.GetMatrix());
         glDrawElements(GL_TRIANGLES, componentMesh.Size(), GL_UNSIGNED_INT, NULL);
+    }
 
+    void GraphicsDevice::render(SpriteComponent& spriteComponent)
+    {
+        _spriteEffect->SetTexture("tex", spriteComponent.Texture);
+        Vector2 windowSize = _window.GetViewportSize();
+        _spriteEffect->SetMatrix2D("transform", Matrix2D::Sprite(
+            spriteComponent.Position.X, spriteComponent.Position.Y,
+            spriteComponent.Size.X, spriteComponent.Size.Y,
+            windowSize.X, windowSize.Y));
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
     }
 
     void GraphicsDevice::printError()
@@ -265,26 +263,54 @@ namespace Ceres
         _loadedTextures.clear();
     }
 
+    // ======== Render methods ========
+    void GraphicsDevice::renderMeshes()
+    {
+        for (IComponent* component : _meshComponents)
+        {
+            MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(component);
+            render(*meshComponent);
+        }
+    }
+
     void GraphicsDevice::renderSkybox()
     {
         glDepthFunc(GL_LEQUAL);
-        // glDepthMask(GL_FALSE);
         _skybox->GetVertexArray().Bind();
         _skybox->GetIndexBuffer().Bind();
 
         _skyboxEffect->Begin();
         _skyboxEffect->SetViewMatrix(_currentCamera->GetRotationMatrix());
         _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
-
-        // Move this into another function later
-        _spriteEffect->Begin();
-        _sprite->GetVertexArray().Bind();
-        _sprite->GetIndexBuffer().Bind();
-        _spriteEffect->SetTexture("tex", _spriteTexture);
-        _spriteEffect->SetMatrix2D("transform", Matrix2D::Scale(256.0f / 1280.0f, 256.0f / 720.0f));
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);        
         glDepthFunc(GL_LESS);
-        // glDepthMask(GL_TRUE);
+    }
+
+    void GraphicsDevice::renderShadows()
+    {
+        glCullFace(GL_FRONT);
+        _shadowmap->SetPosition(_currentCamera->GetPosition());
+        _shadowmap->Bind();
+        for (IComponent* component : _meshComponents)
+        {
+            MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(component);
+            prerender(*meshComponent);
+        }
+        glCullFace(GL_BACK);
+        _shadowmap->Unbind();
+        _window.ResizeViewport();
+
+    }
+
+    void GraphicsDevice::renderSprites()
+    {
+        _spriteEffect->Begin();
+        _spritePlane->GetVertexArray().Bind();
+        _spritePlane->GetIndexBuffer().Bind();
+        for (IComponent* component : _spriteComponents)
+        {
+            SpriteComponent* spriteComponent = dynamic_cast<SpriteComponent*>(component);
+            render(*spriteComponent);
+        }
     }
 }

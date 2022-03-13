@@ -1,19 +1,19 @@
-#include "RenderComponent.h"
+#include "MeshComponent.h"
 
 namespace Ceres
 {
-    RenderComponent::RenderComponent(AssetPtr<Ceres::Mesh> mesh)
-        :IComponent(std::type_index(typeid(RenderComponent))), Mesh(mesh), Transform(), Texture()
+    MeshComponent::MeshComponent(AssetPtr<Ceres::Mesh> mesh)
+        :IComponent(std::type_index(typeid(MeshComponent))), Mesh(mesh), Transform(), Texture()
     {}
 
-    RenderComponent::RenderComponent(AssetPtr<Ceres::Mesh> mesh, AssetPtr<Ceres::Texture> texture)
-            :IComponent(std::type_index(typeid(RenderComponent))), Mesh(mesh), Transform(), Texture(texture)
+    MeshComponent::MeshComponent(AssetPtr<Ceres::Mesh> mesh, AssetPtr<Ceres::Texture> texture)
+            :IComponent(std::type_index(typeid(MeshComponent))), Mesh(mesh), Transform(), Texture(texture)
     {}
 
-    RenderComponent::~RenderComponent()
+    MeshComponent::~MeshComponent()
     {}
 
-    bool RenderComponent::RecieveMessage(Message& message)
+    bool MeshComponent::RecieveMessage(Message& message)
     {
         if(message.Type == "Translate")
         {

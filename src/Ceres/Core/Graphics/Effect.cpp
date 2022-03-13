@@ -10,8 +10,9 @@
 
 namespace Ceres
 {
-    Effect::Effect(const char* vertFile, const char* fragFile)
+    Effect::Effect(const char* vertFile, const char* fragFile, const char* shaderName)
     {
+        _name = shaderName;
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
         _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -76,7 +77,7 @@ namespace Ceres
         GLint location = getUniformLocation(name);
         if (location == -1)
         {
-            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform '{}' in shader '{}'.\n", name, _name);
             return;
         }
         glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
@@ -87,7 +88,7 @@ namespace Ceres
         GLint location = getUniformLocation(name);
         if (location == -1)
         {
-            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform '{}' in shader '{}'.\n", name, _name);
             return;
         }
         glUniformMatrix3fv(location, 1, GL_FALSE, matrix);
@@ -98,7 +99,7 @@ namespace Ceres
         GLint location = getUniformLocation(name);
         if (location == -1)
         {
-            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform '{}' in shader '{}'.\n", name, _name);
             return;
         }
         glUniform3f(location, vector.X, vector.Y, vector.Z);
@@ -109,7 +110,7 @@ namespace Ceres
         GLint location = getUniformLocation(name);
         if (location == -1)
         {
-            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform '{}' in shader '{}'.\n", name, _name);
             return;
         }
         glActiveTexture(GL_TEXTURE0);
@@ -122,7 +123,7 @@ namespace Ceres
         GLint location = getUniformLocation(name);
         if (location == -1)
         {
-            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform '{}' in shader '{}'.\n", name, _name);
             return;
         }
         glActiveTexture(GL_TEXTURE0);
@@ -135,7 +136,7 @@ namespace Ceres
         GLint location = getUniformLocation(name);
         if (location == -1)
         {
-            fmt::print("[glShader] Unable to find GL_Uniform {}.\n", name);
+            fmt::print("[glShader] Unable to find GL_Uniform '{}' in shader '{}'.\n", name, _name);
             return;
         }
         glActiveTexture(GL_TEXTURE1);
@@ -148,7 +149,7 @@ namespace Ceres
         GLint location = getUniformLocation(std::string("shadowmap"));
         if (location == -1)
         {
-            fmt::print("[glShader] Unable to find GL_Uniform shadowmap.\n");
+            fmt::print("[glShader] Unable to find GL_Uniform 'shadowmap' in shader '{}'.\n", _name);
             return;
         }
         glActiveTexture(GL_TEXTURE2);
@@ -188,7 +189,7 @@ namespace Ceres
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
         char* msg = new char[maxLength];
         glGetShaderInfoLog(shader, maxLength, &msgLength, msg);
-        fmt::print("[glshader] [compile] {}\n", msg);
+        fmt::print("[glshader] [compile] Error: '{}' in shader '{}'\n", msg, _name);
         delete[] msg;
     }
     

@@ -8,6 +8,10 @@ namespace Ceres
         :X(x), Y(y)
     {}
 
+    Vector2::Vector2()
+        :Vector2(0.0f, 0.0f)
+    {}
+
     Vector2::~Vector2()
     {}
 

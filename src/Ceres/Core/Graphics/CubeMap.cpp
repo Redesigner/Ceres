@@ -50,7 +50,10 @@ namespace Ceres
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
         _textureID = texture;
-        fmt::print("{} Loaded cubemap file successfully: '{}'.\n", DEBUG_PREFIX, textureName);
+        std::string textureNameStr = std::string(textureName);
+        size_t nameBegin = textureNameStr.rfind('\\') + 1;
+        std::string filename = textureNameStr.substr(nameBegin, textureNameStr.length() - nameBegin);
+        fmt::print("{} Loaded cubemap files '{}'right... successfully.\n", DEBUG_PREFIX, filename);
     }
 
     Cubemap::~Cubemap()

@@ -1,11 +1,11 @@
-#include "Sprite.h"
+#include "Plane.h"
 
 #include "VertexTypes/VertexPositionTexture.h"
 
 namespace Ceres
 {
 	using Vertex = VertexPositionTexture;
-	Sprite::Sprite()
+	Plane::Plane()
 		:_vAO(VertexPositionTextureLayout::Get()), _vBO(4, VertexPositionTextureLayout::Get()), _iBO(6)
 	{
 		const VertexPositionTexture data[] = {
@@ -20,15 +20,15 @@ namespace Ceres
 		_iBO.SetData(indices, 6);
 	}
 
-	Sprite::~Sprite()
+	Plane::~Plane()
 	{}
 
-	const VertexArrayObject& Sprite::GetVertexArray() const
+	const VertexArrayObject& Plane::GetVertexArray() const
 	{
 		return _vAO;
 	}
 
-	const IndexBuffer& Sprite::GetIndexBuffer() const
+	const IndexBuffer& Plane::GetIndexBuffer() const
 	{
 		return _iBO;
 	}

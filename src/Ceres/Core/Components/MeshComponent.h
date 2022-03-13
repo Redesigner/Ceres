@@ -9,13 +9,13 @@
 
 namespace Ceres
 {
-    class RenderComponent : public IComponent
+    class MeshComponent : public IComponent
     {
         public:
-            RenderComponent(AssetPtr<Mesh> mesh);
-            RenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            MeshComponent(AssetPtr<Mesh> mesh);
+            MeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
 
-            ~RenderComponent();
+            ~MeshComponent();
 
             virtual bool RecieveMessage(Message& message) override;
 

@@ -7,7 +7,7 @@
 #include "Mesh.h"
 #include "Shadowmap.h"
 #include "Skybox.h"
-#include "Sprite.h"
+#include "Plane.h"
 #include "Texture.h"
 #include "Window.h"
 
@@ -18,8 +18,9 @@
 #include "../Common/Matrix.h"
 
 #include "../Components/Base/ComponentRef.h"
-#include "../Components/RenderComponent.h"
 #include "../Components/CameraComponent.h"
+#include "../Components/MeshComponent.h"
+#include "../Components/SpriteComponent.h"
 
 #include "VertexStream.h"
 #include "VertexTypes/VertexPositionLayout.h"
@@ -49,7 +50,7 @@ namespace Ceres
             void ReceiveEvent(SDL_WindowEvent& windowEvent);
             void ToggleFullscreen();
 
-            AssetPtr<Effect> LoadEffect(const char* vertexShaderName, const char* fragmentShaderName);
+            AssetPtr<Effect> LoadEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName);
             AssetPtr<Effect> LoadEffect(const char* shaderName);
             AssetPtr<Mesh> LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect);
             AssetPtr<Mesh> LoadMesh(const MeshPrimitiveBase& meshPrimitive, AssetPtr<Effect> effect);
@@ -58,14 +59,18 @@ namespace Ceres
 
             void SetCamera(ComponentRef<CameraComponent> camera);
 
-            ComponentRefBase CreateRenderComponent(AssetPtr<Mesh> mesh);
-            ComponentRefBase CreateRenderComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
+            ComponentRefBase CreateMeshComponent(AssetPtr<Mesh> mesh);
+            ComponentRefBase CreateMeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
 
             ComponentRefBase CreateCamera();
 
+            ComponentRefBase CreateSprite(AssetPtr<Texture> texture, int x, int y, int w, int h);
+
         private:
-            void render(RenderComponent* renderComponent) const;
-            void prerender(RenderComponent* renderComponent) const;
+            void render(MeshComponent& meshComponent) const;
+            void prerender(MeshComponent& meshComponent) const;
+
+            void render(SpriteComponent& spriteComponent);
 
             void printError();
 
@@ -73,10 +78,14 @@ namespace Ceres
             void unloadMeshes();
             void unloadTextures();
 
+            void renderMeshes();
             void renderSkybox();
+            void renderShadows();
+            void renderSprites();
 
-            ComponentList _renderComponents;
+            ComponentList _meshComponents;
             ComponentList _cameraComponents;
+            ComponentList _spriteComponents;
 
             Window _window;
             Context* _currentContext;
@@ -95,7 +104,6 @@ namespace Ceres
 
             Cubemap* _lightMap;
 
-            Sprite* _sprite;
-            AssetPtr<Texture> _spriteTexture;
+            Plane* _spritePlane;
     };
 }

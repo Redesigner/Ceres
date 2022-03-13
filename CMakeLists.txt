@@ -29,14 +29,15 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Components/Base/ComponentList.cpp
 	src/Ceres/Core/Components/Base/ComponentParameters.cpp
 	src/Ceres/Core/Components/Base/ComponentRef.cpp
-	src/Ceres/Core/Components/Base/Message.cpp
 	src/Ceres/Core/Components/Base/IComponent.cpp
+	src/Ceres/Core/Components/Base/Message.cpp
 
-	src/Ceres/Core/Components/RenderComponent.cpp
-	src/Ceres/Core/Components/ControllerComponent.cpp
 	src/Ceres/Core/Components/CameraComponent.cpp
-	src/Ceres/Core/Components/PhysicsComponent.cpp
+	src/Ceres/Core/Components/ControllerComponent.cpp
+	src/Ceres/Core/Components/MeshComponent.cpp
 	src/Ceres/Core/Components/MovementComponent.cpp
+	src/Ceres/Core/Components/PhysicsComponent.cpp
+	src/Ceres/Core/Components/SpriteComponent.cpp
 
 
 	src/Ceres/Core/Entities/Base/IEntity.cpp
@@ -51,9 +52,9 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
 	src/Ceres/Core/Graphics/IndexBuffer.cpp
 	src/Ceres/Core/Graphics/Mesh.cpp
+	src/Ceres/Core/Graphics/Plane.cpp
 	src/Ceres/Core/Graphics/Shadowmap.cpp
 	src/Ceres/Core/Graphics/Skybox.cpp
-	src/Ceres/Core/Graphics/Sprite.cpp
 	src/Ceres/Core/Graphics/Texture.cpp
 	src/Ceres/Core/Graphics/VertexStream.cpp
 	src/Ceres/Core/Graphics/VertexArrayObject.cpp
@@ -98,9 +99,9 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Services/ServiceContainer.cpp
 
 	src/Ceres/Core/Services/ActorService.cpp
-	src/Ceres/Core/Services/RenderService.cpp
-	src/Ceres/Core/Services/PhysicsService.cpp
 	src/Ceres/Core/Services/InputService.cpp
+	src/Ceres/Core/Services/PhysicsService.cpp
+	src/Ceres/Core/Services/RenderService.cpp
 
 	src/Ceres/Core/World/World.cpp
 )

@@ -47,6 +47,16 @@ namespace Ceres
 		);
 	}
 
+	Matrix2D Matrix2D::Sprite(float x, float y, float w, float h, float screenW, float screenH)
+	{
+		return Matrix2D(
+			w / screenW, 	0, 				2 * -x / screenW + 1,
+			0, 				h / screenH, 	2 * y / screenH - 1,
+			0, 				0, 				1
+		);
+	}
+
+
 	Matrix2D Matrix2D::Zero()
 	{
 		return Matrix2D(

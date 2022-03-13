@@ -8,11 +8,11 @@
 
 namespace Ceres
 {
-	class Sprite
+	class Plane
 	{
 		public:
-			Sprite();
-			~Sprite();
+			Plane();
+			~Plane();
 
             const VertexArrayObject& GetVertexArray() const;
             const IndexBuffer& GetIndexBuffer() const;

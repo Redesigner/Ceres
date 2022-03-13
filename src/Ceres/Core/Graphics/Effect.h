@@ -25,7 +25,7 @@ namespace Ceres
     class Effect
     {
         public:
-            Effect(const char* vertFile, const char* fragFile);
+            Effect(const char* vertFile, const char* fragFile, const char* shaderName);
             Effect(Effect&) = delete;
             Effect(Effect&& effect);
             ~Effect();
@@ -54,6 +54,9 @@ namespace Ceres
 
             std::string _vertexShaderSource;
             std::string _fragmentShaderSource;
+
+            /// A human readable name for this shader. This value should only be used for error messages
+            std::string _name;
 
             Matrix _viewPosition;
 

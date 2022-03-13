@@ -19,6 +19,8 @@ namespace Ceres
 			static Matrix2D Rotation(float theta);
 			static Matrix2D Scale(float x, float y);
 
+			static Matrix2D Sprite(float x, float y, float w, float h, float screenW, float screenH);
+
 			static Matrix2D Zero();
 
 			Matrix2D operator*(const Matrix2D& b);

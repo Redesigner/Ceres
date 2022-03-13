@@ -17,15 +17,10 @@
 #include "Core/Entities/Actor.h"
 #include "Core/Entities/Block.h"
 
-// test only
-#include "Core/Physics/ConvexHull.h"
-#include "Core/Physics/Primitives/CubePrimitive.h"
-#include "Core/Physics/PhysicsUtilities.h"
-
 #include "Core/Components/CameraComponent.h"
 #include "Core/Components/ControllerComponent.h"
 #include "Core/Components/MovementComponent.h"
-#include "Core/Components/RenderComponent.h"
+#include "Core/Components/MeshComponent.h"
 #include "Core/Components/PhysicsComponent.h"
 
 #include "Core/IO/ContentManager.h"
@@ -57,8 +52,9 @@ namespace Ceres
         serviceContainer.AddTypeAssociation<CameraComponent, RenderService>();
         serviceContainer.AddTypeAssociation<ControllerComponent, InputService>();
         serviceContainer.AddTypeAssociation<MovementComponent, ActorService>();
-        serviceContainer.AddTypeAssociation<RenderComponent, RenderService>();
+        serviceContainer.AddTypeAssociation<MeshComponent, RenderService>();
         serviceContainer.AddTypeAssociation<PhysicsComponent, PhysicsService>();
+        serviceContainer.AddTypeAssociation<SpriteComponent, RenderService>();
 
         inputHandler.BindAxis2D("Movement", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
         inputHandler.BindAxis2D("Movement", 0, 0, -1);
@@ -76,7 +72,7 @@ namespace Ceres
     void Game::Load()
     {
         Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color(181, 206, 245));
-        Cube<VertexPositionNormalColor> cubeRed = Cube<VertexPositionNormalColor>(1, 1, 1, Color(216, 25, 30));
+        Cube<VertexPositionNormalColor> cubeRed = Cube<VertexPositionNormalColor>(1, 1, 1, Color(216, 25, 30)); 
         Sphere sphere(1, 20, 32, Color::Blue());
         AssetPtr<Mesh> cubeMesh = graphicsDevice.LoadMesh(cube);
         AssetPtr<Mesh> cubeMeshRed = graphicsDevice.LoadMesh(cubeRed);
