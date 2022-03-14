@@ -31,4 +31,8 @@ namespace Ceres
         }
     }
 
+    TypeList ActorService::GetAssociatedTypes() const
+    {
+        return TypeList{Type(typeid(MovementComponent))};
+    }
 }

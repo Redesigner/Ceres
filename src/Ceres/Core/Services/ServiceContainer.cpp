@@ -13,4 +13,13 @@ namespace Ceres
             delete service.second;
         }
     }
+
+    void ServiceContainer::addTypeAssociation(Type componentType, Type serviceType)
+    {
+        // Only add association if none exists
+        if (_componentTypeMap.find(componentType) == _componentTypeMap.end())
+        {
+            _componentTypeMap.emplace(componentType, serviceType);
+        }
+    }
 }

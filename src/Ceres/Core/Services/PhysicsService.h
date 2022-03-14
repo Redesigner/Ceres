@@ -14,6 +14,8 @@ namespace Ceres
             ~PhysicsService();
 
             virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) override;
+            virtual TypeList GetAssociatedTypes() const override;
+
             void Update(float deltaSeconds);
 
         private:

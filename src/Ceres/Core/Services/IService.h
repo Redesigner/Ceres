@@ -9,6 +9,7 @@
 namespace Ceres
 {
     using Type = std::type_index;
+    using TypeList = std::vector<Type>;
     using ComponentPR = std::unique_ptr<ComponentParams>;
 
     /// Handles creation and deletion of Components, implmenting special logic when necessary.
@@ -19,10 +20,9 @@ namespace Ceres
             IService();
             virtual ~IService();
 
-            // TODO: Provide base implementation and exception handling so that
-            // derived classes only need to provide argument count and type name
             virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) = 0;
             virtual ComponentPtrBase GetComponent(unsigned int id);
+            virtual TypeList GetAssociatedTypes() const = 0;
 
         protected:
             ComponentList _components;

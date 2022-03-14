@@ -19,6 +19,8 @@ namespace Ceres
             ~RenderService();
 
             virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) override;
+            virtual TypeList GetAssociatedTypes() const override;
+
             AssetPtr<Texture> GetTexture(std::string textureName);
             AssetPtr<Effect> GetEffect(std::string effectName);
             AssetPtr<Mesh> GetMesh(std::string meshName);

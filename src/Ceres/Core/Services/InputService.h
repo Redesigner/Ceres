@@ -13,6 +13,8 @@ namespace Ceres
             ~InputService();
 
             virtual ComponentPtrBase GenerateComponent(Type type, ComponentPR& params) override;
+            virtual TypeList GetAssociatedTypes() const override;
+
             void Update(double seconds);
 
         private:

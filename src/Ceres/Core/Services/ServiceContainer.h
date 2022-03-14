@@ -21,7 +21,13 @@ namespace Ceres
                 void AddService(T* service)
                 {
                     static_assert(std::is_base_of<IService, T>::value, "The type requested from 'ServiceContainer' must be derived from 'IService'.");
-                    _serviceMap.emplace(Type(typeid(T)), service);
+                    Type serviceType = Type(typeid(T));
+                    _serviceMap.emplace(serviceType, service);
+                    std::vector<Type>& associatedTypes = service->GetAssociatedTypes();
+                    for (Type componentType : associatedTypes)
+                    {
+                        addTypeAssociation(componentType, serviceType);
+                    }
                 }
 
                 template <typename T>
@@ -29,15 +35,6 @@ namespace Ceres
                 {
                     static_assert(std::is_base_of<IService, T>::value, "The type requested from 'ServiceContainer' must be derived from 'IService'.");
                     return dynamic_cast<T*>(_serviceMap.at(Type(typeid(T))));
-                }
-
-                template <typename ComponentType, typename ServiceType>
-                void AddTypeAssociation()
-                {
-                    if (_componentTypeMap.find(Type(typeid(ComponentType))) == _componentTypeMap.end())
-                    {
-                        _componentTypeMap.emplace(Type(typeid(ComponentType)), Type(typeid(ServiceType)));
-                    }
                 }
 
                 template <typename T>
@@ -60,5 +57,7 @@ namespace Ceres
         private:
             std::unordered_map<Type, IService*> _serviceMap;
             std::unordered_map<Type, Type> _componentTypeMap;
+
+            void addTypeAssociation(Type componentType, Type serviceType);
     };
 }

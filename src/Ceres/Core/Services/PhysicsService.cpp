@@ -50,6 +50,10 @@ namespace Ceres
         }
     }
 
+    TypeList PhysicsService::GetAssociatedTypes() const
+    {
+        return TypeList{Type(typeid(PhysicsComponent))};
+    }
 
     void PhysicsService::Update(float deltaSeconds)
     {

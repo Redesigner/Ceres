@@ -17,12 +17,6 @@
 #include "Core/Entities/Actor.h"
 #include "Core/Entities/Block.h"
 
-#include "Core/Components/CameraComponent.h"
-#include "Core/Components/ControllerComponent.h"
-#include "Core/Components/MovementComponent.h"
-#include "Core/Components/MeshComponent.h"
-#include "Core/Components/PhysicsComponent.h"
-
 #include "Core/IO/ContentManager.h"
 
 #include <fmt/core.h>
@@ -48,13 +42,6 @@ namespace Ceres
         serviceContainer.AddService<InputService>(new InputService(inputHandler));
         serviceContainer.AddService<PhysicsService>(new PhysicsService(serviceContainer.GetService<RenderService>()));
         serviceContainer.AddService<ActorService>(new ActorService());
-
-        serviceContainer.AddTypeAssociation<CameraComponent, RenderService>();
-        serviceContainer.AddTypeAssociation<ControllerComponent, InputService>();
-        serviceContainer.AddTypeAssociation<MovementComponent, ActorService>();
-        serviceContainer.AddTypeAssociation<MeshComponent, RenderService>();
-        serviceContainer.AddTypeAssociation<PhysicsComponent, PhysicsService>();
-        serviceContainer.AddTypeAssociation<SpriteComponent, RenderService>();
 
         inputHandler.BindAxis2D("Movement", Button::Key_up, Button::Key_down, Button::Key_left, Button::Key_right);
         inputHandler.BindAxis2D("Movement", 0, 0, -1);

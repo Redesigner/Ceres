@@ -66,6 +66,11 @@ namespace Ceres
         }
     }
 
+    TypeList RenderService::GetAssociatedTypes() const
+    {
+        return TypeList{Type(typeid(MeshComponent)), Type(typeid(CameraComponent)), Type(typeid(SpriteComponent))};
+    }
+
     AssetPtr<Texture> RenderService::GetTexture(std::string textureName)
     {
         return _parentDevice.GetTexture(textureName);

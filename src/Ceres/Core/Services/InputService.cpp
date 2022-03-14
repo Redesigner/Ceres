@@ -34,6 +34,11 @@ namespace Ceres
         }
     }
 
+    TypeList InputService::GetAssociatedTypes() const
+    {
+        return TypeList{Type(typeid(ControllerComponent))};
+    }
+
     void InputService::Update(double seconds)
     {
         for(int i = 0; i < _components.Size(); i++)

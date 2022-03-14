@@ -75,7 +75,8 @@
 			"forward_list": "cpp",
 			"numeric": "cpp",
 			"regex": "cpp",
-			"map": "cpp"
+			"map": "cpp",
+			"xtree": "cpp"
 		}
 	}
 }
