@@ -8,6 +8,7 @@
 
 #include <stdexcept>
 #include <fmt/core.h>
+#include <fmt/color.h>
 
 extern "C" 
 {
@@ -160,7 +161,8 @@ namespace Ceres
                 return AssetPtr<Effect>(_loadedEffects, i);
             }
         }
-        fmt::print("[graphicsdevice] Unable to find effect: '{}'.\n", effectName);
+        printPrefix();
+        fmt::print("Unable to find effect: '{}'.\n", effectName);
         return AssetPtr<Effect>();
     }
 
@@ -187,7 +189,8 @@ namespace Ceres
                 return AssetPtr<Mesh>(_loadedMeshes, i);
             }
         }
-        fmt::print("[graphicsdevice] Unable to find mesh: '{}'.\n", meshName);
+        printPrefix();
+        fmt::print("Unable to find mesh: '{}'.\n", meshName);
         return AssetPtr<Mesh>();
     }
 
@@ -215,7 +218,8 @@ namespace Ceres
                 return AssetPtr<Texture>(_loadedTextures, i);
             }
         }
-        fmt::print("[graphicsdevice] Unable to find texture: '{}'.\n", textureName);
+        printPrefix();
+        fmt::print("Unable to find texture: '{}'.\n", textureName);
         return AssetPtr<Texture>();
     }
 
@@ -374,5 +378,10 @@ namespace Ceres
             SpriteComponent* spriteComponent = dynamic_cast<SpriteComponent*>(component);
             render(*spriteComponent);
         }
+    }
+
+    void GraphicsDevice::printPrefix() const
+    {
+        fmt::print(fmt::emphasis::bold | fg(fmt::color::steel_blue), "[GraphicsDevice] ");
     }
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include "../Graphics/VertexTypes/VertexPositionNormalTexture.h"
 #include "../Graphics/Primitives/MeshPrimitive.h"
 
@@ -21,5 +24,9 @@ namespace Ceres
             void addFace(std::string::iterator& start, std::string::iterator& end,
                 const std::vector<Vector3> &vertices, const std::vector<Vector3> &normals, const std::vector<Vector2> &uvs,
                 std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices) const;
+
+            void printPrefix() const;
+
+            FT_Library fontLibrary;            
     };
 }

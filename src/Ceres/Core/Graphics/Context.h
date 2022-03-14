@@ -19,5 +19,6 @@ namespace Ceres
 
         private:
             SDL_GLContext _glContext;
+            void printPrefix() const;
     };
 }

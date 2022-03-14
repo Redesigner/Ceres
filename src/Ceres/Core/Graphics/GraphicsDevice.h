@@ -94,6 +94,8 @@ namespace Ceres
             void renderShadows();
             void renderSprites();
 
+            void printPrefix() const;
+
             ContentManager& _contentManager;
 
             ComponentList _meshComponents;

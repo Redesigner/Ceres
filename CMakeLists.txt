@@ -121,12 +121,14 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2-image REQUIRED)
 find_package(fmt REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(freetype CONFIG REQUIRED)
 
 # Link packages
 target_link_libraries(ceres PRIVATE SDL2::SDL2)
 target_link_libraries(ceres PRIVATE SDL2::SDL2_image)
 target_link_libraries(ceres PRIVATE fmt::fmt)
 target_link_libraries(ceres PRIVATE GLEW::GLEW)
+target_link_libraries(ceres PRIVATE freetype)
 
 
 # Windows specific

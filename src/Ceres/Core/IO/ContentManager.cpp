@@ -1,11 +1,13 @@
 #include "ContentManager.h"
 
+// TODO: Branch font directory based on OS
 extern "C"
 {
     #include <SDL2/SDL.h>
 }
 
 #include <fmt/core.h>
+#include <fmt/color.h>
 
 #include <algorithm>
 #include <cmath>
@@ -14,17 +16,39 @@ extern "C"
 const std::string CWD = SDL_GetBasePath();
 const std::string CONTENT_DIR = CWD + "..\\..\\content\\";
 
-const std::string DEBUG_PREFIX = "[content]";
+const std::string DEBUG_PREFIX = "[ContentManager]";
 const std::string FILESIZE_SUFFIX[] = {"B", "kB", "mB", "gB"};
+
+const std::string FONT_DIR = "C:\\WINDOWS\\Fonts\\";
 
 namespace Ceres
 {
     ContentManager::ContentManager()
-    {}
+    {
+        FT_Error error = FT_Init_FreeType(&fontLibrary);
+        if (error)
+        {
+            printPrefix();
+            fmt::print("Failed to initialize freetype.\n");
+        }
+        else
+        {
+            printPrefix();
+            fmt::print("FreeType library initialized.\n");
+        }
+        std::string arialPath = FONT_DIR + "arial.ttf";
+        FT_Face arial;
+        error = FT_New_Face(fontLibrary, arialPath.c_str(), 0, &arial);
+        if (error)
+        {
+            printPrefix();
+            fmt::print("failed to load font 'arial.ttf'.\n");
+        }
+    }
 
     ContentManager::~ContentManager()
     {}
-    
+
     const std::string ContentManager::LoadString(const char* filename) const
     {
         std::string currentPath = CONTENT_DIR;
@@ -52,7 +76,8 @@ namespace Ceres
         {
             size = std::round(size) / 1000.0f;
         }
-        fmt::print("{} loaded file '{}' successfully | {} {}\n", DEBUG_PREFIX, filenameEnd, size, FILESIZE_SUFFIX[i]);
+        printPrefix();
+        fmt::print("loaded file '{}' successfully | {} {}\n", filenameEnd, size, FILESIZE_SUFFIX[i]);
         return result;
     }
 
@@ -185,5 +210,10 @@ namespace Ceres
             int c = a + i + 2;
             indices.insert(indices.end(), {a, b, c});
         }
+    }
+
+    void ContentManager::printPrefix() const
+    {
+        fmt::print(fmt::emphasis::bold | fg(fmt::color::steel_blue), "{} ", DEBUG_PREFIX);
     }
 }

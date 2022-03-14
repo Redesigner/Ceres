@@ -1,6 +1,7 @@
 #include "Context.h"
 
 #include <fmt/core.h>
+#include <fmt/color.h>
 
 extern "C"
 {
@@ -22,11 +23,13 @@ namespace Ceres
         glewExperimental = true;
         GLenum glewError = glewInit();
 
-        fmt::print("[graphicsdevice] Initializing GLEW... {}\n", glewGetErrorString(glewError));
+        printPrefix();
+        fmt::print("Initializing GLEW... {}\n", glewGetErrorString(glewError));
 
         if(SDL_GL_SetSwapInterval(1) != 0)
         {
-            fmt::print("[graphicsdevice] Failed to enable VSync. {}\n", glewGetErrorString(glewError));
+            printPrefix();
+            fmt::print("Failed to enable VSync. {}\n", glewGetErrorString(glewError));
         }
 
         int actualBufferCount = 0;
@@ -36,16 +39,23 @@ namespace Ceres
 
         if (actualBufferCount != multisampleBufferCount)
         {
-            fmt::print("[graphicsdevice] OpenGL attribute 'MultiSampleBuffers' was set to {}.\n", actualBufferCount);
+            printPrefix();
+            fmt::print("OpenGL attribute 'MultiSampleBuffers' was set to {}.\n", actualBufferCount);
         }
         if (actualSampleCount != multisampleSampleCount)
         {
-            fmt::print("[graphicsdevice] OpenGL attribute 'MultiSampleSamples' was set to {}.\n", actualSampleCount);
+            printPrefix();
+            fmt::print("OpenGL attribute 'MultiSampleSamples' was set to {}.\n", actualSampleCount);
         }
     }
 
     Context::~Context()
     {
         SDL_GL_DeleteContext(_glContext);
+    }
+
+    void Context::printPrefix() const
+    {
+        fmt::print(fmt::emphasis::bold | fg(fmt::color::steel_blue), "[GraphicsDevice] ");
     }
 }
