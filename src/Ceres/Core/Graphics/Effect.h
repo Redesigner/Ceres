@@ -25,7 +25,7 @@ namespace Ceres
     class Effect
     {
         public:
-            Effect(const char* vertFile, const char* fragFile, const char* shaderName);
+            Effect(const std::string& vertData, const std::string& fragData, const char* shaderName);
             Effect(Effect&) = delete;
             Effect(Effect&& effect);
             ~Effect();
@@ -47,7 +47,7 @@ namespace Ceres
             const std::string& GetName() const;
 
         private:
-            bool compileShader(GLuint shader, const char* filename, std::string source);
+            bool compileShader(GLuint shader, const std::string& source);
             void printGlShaderError(GLuint shader);
             GLint getUniformLocation(std::string& name);
 

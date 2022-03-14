@@ -31,7 +31,8 @@ MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei 
 
 namespace Ceres
 {
-    GraphicsDevice::GraphicsDevice()
+    GraphicsDevice::GraphicsDevice(ContentManager& contentManager)
+        :_contentManager(contentManager)
     {
         _currentContext = new Context(_window);
 
@@ -136,7 +137,10 @@ namespace Ceres
 
     AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName)
     {
-        _loadedEffects.push_back(std::move(Effect(vertexShaderName, fragmentShaderName, shaderName)));
+        const std::string& vertexShaderSource = _contentManager.LoadString(vertexShaderName);
+        const std::string& fragmentShaderSource = _contentManager.LoadString(fragmentShaderName);
+        _loadedEffects.push_back(std::move(Effect(vertexShaderSource, fragmentShaderSource, shaderName)));
+        
         // set the ambient lightmap here, since it shouldn't change once we load the effect
         _loadedEffects.at(_loadedEffects.size() - 1).SetCubemap("lightmap", _lightMap);
         return AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1);

@@ -23,7 +23,9 @@ namespace Ceres
             void Update(double seconds);
             void Draw();
 
+            // Public members with the same name as the class types should be lowercase
             InputHandler inputHandler;
+            ContentManager contentManager;
             GraphicsDevice graphicsDevice;
             ServiceContainer serviceContainer;
             

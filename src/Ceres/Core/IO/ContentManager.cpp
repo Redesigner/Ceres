@@ -19,7 +19,13 @@ const std::string FILESIZE_SUFFIX[] = {"B", "kB", "mB", "gB"};
 
 namespace Ceres
 {
-    const std::string ContentManager::LoadString(const char* filename)
+    ContentManager::ContentManager()
+    {}
+
+    ContentManager::~ContentManager()
+    {}
+    
+    const std::string ContentManager::LoadString(const char* filename) const
     {
         std::string currentPath = CONTENT_DIR;
         currentPath.append(filename);
@@ -50,7 +56,7 @@ namespace Ceres
         return result;
     }
 
-    const MeshPrimitive<VertexPositionNormalTexture> ContentManager::LoadMesh(const char* filename)
+    const MeshPrimitive<VertexPositionNormalTexture> ContentManager::LoadMesh(const char* filename) const
     {
         std::string fileRaw = LoadString(filename);
         std::string::iterator lineStart = fileRaw.begin();
@@ -105,7 +111,7 @@ namespace Ceres
         return MeshPrimitive<VertexPositionNormalTexture>(vertices, indices);
     }
 
-    Vector3 ContentManager::generateVertex(std::string::iterator& start, std::string::iterator& end)
+    Vector3 ContentManager::generateVertex(std::string::iterator& start, std::string::iterator& end) const
     {
         Vector3 vertex;
         const std::regex separator("(?!\\s)[0-9|.|-]+?(?=\\s)");
@@ -131,7 +137,9 @@ namespace Ceres
         return vertex;
     }
 
-    void ContentManager::addFace(std::string::iterator& dataStart, std::string::iterator& dataEnd, const std::vector<Vector3> &vertices, const std::vector<Vector3> &normals, const std::vector<Vector2> &uvs, std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices)
+    void ContentManager::addFace(std::string::iterator& dataStart, std::string::iterator& dataEnd,
+        const std::vector<Vector3> &vertices, const std::vector<Vector3> &normals, const std::vector<Vector2> &uvs,
+        std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices) const
     {
         const std::regex separator("(?!\\s)[0-9|/]+?(?=\\s)");
         std::sregex_iterator iter(dataStart, dataEnd, separator);

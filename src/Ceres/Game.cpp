@@ -29,6 +29,7 @@ void testFunc()
 namespace Ceres
 {
     Game::Game()
+        :graphicsDevice(contentManager)
     {
     }
 
@@ -65,11 +66,11 @@ namespace Ceres
         graphicsDevice.LoadMesh(cube, "cube");
         graphicsDevice.LoadMesh(cubeRed, "cubered");
         graphicsDevice.LoadEffect("textured");
-        graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/RoundCube.obj"), graphicsDevice.GetEffect("textured"), "roundcube");
+        graphicsDevice.LoadMesh(contentManager.LoadMesh("Meshes/RoundCube.obj"), graphicsDevice.GetEffect("textured"), "roundcube");
         graphicsDevice.LoadTexture("dummyTex2.png", "dummy");
         graphicsDevice.LoadTexture("Cloud.png", "cloud");
         graphicsDevice.LoadTexture("transparency.png", "heart");
-        graphicsDevice.LoadMesh(ContentManager::LoadMesh("Meshes/test.obj"), graphicsDevice.GetEffect("textured"), "dummy");
+        graphicsDevice.LoadMesh(contentManager.LoadMesh("Meshes/test.obj"), graphicsDevice.GetEffect("textured"), "dummy");
 
 
         _world.CreateEntity<Actor>(serviceContainer);

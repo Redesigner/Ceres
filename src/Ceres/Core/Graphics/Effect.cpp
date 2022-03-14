@@ -10,14 +10,14 @@
 
 namespace Ceres
 {
-    Effect::Effect(const char* vertFile, const char* fragFile, const char* shaderName)
+    Effect::Effect(const std::string& vertData, const std::string& fragData, const char* shaderName)
     {
         _name = shaderName;
         _glProgram = glCreateProgram();
         _vertexShader = glCreateShader(GL_VERTEX_SHADER);
         _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         _viewPosition = Matrix::Translation(0, -2, -20);
-        if(compileShader(_vertexShader, vertFile, _vertexShaderSource) && compileShader(_fragmentShader, fragFile, _fragmentShaderSource))
+        if(compileShader(_vertexShader, vertData) && compileShader(_fragmentShader, fragData))
         {
             glAttachShader(_glProgram, _vertexShader);
             glAttachShader(_glProgram, _fragmentShader);
@@ -182,9 +182,8 @@ namespace Ceres
 
 
     // Private methods
-    bool Effect::compileShader(GLuint shader, const char* filename, std::string source)
+    bool Effect::compileShader(GLuint shader, const std::string& source)
     {
-        source = ContentManager::LoadString(filename);
         const char* sourceArray = source.c_str();
         glShaderSource(shader, 1, &sourceArray, NULL);
 

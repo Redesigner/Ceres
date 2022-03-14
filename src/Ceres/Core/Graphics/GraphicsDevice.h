@@ -22,6 +22,8 @@
 #include "../Components/MeshComponent.h"
 #include "../Components/SpriteComponent.h"
 
+#include "../IO/ContentManager.h"
+
 #include "VertexStream.h"
 #include "VertexTypes/VertexPositionLayout.h"
 
@@ -39,7 +41,7 @@ namespace Ceres
     {
         public:
 
-            GraphicsDevice();
+            GraphicsDevice(ContentManager& contentManager);
             ~GraphicsDevice();
 
             void BeginRender();
@@ -91,6 +93,8 @@ namespace Ceres
             void renderSkybox();
             void renderShadows();
             void renderSprites();
+
+            ContentManager& _contentManager;
 
             ComponentList _meshComponents;
             ComponentList _cameraComponents;
