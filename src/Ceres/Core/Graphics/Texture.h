@@ -26,6 +26,7 @@ namespace Ceres
              * @param textureName A unique identifier for the texture
              */
             Texture(std::string filePath, std::string textureName);
+            Texture(const unsigned char* imageData, unsigned int width, unsigned int height, std::string textureName);
             Texture(const Texture&) = delete;
             Texture(Texture&& texture);
             ~Texture();

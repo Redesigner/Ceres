@@ -39,6 +39,18 @@ namespace Ceres
         _name = textureName;
     }
 
+    Texture::Texture(const unsigned char* imageData, unsigned int width, unsigned int height, std::string textureName)
+    {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        GLuint texture = 0;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, imageData);
+        _textureID = texture;
+        _name = textureName;
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    }
+
     Texture::Texture(Texture&& texture)
     {
         _textureID = texture._textureID;

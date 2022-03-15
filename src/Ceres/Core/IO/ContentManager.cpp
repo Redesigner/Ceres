@@ -13,6 +13,10 @@ extern "C"
 #include <cmath>
 #include <regex>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_MODULE_H
+
 const std::string CWD = SDL_GetBasePath();
 const std::string CONTENT_DIR = CWD + "..\\..\\content\\";
 
@@ -25,29 +29,11 @@ namespace Ceres
 {
     ContentManager::ContentManager()
     {
-        FT_Error error = FT_Init_FreeType(&fontLibrary);
-        if (error)
-        {
-            printPrefix();
-            fmt::print("Failed to initialize freetype.\n");
-        }
-        else
-        {
-            printPrefix();
-            fmt::print("FreeType library initialized.\n");
-        }
-        std::string arialPath = FONT_DIR + "arial.ttf";
-        FT_Face arial;
-        error = FT_New_Face(fontLibrary, arialPath.c_str(), 0, &arial);
-        if (error)
-        {
-            printPrefix();
-            fmt::print("failed to load font 'arial.ttf'.\n");
-        }
     }
 
     ContentManager::~ContentManager()
-    {}
+    {
+    }
 
     const std::string ContentManager::LoadString(const char* filename) const
     {
@@ -134,6 +120,76 @@ namespace Ceres
             lineStart = lineEnd + 1;
         }
         return MeshPrimitive<VertexPositionNormalTexture>(vertices, indices);
+    }
+
+    void ContentManager::LoadFont(std::string fontName)
+    {
+        FT_Library fontLibrary = nullptr;
+        FT_Error error = FT_Init_FreeType(&fontLibrary);
+        if (error)
+        {
+            printPrefix();
+            fmt::print("Failed to initialize freetype.\n");
+        }
+        else
+        {
+            printPrefix();
+            fmt::print("FreeType library initialized.\n");
+        }
+        const unsigned int textureWidth = 1024;
+        const unsigned int textureHeight = 1024;
+        std::string arialPath = FONT_DIR + fontName;
+        FT_Face face = nullptr;
+        FT_New_Face(fontLibrary, arialPath.c_str(), 0, &face);
+        FT_Set_Char_Size(
+            face,    /* handle to face object           */
+            0,       /* char_width in 1/64th of points  */
+            16*64,   /* char_height in 1/64th of points */
+            300,     /* horizontal device resolution    */
+            300 );   /* vertical device resolution      */
+        FT_GlyphSlot glyphSlot = face->glyph;
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        GLuint texture = 0;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureHeight, textureWidth, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+
+        FT_ULong currentX = 0;
+        FT_ULong currentY = 0;
+        FT_ULong currentH = 0;
+        for (FT_ULong i = 0; i < 256; i++)
+        {
+            FT_UInt glyphIndex = FT_Get_Char_Index(face, i);
+            FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
+            FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+
+            FT_UInt width = glyphSlot->bitmap.width;
+            FT_UInt height = glyphSlot->bitmap.rows;
+
+            if (currentX + width >= textureWidth)
+            {
+                currentX = 0;
+                currentY += currentH;
+                currentH = 0;
+            }
+            if (currentY + width >= textureHeight)
+            {
+                printPrefix();
+                fmt::print("Unable to generate font texture, not enough texture space.\n");
+                break;
+            }
+            glTexSubImage2D(GL_TEXTURE_2D, 0,
+                currentX, currentY,
+                width, height,
+                GL_RED, GL_UNSIGNED_BYTE, glyphSlot->bitmap.buffer);
+            currentX += width;
+            if (height > currentH)
+            {
+                currentH = height;
+            }
+        }
+        FT_Done_Face(face);
+        FT_Done_Library(fontLibrary);
     }
 
     Vector3 ContentManager::generateVertex(std::string::iterator& start, std::string::iterator& end) const

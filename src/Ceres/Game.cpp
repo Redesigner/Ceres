@@ -60,6 +60,7 @@ namespace Ceres
 
     void Game::Load()
     {
+        contentManager.LoadFont("arial.ttf");
         Cube<VertexPositionNormalColor> cube = Cube<VertexPositionNormalColor>(1, 1, 1, Color(181, 206, 245));
         Cube<VertexPositionNormalColor> cubeRed = Cube<VertexPositionNormalColor>(1, 1, 1, Color(216, 25, 30)); 
         Sphere sphere(1, 20, 32, Color::Blue());

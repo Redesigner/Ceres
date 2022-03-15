@@ -1,10 +1,8 @@
 #pragma once
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include "../Graphics/VertexTypes/VertexPositionNormalTexture.h"
 #include "../Graphics/Primitives/MeshPrimitive.h"
+#include "../Graphics/Texture.h"
 
 #include <string>
 #include <vector>
@@ -18,6 +16,7 @@ namespace Ceres
             ~ContentManager();
             const std::string LoadString(const char* filename) const;
             const MeshPrimitive<VertexPositionNormalTexture> LoadMesh(const char* filename) const;
+            void LoadFont(std::string fontName);
         private:
             Vector3 generateVertex(std::string::iterator& start, std::string::iterator& end) const;
             
@@ -26,7 +25,5 @@ namespace Ceres
                 std::vector<VertexPositionNormalTexture>& mesh, std::vector<int>& indices) const;
 
             void printPrefix() const;
-
-            FT_Library fontLibrary;            
     };
 }
