@@ -63,7 +63,8 @@ namespace Ceres
         _spritePlane = new Plane();
 
         _fontBatchers.emplace_back(128, _contentManager.LoadFont("arial.ttf", 128), LoadEffect("font"));
-        _fontBatchers[0].LoadString("This is a test message!", 256, 64);
+        _fontBatchers[0].LoadString("This is a test message! AV", 256, 256);
+        _fontBatchers[0].SetScreenSize(_window.GetViewportSize().X, _window.GetViewportSize().Y);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -101,6 +102,7 @@ namespace Ceres
         renderShadows();
         renderMeshes();
         renderSkybox();
+        glDisable(GL_DEPTH_TEST);
         renderSprites();
         for (int i = 0; i < _fontBatchers.size(); i++)
         {
@@ -120,6 +122,7 @@ namespace Ceres
             case SDL_WINDOWEVENT_RESIZED:
             {
                 _window.Resize(windowEvent.data1, windowEvent.data2);
+                _fontBatchers[0].SetScreenSize(_window.GetViewportSize().X, _window.GetViewportSize().Y);
                 return;
             }
             case SDL_WINDOWEVENT_MAXIMIZED:
@@ -133,6 +136,7 @@ namespace Ceres
     void GraphicsDevice::ToggleFullscreen()
     {
         _window.ToggleFullscreen();
+        _fontBatchers[0].SetScreenSize(_window.GetViewportSize().X, _window.GetViewportSize().Y);
     }
     
     void GraphicsDevice::LockWindow()

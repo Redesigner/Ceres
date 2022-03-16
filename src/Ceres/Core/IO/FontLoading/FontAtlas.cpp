@@ -42,10 +42,12 @@ namespace Ceres
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glClearTexImage(_openGLTextureID, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
 
         FT_UInt currentX = 0;
         FT_UInt currentY = 0;
         FT_UInt currentH = 0;
+        const unsigned int padding = 1;
         for (FT_ULong i = 0; i < 256; i++)
         {
             FT_UInt glyphIndex = FT_Get_Char_Index(face, i);
@@ -58,7 +60,7 @@ namespace Ceres
             if (currentX + width >= textureWidth)
             {
                 currentX = 0;
-                currentY += currentH;
+                currentY += currentH + padding * 2;
                 currentH = 0;
             }
             if (currentY + width >= textureHeight)
@@ -74,13 +76,22 @@ namespace Ceres
             _glyphSubs[i] = GlyphSubtexture(
                 currentX * textureResolutionX, currentY * textureResolutionY,
                 width * textureResolutionX, height * textureResolutionY);
-            _glyphSubs[i].pxH = height;
-            _glyphSubs[i].pxW = width;
+            _glyphSubs[i].PxH = height;
+            _glyphSubs[i].PxW = width;
+            _glyphSubs[i].XOffset = glyphSlot->bitmap_left;
+            _glyphSubs[i].YOffset = glyphSlot->bitmap_top;
+            _glyphSubs[i].Advance = glyphSlot->advance.x >> 6;
 
-            currentX += width;
+            currentX += width + padding * 2;
             if (height > currentH)
             {
                 currentH = height;
+            }
+            FT_Vector kerning = FT_Vector();
+            for (int j = 0; j < 256; j++)
+            {
+                FT_Get_Kerning(face, i, j, FT_KERNING_DEFAULT, &kerning);
+                _glyphSubs[i].Kerning[j] = static_cast<float>(kerning.x >> 6);
             }
         }
         FT_Done_Face(face);

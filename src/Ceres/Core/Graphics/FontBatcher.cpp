@@ -30,19 +30,25 @@ namespace Ceres
 		_iBO.Bind();
 		_spriteEffect->Begin();
 		_spriteEffect->SetTexture("tex", _fontAtlas->GetTextureID());
-        _spriteEffect->SetMatrix2D("transform", Matrix2D::Sprite(
-			0, 0,
-            1, -1,
-            1280, 720));
-		}
+        _spriteEffect->SetMatrix2D("transform", _screenSpace);
+	}
 
-	void FontBatcher::LoadString(std::string string, unsigned int xPos, unsigned int yPos)
+	void FontBatcher::SetScreenSize(unsigned int x, unsigned int y)
 	{
-		unsigned int currentX = xPos;
+		_screenSpace = Matrix2D::Sprite(0, 0, 1, -1, x, y);
+	}
+
+	void FontBatcher::LoadString(std::string string, int xPos, int yPos)
+	{
+		int currentX = xPos;
 		for (int i = 0; i < string.length(); i++)
 		{
 			generateGlyphPrimitive(string[i], currentX, yPos);
-			currentX += _fontAtlas->GetCharUV(string[i]).pxW; 
+			currentX += _fontAtlas->GetCharUV(string[i]).Advance;
+			if (i + 1 < string.length())
+			{
+				currentX += _fontAtlas->GetCharUV(string[i]).Kerning[i + 1];
+			} 
 		}
 		_vBO.SetData(&_glyphVertices[0], _glyphVertices.size());
 		_iBO.SetData(&_glyphIndices[0], _glyphIndices.size());
@@ -55,26 +61,28 @@ namespace Ceres
 		return _glyphIndices.size();
 	}
 
-	void FontBatcher::generateGlyphPrimitive(const char glyph, unsigned int xOffset, unsigned int yOffset)
+	void FontBatcher::generateGlyphPrimitive(const char glyph, int xOffset, int yOffset)
 	{
 		if (!_fontAtlas)
 		{
 			throw std::exception();
 		}
 		const GlyphSubtexture& glyphSub = _fontAtlas->GetCharUV(glyph);
+		xOffset += glyphSub.XOffset;
+		yOffset -= glyphSub.YOffset;
 		unsigned int currentIndex = _glyphVertices.size();
 		// Top left
-		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset, yOffset), Vector2(glyphSub.X, glyphSub.Y + glyphSub.H)));
+		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset, yOffset), Vector2(glyphSub.X, glyphSub.Y)));
 		// Top right
-		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset + glyphSub.pxW, yOffset), Vector2(glyphSub.X + glyphSub.W, glyphSub.Y + glyphSub.H)));
+		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset + glyphSub.PxW, yOffset), Vector2(glyphSub.X + glyphSub.W, glyphSub.Y)));
 		// Bottom left
-		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset, yOffset - glyphSub.pxH), Vector2(glyphSub.X, glyphSub.Y)));
+		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset, static_cast<float>(yOffset) + glyphSub.PxH), Vector2(glyphSub.X, glyphSub.Y + glyphSub.H)));
 		// Bottom right
-		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset + glyphSub.pxW, yOffset - glyphSub.pxH), Vector2(glyphSub.X + glyphSub.W, glyphSub.Y)));
+		_glyphVertices.emplace_back(VertexPositionTexture(Vector2(xOffset + glyphSub.PxW, static_cast<float>(yOffset) + glyphSub.PxH), Vector2(glyphSub.X + glyphSub.W, glyphSub.Y + glyphSub.H)));
 		unsigned int a = currentIndex;
 		unsigned int b = currentIndex + 1;
 		unsigned int c = currentIndex + 2;
 		unsigned int d = currentIndex + 3;
-		_glyphIndices.insert(_glyphIndices.end(), {a, b, c, c, b, d});
+		_glyphIndices.insert(_glyphIndices.end(), {c, b, a, d, b, c});
 	}
 }

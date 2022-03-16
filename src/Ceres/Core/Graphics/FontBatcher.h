@@ -26,12 +26,13 @@ namespace Ceres
 			~FontBatcher();
 
 			void Bind();
-			void LoadString(std::string string, unsigned int xPos, unsigned int yPos);
+			void SetScreenSize(unsigned int x, unsigned int y);
+			void LoadString(std::string string, int xPos, int yPos);
 
 			unsigned int GetTriCount() const;
 
 		private:
-			void generateGlyphPrimitive(const char glyph, unsigned int xOffset, unsigned int yOffset);
+			void generateGlyphPrimitive(const char glyph, int xOffset, int yOffset);
 
 			IndexBuffer _iBO;
 			VertexArrayObject _vAO;
@@ -41,5 +42,7 @@ namespace Ceres
 
 			std::vector<VertexPositionTexture> _glyphVertices;
 			std::vector<unsigned int> _glyphIndices;
+
+			Matrix2D _screenSpace;
 	};
 }
