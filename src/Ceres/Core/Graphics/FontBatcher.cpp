@@ -47,18 +47,19 @@ namespace Ceres
 			currentX += _fontAtlas->GetCharUV(string[i]).Advance;
 			if (i + 1 < string.length())
 			{
-				currentX += _fontAtlas->GetCharUV(string[i]).Kerning[i + 1];
+				currentX += _fontAtlas->GetKerning(string[i], string[i + 1]);
 			} 
 		}
 		_vBO.SetData(&_glyphVertices[0], _glyphVertices.size());
 		_iBO.SetData(&_glyphIndices[0], _glyphIndices.size());
-		// _glyphVertices.clear();
-		// _glyphIndices.clear();
+		_glyphVertices.clear();
+		_glyphIndices.clear();
+		_charCount = string.size(); 
 	}
 
 	unsigned int FontBatcher::GetTriCount() const
 	{
-		return _glyphIndices.size();
+		return _charCount * 6;
 	}
 
 	void FontBatcher::generateGlyphPrimitive(const char glyph, int xOffset, int yOffset)

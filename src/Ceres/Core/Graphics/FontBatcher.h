@@ -42,6 +42,7 @@ namespace Ceres
 
 			std::vector<VertexPositionTexture> _glyphVertices;
 			std::vector<unsigned int> _glyphIndices;
+			unsigned int _charCount = 0;
 
 			Matrix2D _screenSpace;
 	};

@@ -15,6 +15,5 @@ namespace Ceres
 		float X, Y, W, H;
 		unsigned int PxW, PxH;
 		float XOffset, YOffset, Advance;
-		float Kerning[256];
 	};
 }

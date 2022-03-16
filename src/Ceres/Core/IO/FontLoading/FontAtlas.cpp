@@ -48,7 +48,7 @@ namespace Ceres
         FT_UInt currentY = 0;
         FT_UInt currentH = 0;
         const unsigned int padding = 1;
-        for (FT_ULong i = 0; i < 256; i++)
+        for (int i = 0; i < 256; i++)
         {
             FT_UInt glyphIndex = FT_Get_Char_Index(face, i);
             FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
@@ -91,7 +91,11 @@ namespace Ceres
             for (int j = 0; j < 256; j++)
             {
                 FT_Get_Kerning(face, i, j, FT_KERNING_DEFAULT, &kerning);
-                _glyphSubs[i].Kerning[j] = static_cast<float>(kerning.x >> 6);
+                if (kerning.x != 0)
+                {
+                    KerningPair pair = KerningPair(i, j);
+                    _kerningMap.emplace_back(pair, kerning.x >> 6);
+                }
             }
         }
         FT_Done_Face(face);
@@ -115,7 +119,20 @@ namespace Ceres
 
     const GlyphSubtexture& FontAtlas::GetCharUV(char glyph) const
     {
-        return _glyphSubs[static_cast<int>(glyph)];
+        return _glyphSubs[glyph];
+    }
+
+    float FontAtlas::GetKerning(char a, char b) const
+    {
+        KerningPair pair = KerningPair(a, b);
+        for(std::pair<KerningPair, float> value : _kerningMap)
+        {
+            if (value.first == pair)
+            {
+                return value.second;
+            }
+        }
+        return 0.0f;
     }
 
     GLuint FontAtlas::GetTextureID() const
