@@ -25,6 +25,10 @@ namespace Ceres
             {
 		        return &_container->at(_id);
 	        };
+            const AssetType* operator->() const
+            {
+                return &_container->at(_id);
+            }
 
             /**
              * @brief Does the asset exist?

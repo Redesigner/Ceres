@@ -144,6 +144,19 @@ namespace Ceres
         glUniform1i(location, 0);
     }
 
+    void Effect::SetTexture(std::string name, GLuint textureID)
+    {
+        GLint location = getUniformLocation(name);
+        if (location == -1)
+        {
+            fmt::print("[glShader] Unable to find GL_Uniform '{}' in shader '{}'.\n", name, _name);
+            return;
+        }
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glUniform1i(location, 0);
+    }
+
     void Effect::SetCubemap(std::string name, Cubemap* cubemap)
     {
         GLint location = getUniformLocation(name);

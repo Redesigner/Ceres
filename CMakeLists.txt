@@ -49,6 +49,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Graphics/Context.cpp
 	src/Ceres/Core/Graphics/CubeMap.cpp
 	src/Ceres/Core/Graphics/Effect.cpp
+	src/Ceres/Core/Graphics/FontBatcher.cpp
 	src/Ceres/Core/Graphics/GraphicsDevice.cpp
 	src/Ceres/Core/Graphics/IndexBuffer.cpp
 	src/Ceres/Core/Graphics/Mesh.cpp
@@ -81,6 +82,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Input/Joystick.cpp
 
 	src/Ceres/Core/IO/ContentManager.cpp
+	src/Ceres/Core/IO/FontLoading/FontAtlas.cpp
 
 	# Physics
 	src/Ceres/Core/Physics/ConvexHull.cpp

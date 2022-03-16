@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Cubemap.h"
+#include "FontBatcher.h"
 #include "Mesh.h"
 #include "Shadowmap.h"
 #include "Skybox.h"
@@ -116,6 +117,8 @@ namespace Ceres
 
             AssetPtr<Effect> _skyboxEffect;
             AssetPtr<Effect> _spriteEffect;
+
+            std::vector<FontBatcher> _fontBatchers;
 
             Cubemap* _lightMap;
 

@@ -4,7 +4,6 @@
 #include "VertexTypes/IVertexType.h"
 #include "VertexTypes/IVertexLayout.h"
 
-#include <fmt/core.h>
 #include <vector>
 #include <stdexcept>
 

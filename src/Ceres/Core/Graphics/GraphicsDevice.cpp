@@ -61,6 +61,9 @@ namespace Ceres
 
         _shadowmap = new Shadowmap(2048, LoadEffect("shadowmap"));
         _spritePlane = new Plane();
+
+        _fontBatchers.emplace_back(128, _contentManager.LoadFont("arial.ttf", 128), LoadEffect("font"));
+        _fontBatchers[0].LoadString("This is a test message!", 256, 64);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -99,6 +102,11 @@ namespace Ceres
         renderMeshes();
         renderSkybox();
         renderSprites();
+        for (int i = 0; i < _fontBatchers.size(); i++)
+        {
+            _fontBatchers[i].Bind();
+            glDrawElements(GL_TRIANGLES, _fontBatchers[i].GetTriCount(), GL_UNSIGNED_INT, NULL);
+        }
     }
 
     void GraphicsDevice::ReceiveEvent(SDL_WindowEvent& windowEvent)
