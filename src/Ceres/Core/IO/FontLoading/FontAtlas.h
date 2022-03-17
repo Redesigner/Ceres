@@ -24,8 +24,8 @@ namespace Ceres
 
 			const GlyphSubtexture& GetCharUV(char glyph) const;
 			float GetKerning(char a, char b) const;
-
 			GLuint GetTextureID() const;
+			float GetLineHeight() const;
 
 		private:
 			struct KerningPair
@@ -44,9 +44,9 @@ namespace Ceres
 			GLuint _openGLTextureID = 0;
 			// Assuming we use UTF-8, cover all possible values
 			std::array<GlyphSubtexture, 256> _glyphSubs;
-			std::vector<std::pair<KerningPair, float>> _kerningMap; 
-
-
+			std::vector<std::pair<KerningPair, float>> _kerningMap;
+			
+			float _lineHeight = 0;
 			bool _initialized = true;
 	};
 }

@@ -63,7 +63,7 @@ namespace Ceres
         _spritePlane = new Plane();
 
         _fontBatchers.emplace_back(128, _contentManager.LoadFont("arial.ttf", 128), LoadEffect("font"));
-        _fontBatchers[0].LoadString("This is a test message! AV", 256, 256);
+        _fontBatchers[0].LoadString("This is a test message!\nThis is a test newline!", 256, 256);
         _fontBatchers[0].SetScreenSize(_window.GetViewportSize().X, _window.GetViewportSize().Y);
     }
 

@@ -53,6 +53,10 @@ namespace Ceres
             FT_UInt glyphIndex = FT_Get_Char_Index(face, i);
             FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
             FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+            if (_lineHeight == 0)
+            {
+                _lineHeight = static_cast<float>((face->size->metrics.ascender - face->size->metrics.descender) >> 6);            
+            }
 
             FT_UInt width = glyphSlot->bitmap.width;
             FT_UInt height = glyphSlot->bitmap.rows;
@@ -78,9 +82,9 @@ namespace Ceres
                 width * textureResolutionX, height * textureResolutionY);
             _glyphSubs[i].PxH = height;
             _glyphSubs[i].PxW = width;
-            _glyphSubs[i].XOffset = glyphSlot->bitmap_left;
-            _glyphSubs[i].YOffset = glyphSlot->bitmap_top;
-            _glyphSubs[i].Advance = glyphSlot->advance.x >> 6;
+            _glyphSubs[i].XOffset = static_cast<float>(glyphSlot->bitmap_left);
+            _glyphSubs[i].YOffset = static_cast<float>(glyphSlot->bitmap_top);
+            _glyphSubs[i].Advance = static_cast<float>(glyphSlot->advance.x >> 6);
 
             currentX += width + padding * 2;
             if (height > currentH)
@@ -94,7 +98,7 @@ namespace Ceres
                 if (kerning.x != 0)
                 {
                     KerningPair pair = KerningPair(i, j);
-                    _kerningMap.emplace_back(pair, kerning.x >> 6);
+                    _kerningMap.emplace_back(pair, static_cast<float>(kerning.x >> 6));
                 }
             }
         }
@@ -105,6 +109,7 @@ namespace Ceres
     FontAtlas::FontAtlas(FontAtlas&& fontAtlas)
     {
         _openGLTextureID = fontAtlas._openGLTextureID;
+        _lineHeight = fontAtlas._lineHeight;
         std::swap(fontAtlas._glyphSubs, _glyphSubs);
         fontAtlas._initialized = false;
     }
@@ -138,5 +143,10 @@ namespace Ceres
     GLuint FontAtlas::GetTextureID() const
     {
         return _openGLTextureID;
+    }
+
+    float FontAtlas::GetLineHeight() const
+    {
+        return _lineHeight;
     }
 }

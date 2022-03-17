@@ -41,9 +41,16 @@ namespace Ceres
 	void FontBatcher::LoadString(std::string string, int xPos, int yPos)
 	{
 		int currentX = xPos;
+		int currentY = yPos;
 		for (int i = 0; i < string.length(); i++)
 		{
-			generateGlyphPrimitive(string[i], currentX, yPos);
+			if (string[i] == '\\n' || string[i] == 10)
+			{
+				currentX = xPos;
+				currentY += _fontAtlas->GetLineHeight();
+				continue;
+			}
+			generateGlyphPrimitive(string[i], currentX, currentY);
 			currentX += _fontAtlas->GetCharUV(string[i]).Advance;
 			if (i + 1 < string.length())
 			{
