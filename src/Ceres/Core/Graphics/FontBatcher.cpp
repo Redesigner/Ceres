@@ -24,6 +24,10 @@ namespace Ceres
 	FontBatcher::~FontBatcher()
 	{}
 
+	/**
+	 * @brief Attach our buffers and textures to the current OpenGL state
+	 * 
+	 */
 	void FontBatcher::Bind()
 	{
 		_vAO.Bind();
@@ -38,6 +42,13 @@ namespace Ceres
 		_screenSpace = Matrix2D::Sprite(0, 0, 1, -1, x, y);
 	}
 
+	/**
+	 * @brief Populate the local buffers with the necessary data for rendering text
+	 * 
+	 * @param string Text to be displayed
+	 * @param xPos
+	 * @param yPos 
+	 */
 	void FontBatcher::LoadString(std::string string, int xPos, int yPos)
 	{
 		int currentX = xPos;
@@ -57,16 +68,75 @@ namespace Ceres
 				currentX += _fontAtlas->GetKerning(string[i], string[i + 1]);
 			} 
 		}
-		_vBO.SetData(&_glyphVertices[0], _glyphVertices.size());
-		_iBO.SetData(&_glyphIndices[0], _glyphIndices.size());
-		_glyphVertices.clear();
-		_glyphIndices.clear();
-		_charCount = string.size(); 
+
+		_unbufferedChars += string.size(); 
 	}
 
-	unsigned int FontBatcher::GetTriCount() const
+	/**
+	 * @brief Get the total number of vertices to render
+	 * 
+	 * @return unsigned int 
+	 */
+	unsigned int FontBatcher::GetVertexCount() const
 	{
-		return _charCount * 6;
+		return _bufferedChars * 6;
+	}
+
+	void FontBatcher::RegisterComponent(ComponentPtr<TextComponent> component)
+	{
+		_componentsToBatch.push_back(component);
+		Vector2 position = component->GetPosition();
+		LoadString(component->GetContent(), position.X, position.Y);
+	}
+
+	void FontBatcher::UnregisterComponent(ComponentPtr<TextComponent> component)
+	{
+		for (auto i = _componentsToBatch.begin(); i < _componentsToBatch.end(); i++)
+		{
+			if (component == *i)
+			{
+				_componentsToBatch.erase(i);
+			}
+		}
+	}
+
+	void FontBatcher::Regenerate()
+	{
+		_glyphVertices.clear();
+		_glyphIndices.clear();
+		for (ComponentPtr<TextComponent> component : _componentsToBatch)
+		{
+			Vector2 position = component->GetPosition();
+			LoadString(component->GetContent(), position.X, position.Y);
+			component->Updated = false;
+		}
+		BufferData();
+	}
+
+	bool FontBatcher::CheckForUpdates() const
+	{
+		for (ComponentPtr<TextComponent> component : _componentsToBatch)
+		{
+			if (component->Updated)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @brief Send our rendering data to the VBO and IBO
+	 * 
+	 */
+	void FontBatcher::BufferData()
+	{
+		_vBO.SetData(&_glyphVertices[0], _glyphVertices.size(), 0);
+		_iBO.SetData(&_glyphIndices[0], _glyphIndices.size(), 0);
+		_glyphVertices.clear();
+		_glyphIndices.clear();
+		_bufferedChars = _unbufferedChars;
+		_unbufferedChars = 0;
 	}
 
 	void FontBatcher::generateGlyphPrimitive(const char glyph, int xOffset, int yOffset)

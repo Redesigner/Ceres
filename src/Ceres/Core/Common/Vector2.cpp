@@ -52,4 +52,14 @@ namespace Ceres
         }
         return std::acos(dot);
     }
+
+    bool Vector2::operator==(const Vector2& b) const
+    {
+        return X == b.X && Y == b.Y;
+    }
+
+    bool Vector2::operator!=(const Vector2& b) const
+    {
+        return X != b.X || Y != b.Y;
+    }
 }

@@ -38,6 +38,7 @@ target_sources(ceres PRIVATE
 	src/Ceres/Core/Components/MovementComponent.cpp
 	src/Ceres/Core/Components/PhysicsComponent.cpp
 	src/Ceres/Core/Components/SpriteComponent.cpp
+	src/Ceres/Core/Components/TextComponent.cpp
 
 
 	src/Ceres/Core/Entities/Base/IEntity.cpp

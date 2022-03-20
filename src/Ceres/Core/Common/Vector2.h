@@ -22,6 +22,9 @@ namespace Ceres
 
         explicit operator Vector3() const { return Vector3(X, Y, 0.0f); }
 
+        bool operator==(const Vector2& b) const;
+        bool operator!=(const Vector2& b) const;
+
         float X;
         float Y;
     };

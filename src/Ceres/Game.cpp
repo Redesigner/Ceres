@@ -72,6 +72,8 @@ namespace Ceres
         graphicsDevice.LoadTexture("transparency.png", "heart");
         graphicsDevice.LoadMesh(contentManager.LoadMesh("Meshes/test.obj"), graphicsDevice.GetEffect("textured"), "dummy");
 
+        graphicsDevice.LoadFont("arial.ttf");
+
 
         _world.CreateEntity<Actor>(serviceContainer);
 

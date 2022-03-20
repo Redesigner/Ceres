@@ -3,7 +3,6 @@
 #include "ComponentList.h"
 
 #include <stdexcept>
-#include <fmt/core.h>
 #include <type_traits>
 
 namespace Ceres
@@ -26,20 +25,20 @@ namespace Ceres
     };
 
     template <typename T>
-    struct ComponentRef : public ComponentPtrBase
+    struct ComponentPtr : public ComponentPtrBase
     {
         public:
-            ComponentRef()
+            ComponentPtr()
             {
                 static_assert(std::is_base_of<IComponent, T>::value, "The type requested from must be derived from 'IComponent'.");
             }
-            ComponentRef(ComponentList* list, int localID)
+            ComponentPtr(ComponentList* list, int localID)
                 : ComponentPtrBase(list, localID)
             {
                 static_assert(std::is_base_of<IComponent, T>::value, "The type requested from must be derived from 'IComponent'.");
             }
 
-            const ComponentRef operator=(const ComponentRef& value)
+            const ComponentPtr operator=(const ComponentPtr& value)
             {
                 _listRef = value._listRef;
                 _localID = value._localID;
@@ -49,6 +48,11 @@ namespace Ceres
             T* operator->() const
             {
                 return dynamic_cast<T*>((*_listRef)[_localID]);
+            }
+            
+            bool operator==(const ComponentPtr& value) const
+            {
+                return _listRef == value._listRef && _localID == value._localID;
             }
             
     };

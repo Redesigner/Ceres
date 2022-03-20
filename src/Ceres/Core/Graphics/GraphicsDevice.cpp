@@ -50,9 +50,11 @@ namespace Ceres
         std::string lightMapLocation = CONTENT_DIR + "Textures\\lightmap\\ambient_";
         _lightMap = new Cubemap(lightMapLocation.c_str());
         
+        // Essential shaders that really shouldn't change too much... we'll just keep references to these around
         LoadEffect("default");
         _skyboxEffect = LoadEffect("skybox");
         _spriteEffect = LoadEffect("sprite");
+        _fontEffect = LoadEffect("font");
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
@@ -62,9 +64,9 @@ namespace Ceres
         _shadowmap = new Shadowmap(2048, LoadEffect("shadowmap"));
         _spritePlane = new Plane();
 
-        _fontBatchers.emplace_back(128, _contentManager.LoadFont("arial.ttf", 128), LoadEffect("font"));
-        _fontBatchers[0].LoadString("This is a test message!\nThis is a test newline!", 256, 256);
-        _fontBatchers[0].SetScreenSize(_window.GetViewportSize().X, _window.GetViewportSize().Y);
+        // _fontBatchers.emplace_back(128, _contentManager.LoadFont("arial.ttf", 128), LoadEffect("font"));
+        // _fontBatchers[0].LoadString("This is a test message!\nThis is a test newline!", 256, 256);
+        // _fontBatchers[0].SetScreenSize(_window.GetViewportSize().X, _window.GetViewportSize().Y);
     }
 
     GraphicsDevice::~GraphicsDevice()
@@ -102,13 +104,9 @@ namespace Ceres
         renderShadows();
         renderMeshes();
         renderSkybox();
-        glDisable(GL_DEPTH_TEST);
+        glClear(GL_DEPTH_BUFFER_BIT);
         renderSprites();
-        for (int i = 0; i < _fontBatchers.size(); i++)
-        {
-            _fontBatchers[i].Bind();
-            glDrawElements(GL_TRIANGLES, _fontBatchers[i].GetTriCount(), GL_UNSIGNED_INT, NULL);
-        }
+        renderText();
     }
 
     void GraphicsDevice::ReceiveEvent(SDL_WindowEvent& windowEvent)
@@ -235,7 +233,18 @@ namespace Ceres
         return AssetPtr<Texture>();
     }
 
-    void GraphicsDevice::SetCamera(ComponentRef<CameraComponent> camera)
+    void GraphicsDevice::LoadFont(std::string fontName)
+    {
+        // Load a 64px sized font
+        AssetPtr<FontAtlas> newFont = _contentManager.LoadFont(fontName, 64);
+        _fontBatchers.emplace_back(1024, newFont, _fontEffect);
+        AssetPtr<FontBatcher> fontBatcher = AssetPtr<FontBatcher>(_fontBatchers, _fontBatchers.size() - 1);
+        size_t stringEnd = fontName.rfind('.');
+        std::string fontNameOnly = fontName.substr(0, fontName.size() - stringEnd + 1);
+        _fontIDMap.insert(std::pair<std::string, AssetPtr<FontBatcher>>(fontNameOnly, fontBatcher));
+    }
+
+    void GraphicsDevice::SetCamera(ComponentPtr<CameraComponent> camera)
     {
         _currentCamera = camera;
     }
@@ -257,7 +266,7 @@ namespace Ceres
     ComponentPtrBase GraphicsDevice::CreateCamera()
     {
         _cameraComponents.Insert(new CameraComponent());
-        _currentCamera = ComponentRef<CameraComponent>(&_cameraComponents, _cameraComponents.Size() - 1);
+        _currentCamera = ComponentPtr<CameraComponent>(&_cameraComponents, _cameraComponents.Size() - 1);
         _currentCamera->SetClipRange(1.0f, 10.0f);
         const Vector2 resolution = _window.GetViewportSize();
         _currentCamera->SetResolution(resolution.X, resolution.Y);
@@ -269,6 +278,20 @@ namespace Ceres
     {
         _spriteComponents.Insert(new SpriteComponent(texture, x, y, w, h));
         return ComponentPtrBase(&_spriteComponents, _spriteComponents.Size() - 1);
+    }
+
+    ComponentPtrBase GraphicsDevice::CreateText(std::string fontID, std::string text, int x, int y)
+    {
+        TextComponent* textComponent = new TextComponent(fontID, x, y);
+        textComponent->SetContent(text);
+        _textComponents.Insert(textComponent);
+        auto fontBatcher = _fontIDMap.find(fontID);
+        ComponentPtr<TextComponent> textComponentPtr = ComponentPtr<TextComponent>(&_textComponents, _textComponents.Size() - 1);
+        if (fontBatcher != _fontIDMap.end())
+        {
+            fontBatcher->second->RegisterComponent(textComponentPtr);
+        }
+        return textComponentPtr;
     }
 
 
@@ -389,6 +412,20 @@ namespace Ceres
         {
             SpriteComponent* spriteComponent = dynamic_cast<SpriteComponent*>(component);
             render(*spriteComponent);
+        }
+    }
+
+    void GraphicsDevice::renderText()
+    {
+        for (int i = 0; i < _fontBatchers.size(); i++)
+        {
+            _fontBatchers[i].SetScreenSize(_window.GetViewportSize().X, _window.GetViewportSize().Y);
+            if (_fontBatchers[i].CheckForUpdates())
+            {
+                _fontBatchers[i].Regenerate();
+            }
+            _fontBatchers[i].Bind();
+            glDrawElements(GL_TRIANGLES, _fontBatchers[i].GetVertexCount(), GL_UNSIGNED_INT, NULL);
         }
     }
 

@@ -61,6 +61,13 @@ namespace Ceres
                 throw std::invalid_argument(fmt::format("Invalid argument count: {}.", type.name()));
             }
         }
+        else if(type == Type(typeid(TextComponent)))
+        {
+            if(params->Count() == 4)
+            {
+                return _parentDevice.CreateText(params->Get<std::string>(0), params->Get<std::string>(3), params->Get<int>(1), params->Get<int>(2));
+            }
+        }
         {
             throw std::invalid_argument(fmt::format("Unable to generate component of type {}.", type.name()));
         }
@@ -68,7 +75,7 @@ namespace Ceres
 
     TypeList RenderService::GetAssociatedTypes() const
     {
-        return TypeList{Type(typeid(MeshComponent)), Type(typeid(CameraComponent)), Type(typeid(SpriteComponent))};
+        return TypeList{Type(typeid(MeshComponent)), Type(typeid(CameraComponent)), Type(typeid(SpriteComponent)), Type(typeid(TextComponent))};
     }
 
     AssetPtr<Texture> RenderService::GetTexture(std::string textureName)

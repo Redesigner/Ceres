@@ -50,7 +50,7 @@ namespace Ceres
 			template <typename T, typename... Ts>
 			void WriteParam(int offset, T first, Ts&... args)
 			{
-				memcpy(_rawData + offset, &first, sizeof(T));
+				new(_rawData + offset) T(first);
 				_paramLocations.push_back(offset);
 				_paramTypes.push_back(std::type_index(typeid(T)) );
 				WriteParam(offset + sizeof(T), args...);

@@ -7,6 +7,8 @@
 #include <typeindex>
 #include <type_traits>
 
+#include <fmt/core.h>
+
 namespace Ceres
 {
     using Type = std::type_index;

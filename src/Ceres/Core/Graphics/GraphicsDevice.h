@@ -19,9 +19,11 @@
 #include "../Common/Matrix.h"
 
 #include "../Components/Base/ComponentPtr.h"
+#include "../Components/Base/ComponentSet.h"
 #include "../Components/CameraComponent.h"
 #include "../Components/MeshComponent.h"
 #include "../Components/SpriteComponent.h"
+#include "../Components/TextComponent.h"
 
 #include "../IO/ContentManager.h"
 
@@ -69,7 +71,10 @@ namespace Ceres
             AssetPtr<Texture> LoadTexture(std::string textureName);
             AssetPtr<Texture> GetTexture(std::string textureName);
 
-            void SetCamera(ComponentRef<CameraComponent> camera);
+            void LoadFont(std::string fontName);
+
+
+            void SetCamera(ComponentPtr<CameraComponent> camera);
 
             ComponentPtrBase CreateMeshComponent(AssetPtr<Mesh> mesh);
             ComponentPtrBase CreateMeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
@@ -77,6 +82,8 @@ namespace Ceres
             ComponentPtrBase CreateCamera();
 
             ComponentPtrBase CreateSprite(AssetPtr<Texture> texture, int x, int y, int w, int h);
+
+            ComponentPtrBase CreateText(std::string fontID, std::string text, int x, int y);
 
         private:
             void render(MeshComponent& meshComponent) const;
@@ -94,22 +101,30 @@ namespace Ceres
             void renderSkybox();
             void renderShadows();
             void renderSprites();
+            void renderText();
 
             void printPrefix() const;
 
             ContentManager& _contentManager;
 
-            ComponentList _meshComponents;
+            // TODO: allocate memory more effeciently and use a different container?
             ComponentList _cameraComponents;
+            ComponentList _meshComponents;
             ComponentList _spriteComponents;
+            ComponentList _textComponents;
 
             Window _window;
             Context* _currentContext;
-            ComponentRef<CameraComponent> _currentCamera;
+            ComponentPtr<CameraComponent> _currentCamera;
 
-            std::vector<Effect>     _loadedEffects;
-            std::vector<Mesh>       _loadedMeshes;
-            std::vector<Texture>    _loadedTextures;
+            // Should these be held by content manager instead???
+            std::vector<Effect>         _loadedEffects;
+            std::vector<Mesh>           _loadedMeshes;
+            std::vector<Texture>        _loadedTextures;
+            std::vector<FontBatcher>    _fontBatchers;
+
+            // TODO: have content manager handle this map
+            std::unordered_map<std::string, AssetPtr<FontBatcher>> _fontIDMap;
 
             Skybox* _skybox;
             Cubemap* _skyboxCubemap;
@@ -117,8 +132,8 @@ namespace Ceres
 
             AssetPtr<Effect> _skyboxEffect;
             AssetPtr<Effect> _spriteEffect;
+            AssetPtr<Effect> _fontEffect;
 
-            std::vector<FontBatcher> _fontBatchers;
 
             Cubemap* _lightMap;
 
