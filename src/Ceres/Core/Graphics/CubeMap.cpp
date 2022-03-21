@@ -53,7 +53,7 @@ namespace Ceres
         std::string textureNameStr = std::string(textureName);
         size_t nameBegin = textureNameStr.rfind('\\') + 1;
         std::string filename = textureNameStr.substr(nameBegin, textureNameStr.length() - nameBegin);
-        fmt::print("{} Loaded cubemap files '{}'right... successfully.\n", DEBUG_PREFIX, filename);
+        // fmt::print("{} Loaded cubemap '{}' successfully.\n", DEBUG_PREFIX, filename);
     }
 
     Cubemap::~Cubemap()

@@ -39,7 +39,9 @@ namespace Ceres
 
 	void FontBatcher::SetScreenSize(unsigned int x, unsigned int y)
 	{
-		_screenSpace = Matrix2D::Sprite(0, 0, 1, -1, x, y);
+		_screenSpace = Matrix2D::TranslateAndScale(
+			-1.0f, 1.0f,
+			2 / static_cast<float>(x), -2 / static_cast<float>(y) );
 	}
 
 	/**

@@ -95,5 +95,7 @@ namespace Ceres
     void PhysicsComponent::FinalizeVelocity()
     {
         sendMessage(Message::Write("Velocity", Velocity));
+        std::string velocity = Velocity.ToString();
+        sendMessage(Message::Write("Text", velocity));
     }
 }

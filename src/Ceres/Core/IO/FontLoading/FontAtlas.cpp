@@ -1,6 +1,7 @@
 #include "FontAtlas.h"
 
 #include <fmt/core.h>
+#include <fmt/color.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -16,12 +17,12 @@ namespace Ceres
         FT_Error error = FT_Init_FreeType(&fontLibrary);
         if (error)
         {
-            // printPrefix();
+            printPrefix();
             fmt::print("Failed to initialize freetype.\n");
         }
         else
         {
-            // printPrefix();
+            printPrefix();
             fmt::print("FreeType library initialized.\n");
         }
         const unsigned int textureWidth = resolution;
@@ -69,7 +70,7 @@ namespace Ceres
             }
             if (currentY + width >= textureHeight)
             {
-                // printPrefix();
+                printPrefix();
                 fmt::print("Unable to generate font texture, not enough texture space.\n");
                 break;
             }
@@ -102,6 +103,8 @@ namespace Ceres
                 }
             }
         }
+        printPrefix();
+        fmt::print("Loaded font '{}' {}pt | reserved {}px\n", name, fontSize, resolution);
         FT_Done_Face(face);
         FT_Done_Library(fontLibrary);
 	}
@@ -124,6 +127,10 @@ namespace Ceres
 
     const GlyphSubtexture& FontAtlas::GetCharUV(char glyph) const
     {
+        if (glyph < 0 || glyph > 255)
+        {
+            glyph = 0;
+        }
         return _glyphSubs[glyph];
     }
 
@@ -148,5 +155,10 @@ namespace Ceres
     float FontAtlas::GetLineHeight() const
     {
         return _lineHeight;
+    }
+
+    void FontAtlas::printPrefix() const
+    {
+        fmt::print(fmt::emphasis::bold | fg(fmt::color::steel_blue), "[FontAtlas] ");
     }
 }

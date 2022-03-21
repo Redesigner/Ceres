@@ -45,6 +45,7 @@ namespace Ceres
 			// Assuming we use UTF-8, cover all possible values
 			std::array<GlyphSubtexture, 256> _glyphSubs;
 			std::vector<std::pair<KerningPair, float>> _kerningMap;
+			void printPrefix() const;
 			
 			float _lineHeight = 0;
 			bool _initialized = true;

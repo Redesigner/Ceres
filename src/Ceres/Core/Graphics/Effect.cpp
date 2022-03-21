@@ -38,7 +38,6 @@ namespace Ceres
                 throw std::runtime_error("OpenGL shaders failed to compile.");
             }
             glUseProgram(_glProgram);
-            SetVector3("lightPos", Vector3(0, -1000, 100));
         }
     }
 

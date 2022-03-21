@@ -52,16 +52,16 @@ namespace Ceres
         
         // Essential shaders that really shouldn't change too much... we'll just keep references to these around
         LoadEffect("default");
-        _skyboxEffect = LoadEffect("skybox");
-        _spriteEffect = LoadEffect("sprite");
-        _fontEffect = LoadEffect("font");
+        _skyboxEffect = LoadSimpleEffect("skybox");
+        _spriteEffect = LoadSimpleEffect("sprite");
+        _fontEffect = LoadSimpleEffect("font");
 
         _skybox = new Skybox();
         std::string cubeMapLocation = CONTENT_DIR + "Textures\\skybox\\";
         _skyboxCubemap = new Cubemap(cubeMapLocation.c_str()); 
         _skyboxEffect->SetTexture("skybox", _skyboxCubemap);
 
-        _shadowmap = new Shadowmap(2048, LoadEffect("shadowmap"));
+        _shadowmap = new Shadowmap(2048, LoadSimpleEffect("shadowmap"));
         _spritePlane = new Plane();
 
         // _fontBatchers.emplace_back(128, _contentManager.LoadFont("arial.ttf", 128), LoadEffect("font"));
@@ -154,6 +154,8 @@ namespace Ceres
         
         // set the ambient lightmap here, since it shouldn't change once we load the effect
         _loadedEffects.at(_loadedEffects.size() - 1).SetCubemap("lightmap", _lightMap);
+        _loadedEffects.at(_loadedEffects.size() - 1).SetVector3("lightPos", Vector3(0, -1000, 100));
+
         return AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1);
     }
     AssetPtr<Effect> GraphicsDevice::LoadEffect(const char* shaderName)
@@ -161,6 +163,19 @@ namespace Ceres
         std::string vertexName = SHADER_PATH + shaderName + VERT_EXTENSION;
         std::string fragmentName = SHADER_PATH + shaderName + FRAG_EXTENSTION;
         return LoadEffect(vertexName.c_str(), fragmentName.c_str(), shaderName);
+    }
+    AssetPtr<Effect> GraphicsDevice::LoadSimpleEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName)
+    {
+        const std::string& vertexShaderSource = _contentManager.LoadString(vertexShaderName);
+        const std::string& fragmentShaderSource = _contentManager.LoadString(fragmentShaderName);
+        _loadedEffects.push_back(std::move(Effect(vertexShaderSource, fragmentShaderSource, shaderName)));
+        return AssetPtr<Effect>(_loadedEffects, _loadedEffects.size() - 1);
+    }
+    AssetPtr<Effect> GraphicsDevice::LoadSimpleEffect(const char* shaderName)
+    {
+        std::string vertexName = SHADER_PATH + shaderName + VERT_EXTENSION;
+        std::string fragmentName = SHADER_PATH + shaderName + FRAG_EXTENSTION;
+        return LoadSimpleEffect(vertexName.c_str(), fragmentName.c_str(), shaderName);
     }
     AssetPtr<Effect> GraphicsDevice::GetEffect(std::string effectName)
     {

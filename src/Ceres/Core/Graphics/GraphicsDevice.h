@@ -60,6 +60,9 @@ namespace Ceres
 
             AssetPtr<Effect> LoadEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName);
             AssetPtr<Effect> LoadEffect(const char* shaderName);
+            // Create a shader program without using lights... won't be used for much later, just works in the current uniform setup
+            AssetPtr<Effect> LoadSimpleEffect(const char* vertexShaderName, const char* fragmentShaderName, const char* shaderName);
+            AssetPtr<Effect> LoadSimpleEffect(const char* shaderName);
             AssetPtr<Effect> GetEffect(std:: string effectName);
 
             AssetPtr<Mesh> LoadMesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect, std::string name);
@@ -123,7 +126,7 @@ namespace Ceres
             std::vector<Texture>        _loadedTextures;
             std::vector<FontBatcher>    _fontBatchers;
 
-            // TODO: have content manager handle this map
+            // TODO: have content manager handle this map?
             std::unordered_map<std::string, AssetPtr<FontBatcher>> _fontIDMap;
 
             Skybox* _skybox;

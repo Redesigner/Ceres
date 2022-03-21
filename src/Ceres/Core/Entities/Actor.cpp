@@ -29,8 +29,7 @@ namespace Ceres
         AddComponent<PhysicsComponent>(ComponentParams::WriteParams(_primitive));
         AddComponent<MovementComponent>();
         AddComponent<SpriteComponent>(ComponentParams::WriteParams(serviceContainer.GetService<RenderService>()->GetTexture("heart"), 64, 64, 64, 64));
-        AddComponent<SpriteComponent>(ComponentParams::WriteParams(serviceContainer.GetService<RenderService>()->GetTexture("arialX"), 128, 64, 64, 64));
-        AddComponent<TextComponent>(ComponentParams::WriteParams(arialString, 0, 256, text));
+        AddComponent<TextComponent>(ComponentParams::WriteParams(arialString, 128, 96, text));
 
         SendMessage("Pause");
         SendMessage("Position", Vector3::Zero() );

@@ -32,10 +32,9 @@ namespace Ceres
             static Message Write(std::string name, T data)
             {
                 Message message = Message(name);
-                message.setData(data);
+                message.setData(std::forward<T>(data));
                 return message;
             }
-
             /// Construct a message without any additional data.
             static Message Write(std::string name)
             {
@@ -54,8 +53,7 @@ namespace Ceres
                 {
                     _dataType = std::type_index(typeid(T));
                     _dataSize = sizeof(T);
-                    _data = new char[_dataSize];
-                    memcpy(_data, &data, _dataSize);
+                    _data = reinterpret_cast<char*>(new T(data));
                 }
             }
 

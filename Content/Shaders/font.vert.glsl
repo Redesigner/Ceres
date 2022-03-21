@@ -9,6 +9,8 @@ uniform mat3 transform;
 
 void main()
 {
-	gl_Position = vec4(transform * vec3(position, -1.0), 1.0);
+	vec2 screenPos = (transform * vec3(position, 1.0)).xy;
+	float depth = -1.0;
+	gl_Position = vec4(screenPos, depth, 1.0);
 	wTexCoord = texCoord;
 }

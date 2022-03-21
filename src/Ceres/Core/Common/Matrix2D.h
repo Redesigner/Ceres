@@ -22,6 +22,7 @@ namespace Ceres
 			static Matrix2D Translation(float x, float y);
 			static Matrix2D Rotation(float theta);
 			static Matrix2D Scale(float x, float y);
+			static Matrix2D TranslateAndScale(float x, float y, float w, float h);
 
 			/**
 			 * @brief Transformation matrix for mapping a sprite from screen coordinates to OpenGL space
