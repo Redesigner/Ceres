@@ -10,6 +10,7 @@
 #include <fmt/core.h>
 #include <fmt/color.h>
 
+#pragma warning(push, 0)        
 extern "C" 
 {
 	#include <SDL2/SDL.h>
@@ -17,6 +18,7 @@ extern "C"
     #include <gl/glew.h>
     #include <SDL2/SDL_opengl.h>
 }
+#pragma warning(pop)
 
 const std::string CWD = SDL_GetBasePath();
 const std::string CONTENT_DIR = CWD + "..\\..\\content\\";

@@ -3,12 +3,13 @@
 #include "Game.h"
 #include "Input/Buttons.h"
 
+#pragma warning(push, 0)
 #include <fmt/core.h>
-
 extern "C" 
 {
 	#include <SDL2/SDL.h>
 }
+#pragma warning(pop)
 
 namespace Ceres
 {

@@ -12,8 +12,14 @@ namespace Ceres
 		{
 		}
 
-		float X, Y, W, H;
-		unsigned int PxW, PxH;
-		float XOffset, YOffset, Advance;
+		float X = {};
+		float Y = {};
+		float W = {};
+		float H = {};
+		unsigned int PxW {};
+		unsigned int PxH {};
+		float XOffset {};
+		float YOffset {};
+		float Advance {};
 	};
 }

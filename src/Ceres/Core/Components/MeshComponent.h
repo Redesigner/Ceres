@@ -17,9 +17,8 @@ namespace Ceres
             MeshComponent(AssetPtr<Mesh> mesh, AssetPtr<Texture> texture);
             MeshComponent(AssetPtr<Mesh> mesh);
 
-            ~MeshComponent();
 
-            virtual bool ReceiveMessage(Message& message) override;
+            ~MeshComponent();
 
             AssetPtr<Mesh> Mesh;
             AssetPtr<Texture> Texture;

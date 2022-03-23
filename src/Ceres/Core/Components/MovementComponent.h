@@ -10,8 +10,6 @@ namespace Ceres
             MovementComponent();
             ~MovementComponent();
 
-            virtual bool ReceiveMessage(Message& message) override;
-
         private:
             bool _grounded = false;
     };

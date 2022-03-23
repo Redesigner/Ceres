@@ -17,8 +17,6 @@ namespace Ceres
             CameraComponent();
             ~CameraComponent();
 
-            bool virtual ReceiveMessage(Message& message) override;
-
             /**
              * @brief Get the Matrix object associated with this camera's transformation
              * 
@@ -79,9 +77,9 @@ namespace Ceres
             bool _regenProjectionMatrix = true;
 
             float _fOV = 90.0f;
-            unsigned int _width;
-            unsigned int _height;
-            float _clipStart = 0.1f;
-            float _clipEnd = 100.0f;
+            unsigned int _width = 0;
+            unsigned int _height = 0;
+            float _clipStart = 0.5f;
+            float _clipEnd = 30.0f;
     };
 }

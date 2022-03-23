@@ -9,46 +9,46 @@ namespace Ceres
 
     PhysicsComponent::PhysicsComponent(PrimitivePtr &primitive)
         :IComponent(std::type_index(typeid(PhysicsComponent))), _primitive(primitive)
-    {}
+    {
+        addMessageHandler("Position", [](IComponent* component, Message& message)
+            {
+                PhysicsComponent* physics = static_cast<PhysicsComponent*>(component);
+                Transform& newTransform = physics->_primitive->GetTransform();
+                newTransform.SetPosition(message.GetData<Vector3>());
+                physics->_primitive->SetTransform(newTransform);
+            });
+
+        addMessageHandler("Rotate", [](IComponent* component, Message& message)
+            {
+                PhysicsComponent* physics = static_cast<PhysicsComponent*>(component);
+                Transform& newTransform = physics->_primitive->GetTransform();
+                newTransform.SetRotation(newTransform.GetRotation() + message.GetData<Vector3>());
+                physics->_primitive->SetTransform(newTransform);
+            });
+
+        addMessageHandler("Scale", [](IComponent* component, Message& message)
+            {
+                PhysicsComponent* physics = static_cast<PhysicsComponent*>(component);
+                Transform& newTransfrom = physics->_primitive->GetTransform();
+                newTransfrom.SetScale(message.GetData<Vector3>());
+                physics->_primitive->SetTransform(newTransfrom);
+            });
+
+        addMessageHandler("Acceleration", [](IComponent* component, Message& message)
+            {
+                PhysicsComponent* physics = static_cast<PhysicsComponent*>(component);
+                physics->Acceleration += message.GetData<Vector3>();
+            });
+
+        addMessageHandler("Pause", [](IComponent* component, Message& message)
+            {
+                PhysicsComponent* physics = static_cast<PhysicsComponent*>(component);
+                physics->Paused = !physics->Paused;
+            });
+    }
 
     PhysicsComponent::~PhysicsComponent()
     {
-    }
-
-    bool PhysicsComponent::ReceiveMessage(Message& message)
-    {
-        if (message.Type == "Position")
-        {
-            Transform newTransform = _primitive->GetTransform();
-            newTransform.SetPosition(message.GetData<Vector3>());
-            _primitive->SetTransform(newTransform);
-            return true;
-        }
-        else if (message.Type == "Rotate")
-        {
-            Transform newTransform = _primitive->GetTransform();
-            newTransform.SetRotation(newTransform.GetRotation() + message.GetData<Vector3>());
-            _primitive->SetTransform(newTransform);
-            return true;
-        }
-        else if (message.Type == "Scale")
-        {
-            Transform newTransfrom = _primitive->GetTransform();
-            newTransfrom.SetScale(message.GetData<Vector3>());
-            _primitive->SetTransform(newTransfrom);
-            return true;
-        }
-        else if (message.Type == "Acceleration")
-        {
-            Acceleration += message.GetData<Vector3>();
-            return true;
-        }
-        else if (message.Type == "Pause")
-        {
-            Paused = !Paused;
-            return true;
-        }
-        return false;
     }
 
     const Vector3 PhysicsComponent::GetPosition() const

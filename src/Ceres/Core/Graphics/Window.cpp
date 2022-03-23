@@ -1,5 +1,6 @@
 #include "Window.h"
 
+#pragma warning(push, 0)
 extern "C"
 {
     #include <SDL2/SDL.h>
@@ -7,6 +8,7 @@ extern "C"
     #include <gl/glew.h>
     #include <SDL2/SDL_opengl.h>
 }
+#pragma warning(pop)
 
 #include <fmt/core.h>
 

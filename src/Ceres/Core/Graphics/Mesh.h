@@ -23,7 +23,7 @@ namespace Ceres
     {
         public:
             Mesh(const IVertexType vertexData[], const IVertexLayout& vertexLayout, const uint vertexCount, const uint indices[], const uint indexCount, AssetPtr<Effect> effect, std::string name);
-            Mesh(Mesh&& mesh);
+            Mesh(Mesh&& mesh) noexcept;
             Mesh(const Mesh&) = delete;
             ~Mesh();
 

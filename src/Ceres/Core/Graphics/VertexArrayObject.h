@@ -2,12 +2,14 @@
 
 #include "VertexTypes/IVertexLayout.h"
 
+#pragma warning(push, 0)
 extern "C"
 {
     #include <SDL2/SDL.h>
     #include <gl/glew.h>
     #include <SDL2/SDL_opengl.h>
 }
+#pragma warning(pop)
 
 namespace Ceres
 {
@@ -19,7 +21,7 @@ namespace Ceres
     {
         public:
             VertexArrayObject(const IVertexLayout& vertexLayout);
-            VertexArrayObject(VertexArrayObject&& vertexArrayObject);
+            VertexArrayObject(VertexArrayObject&& vertexArrayObject) noexcept;
             ~VertexArrayObject();
 
             VertexArrayObject& operator=(VertexArrayObject&& vertexArrayObject) noexcept;

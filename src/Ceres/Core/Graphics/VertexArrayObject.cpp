@@ -12,7 +12,7 @@ namespace Ceres
         glBindVertexArray(_gVAO);
     }
 
-    VertexArrayObject::VertexArrayObject(VertexArrayObject&& vertexArrayObject)
+    VertexArrayObject::VertexArrayObject(VertexArrayObject&& vertexArrayObject) noexcept
         :_vertexLayout(vertexArrayObject._vertexLayout)
     {
         _gVAO = vertexArrayObject._gVAO;

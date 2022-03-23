@@ -26,8 +26,7 @@ namespace Ceres
             Vector2 GetViewportSize() const; 
 
         private:
-            SDL_Window* _sdlWindow;
-
+            SDL_Window* _sdlWindow = nullptr;
             unsigned int _width = 1280;
             unsigned int _height = 720;
 

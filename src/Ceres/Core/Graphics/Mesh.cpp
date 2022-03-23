@@ -16,7 +16,7 @@ namespace Ceres
         _vAO.SetAttributes();
         _iBO.SetData(indices, indexCount);
     }
-    Mesh::Mesh(Mesh&& mesh)
+    Mesh::Mesh(Mesh&& mesh) noexcept
         :_vertexCount(mesh._vertexCount), _indexCount(mesh._indexCount),
         _vAO(std::move(mesh._vAO)), _vBO(std::move(mesh._vBO)), _iBO(std::move(mesh._iBO)), _effect(mesh._effect), _name(mesh._name)
     {

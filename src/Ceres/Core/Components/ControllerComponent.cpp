@@ -22,21 +22,17 @@ namespace Ceres
 
         inputHandler.BindAction("Jump",  [this]() { sendMessage(Message::Write("Jump")); });
         inputHandler.BindAction("Pause", [this]() { sendMessage(Message::Write("Pause")); });
+
+        addMessageHandler("CameraRotation", [](IComponent* component, Message& message)
+            {
+                ControllerComponent* controller = static_cast<ControllerComponent*>(component);
+                float angleX = message.GetData<Vector3>().X / 640.0f;
+                controller->_rotation = Math::ClampRadians(controller->_rotation - angleX);
+            });
     }
 
     ControllerComponent::~ControllerComponent()
     {}
-
-    bool ControllerComponent::ReceiveMessage(Message& message)
-    {
-        if (message.Type == "CameraRotation")
-        {
-            float angleX = message.GetData<Vector3>().X / 640.0f;
-            _rotation =  Math::ClampRadians(_rotation - angleX);
-            return true;
-        }
-        return false;
-    }
 
     void ControllerComponent::Update(double seconds)
     {

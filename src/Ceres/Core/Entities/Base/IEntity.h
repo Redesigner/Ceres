@@ -3,7 +3,7 @@
 #include "../../Components/Base/IComponent.h"
 #include "../../Components/Base/ComponentParameters.h"
 #include "../../Components/Base/ComponentPtr.h"
-#include "../../Components/Base/Message.h"
+#include "../../Components/Base/MessageSystem/Message.h"
 
 #include "../../Services/ServiceContainer.h"
 
